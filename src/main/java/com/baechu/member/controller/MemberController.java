@@ -29,7 +29,7 @@ public class MemberController {
 
 	@GetMapping("/login")
 	public ModelAndView loginPage() {
-		return new ModelAndView();
+		return new ModelAndView("login");
 	}
 
 	@PostMapping("/signin")
