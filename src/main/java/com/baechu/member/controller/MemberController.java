@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.baechu.common.dto.BaseResponse;
+import com.baechu.member.dto.LoginDto;
 import com.baechu.member.dto.SigninDto;
 import com.baechu.member.service.MemberService;
 
@@ -20,8 +21,14 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping("/login")
-	public void login() {
+	@ResponseBody
+	public ResponseEntity<BaseResponse> login(@RequestBody LoginDto loginDto) {
+		return memberService.login(loginDto);
+	}
 
+	@GetMapping("/login")
+	public String loginPage() {
+		return "login";
 	}
 
 	@PostMapping("/signin")

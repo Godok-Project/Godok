@@ -10,6 +10,7 @@ import com.baechu.common.dto.BaseResponse;
 import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 import com.baechu.common.exception.SuccessCode;
+import com.baechu.member.dto.LoginDto;
 import com.baechu.member.dto.SigninDto;
 import com.baechu.member.entity.Member;
 import com.baechu.member.repository.MemberRepository;
@@ -33,5 +34,19 @@ public class MemberService {
 			memberRepository.save(new Member(signinDto));
 			return BaseResponse.toResponseEntity(SuccessCode.SIGNUP_SUCCESS);
 		}
+	}
+
+	public ResponseEntity<BaseResponse> login(LoginDto loginDto) {
+
+		Member findMember = memberRepository.findByEmail(loginDto.getEmail()).orElseThrow(
+			()-> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		if(findMember.getPassword().equals(loginDto.getPassword())){
+			return BaseResponse.toResponseEntity(SuccessCode.LOGIN_SUCCESS);
+
+		}else {
+			throw new CustomException(ErrorCode.INVALIDATION_PASSWORD);
+		}
+
 	}
 }
