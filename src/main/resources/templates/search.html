@@ -296,33 +296,26 @@
         <input class="btn btn-primary" type="button" value="적용">
     </div>
     <div class="info-area">
+        <tr th:each="book : ${result}">
+            <div class="book-box">
+                <div class="image-area">
+                    <img th:src="${book.getImage()}" alt="My Image" width="97">
+                </div>
+                <div class="desc-area">
+                    <h5 th:text="${book.getTitle()}">에밀</h5>
+                    <h6 th:text="'가격 : '+${book.getPrice()}+' 원'">35000</h6>
+                    <h6 th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</h6>
+                    <h6 th:text="'출판사 : '+${book.getAuthor()}">육문사</h6>
+                    <h6 th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
+                        82012.3</h6>
+                </div>
+            </div>
+        </tr>
     </div>
 
 </div>
 
 </body>
 <script>
-    getBoxes()
-
-    function getBoxes() {
-        for (let i = 0; i < 8; i++) {
-            let html = `
-            <div class="book-box">
-            <div class="image-area">
-                <img src="https://image.aladin.co.kr/product/1604/31/cover200/8982032002_1.jpg" alt="My Image"
-                     width="97">
-            </div>
-            <div class="desc-area">
-                <h5>에밀</h5>
-                <h6>가격 : 35000 원</h6>
-                <h6>작가 : 장 자크 루소</h6>
-                <h6>출판사 : 육문사</h6>
-                <h6>별점 : 8 / 발행년도 : 2012.3</h6>
-            </div>
-        </div>
-            `
-            $('.info-area').append(html)
-        }
-    }
 </script>
 </html>
