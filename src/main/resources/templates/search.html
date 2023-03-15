@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>검색 페이지</title>
+    <style>
+        /*뒤로가기 영역*/
+        .top-area {
+            margin: 30px;
+        }
+
+        /*검색 영역*/
+        .search-area {
+            display: flex;
+            justify-content: center;
+            height: 50px;
+            margin: auto;
+            margin-bottom: 40px;
+            width: 90%;
+        }
+
+        .form-select {
+            width: 200px;
+            height: 50px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .form-control {
+            width: 500px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .mid-area {
+            display: flex;
+            /*justify-content: center;*/
+            max-width: 2500px;
+            width: 100%;
+            height: 1350px;
+            margin: auto;
+            /*background-color: darkseagreen;*/
+        }
+
+        /*상세 필터 영역*/
+        .filter-area {
+            background-color: whitesmoke;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 300px;
+            width: 20%;
+            margin-right: 2%;
+            margin-left: 2%;
+            border: 1px darkblue solid;
+            border-radius: 8px;
+            height: 800px
+            /*min-height: 1500px;*/
+        }
+
+        .star-area {
+            /*background-color: brown;*/
+            border: 1px slategray solid;
+            border-radius: 5px;
+            display: flex;
+            margin-top: 30px;
+            align-items: center;
+            justify-content: center;
+            /*top: 50%;*/
+        }
+
+        .star-box {
+            /*background-color: darkorange;*/
+            width: 70%;
+            height: 200px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .price-area {
+            /*background-color: blueviolet;*/
+            margin-top: 30px;
+        }
+
+        .publish-area {
+            /*background-color: darkslategray;*/
+            margin-top: 30px;
+        }
+
+        .author-area {
+            /*background-color: gold;*/
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .star-box-left {
+            display: flex;
+            flex-direction: column;
+            margin: 0 20px 0 10px;
+        }
+
+        .star-box-right {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-input {
+            width: 80%;
+        }
+
+        #min-price {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #max-price {
+            width: 100%;
+        }
+
+        #publish-box {
+            width: 100%;
+        }
+
+        #author-box {
+            width: 100%;
+        }
+
+        /*책 정보 영역*/
+        .info-area {
+            background-color: whitesmoke;
+            border-radius: 5px;
+            padding-top: 10px;
+            width: 75%;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: center;
+        }
+
+        .book-box {
+            border: 1px black solid;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px 2% 20px 2%;
+            height: 200px;
+            display: flex;
+            width: 47%;
+        }
+
+        .image-area {
+            border-radius: 10px;
+            margin-right: 15px;
+            width: 20%;
+        }
+
+        .desc-area {
+            border: 1px darkslategrey solid;
+            padding: 10px;
+            border-radius: 10px;
+            width: 78%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="top-area">
+    <input class="btn btn-primary" type="button" value="뒤로가기">
+</div>
+<div class="search-area">
+    <select class="form-select" aria-label="Default select example">
+        <option selected>대분류</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+    </select>
+    <select class="form-select" aria-label="Default select example">
+        <option selected>소분류</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+    </select>
+
+    <input type="email" class="form-control" id="search-box" placeholder="검색">
+
+    <input class="btn btn-primary" type="button" value="검색">
+
+    <select class="form-select" aria-label="Default select example">
+        <option selected>정렬</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+    </select>
+</div>
+<div class="mid-area">
+    <div class="filter-area">
+        <select class="form-select" aria-label="Default select example">
+            <option selected>발행년도</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+        <div class="star-area">
+            <h3>별점</h3>
+            <div class="star-box">
+                <div class="star-box-left">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                               value="option1">
+                        <label class="form-check-label" for="inlineRadio1">1</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                               value="option2">
+                        <label class="form-check-label" for="inlineRadio1">2</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
+                               value="option3">
+                        <label class="form-check-label" for="inlineRadio1">3</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4"
+                               value="option4">
+                        <label class="form-check-label" for="inlineRadio1">4</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5"
+                               value="option5">
+                        <label class="form-check-label" for="inlineRadio1">5</label>
+                    </div>
+                </div>
+                <div class="star-box-right">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6"
+                               value="option6">
+                        <label class="form-check-label" for="inlineRadio2">6</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio7"
+                               value="option7">
+                        <label class="form-check-label" for="inlineRadio2">7</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio8"
+                               value="option8">
+                        <label class="form-check-label" for="inlineRadio2">8</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio9"
+                               value="option9">
+                        <label class="form-check-label" for="inlineRadio2">9</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio10"
+                               value="option10">
+                        <label class="form-check-label" for="inlineRadio2">10</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="price-area">
+            <h3>가격 범위</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="min-price" type="text" placeholder="최소 가격"
+                       aria-label=".form-control-sm example">
+            </div>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="max-price" type="text" placeholder="최대 가격"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <div class="publish-area">
+            <h3>출판사</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="publish-box" type="text"
+                       placeholder="출판사"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <div class="author-area">
+            <h3>작가</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="author-box" type="text"
+                       placeholder="작가"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <input class="btn btn-primary" type="button" value="적용">
+    </div>
+    <div class="info-area">
+    </div>
+
+</div>
+
+</body>
+<script>
+    getBoxes()
+
+    function getBoxes() {
+        for (let i = 0; i < 8; i++) {
+            let html = `
+            <div class="book-box">
+            <div class="image-area">
+                <img src="https://image.aladin.co.kr/product/1604/31/cover200/8982032002_1.jpg" alt="My Image"
+                     width="97">
+            </div>
+            <div class="desc-area">
+                <h5>에밀</h5>
+                <h6>가격 : 35000 원</h6>
+                <h6>작가 : 장 자크 루소</h6>
+                <h6>출판사 : 육문사</h6>
+                <h6>별점 : 8 / 발행년도 : 2012.3</h6>
+            </div>
+        </div>
+            `
+            $('.info-area').append(html)
+        }
+    }
+</script>
+</html>
