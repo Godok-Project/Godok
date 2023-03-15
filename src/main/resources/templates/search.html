@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -297,9 +297,11 @@
     </div>
     <div class="info-area">
         <tr th:each="book : ${result}">
-            <div class="book-box">
+            <div class="book-box" type="button" th:onclick="moveToDetail(${book.getId()})">
                 <div class="image-area">
-                    <img th:src="${book.getImage()}" alt="My Image" width="97">
+                    <a th:href="@{/detail/{id}(id=${book.getId()})}">
+                        <img th:src="${book.getImage()}" alt="My Image" width="97">
+                    </a>
                 </div>
                 <div class="desc-area">
                     <h5 th:text="${book.getTitle()}">에밀</h5>
