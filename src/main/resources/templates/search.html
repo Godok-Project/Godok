@@ -161,12 +161,13 @@
             padding: 20px 2% 20px 2%;
             height: 200px;
             display: flex;
-            width: 47%;
+            /*width: 47%;*/
+            width: 500px;
         }
 
         .image-area {
             border-radius: 10px;
-            margin-right: 15px;
+            margin-right: 7%;
             width: 20%;
         }
 
@@ -181,7 +182,9 @@
 </head>
 <body>
 <div class="top-area">
-    <input class="btn btn-primary" type="button" value="뒤로가기">
+    <a href="/main">
+        <input class="btn btn-primary" type="button" value="뒤로가기">
+    </a>
 </div>
 <div class="search-area">
     <select id="category" class="form-select" aria-label="Default select example">
@@ -199,7 +202,7 @@
 
     <input type="email" class="form-control" id="search-box" placeholder="검색">
 
-    <input class="btn btn-primary" type="button" value="검색">
+    <input class="btn btn-primary" type="button" onclick="searchBook()" value="검색">
 
     <select id="sort" class="form-select" aria-label="Default select example">
         <option selected value="0">정렬</option>
@@ -322,16 +325,6 @@
                 </div>
             </div>
         </tr>
-        <p th:text="'cid = '+${cid} + ', '"></p>
-        <p th:text="'query = '+${query} + ', '"></p>
-        <p th:text="'sort = '+${sort} + ', '"></p>
-        <p th:text="'year = '+${year} + ', '"></p>
-        <p th:text="'month = '+${month} + ', '"></p>
-        <p th:text="'star = '+${star} + ', '"></p>
-        <p th:text="'minprice = '+${minprice} + ', '"></p>
-        <p th:text="'maxprice = '+${maxprice} + ', '"></p>
-        <p th:text="'publish = '+${publish} + ', '"></p>
-        <p th:text="'author = '+${author}"></p>
     </div>
 
 </div>
@@ -349,7 +342,6 @@
     let publish = [[${publish}]];
     let author = [[${author}]];
 
-    
     function searchBook() {
         query = $('#search-box').val();
         // cid는 카테고리 대/소분류 구현해야 적용 가능
