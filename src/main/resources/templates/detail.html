@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Detailpage</title>
+
+    <style>
+        .title{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inputplace{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orderplace{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bookdetail{
+            margin-left: 20px;
+            font-size: 20px;
+        }
+
+        .explain{
+            font-weight: bold;
+            display: flex;
+            flex-direction: row;
+        }
+
+    </style>
+    <script>
+    </script>
+</head>
+<!--참조 문서-->
+<!--thymeleaf+html 연동하기-->
+<!--https://lifere.tistory.com/entry/Spring-Boot-Thymeleaf-PathVariable-url-%EA%B2%BD%EB%A1%9C%EC%9D%98-%EA%B0%92%EC%9D%84-%EB%B3%80%EC%88%98%EB%A1%9C-%EB%B0%9B%EA%B8%B0-->
+<body>
+    <header class = 'container'>
+        <button class = 'back' onclick = 'window.history.back()'>⬅</button>
+        <h1 class = 'title'>GODOK</h1>
+    </header>
+<div id="allbox">
+    <div class = 'inputplace'>
+        <div>
+            <img th:src="${info.image}" src="https://image.aladin.co.kr/product/22460/28/cover200/8994492046_1.jpg" width="300" >
+        </div>
+        <div class="bookdetail">
+            <ul>
+                <li class="explain">
+                    <div>가격 : </div>
+                    <div th:text="${info.price}">test가격</div>
+                </li>
+            </ul>
+            <h4 id="booktitle" th:text="${info.title}">test제목</h4>
+            <h4 id="bookprice" th:text="${info.price}">test가아격</h4>
+            <h4 id="bookauthor" th:text="${info.author}">test작가</h4>
+            <h4 id="bookpublish" th:text="${info.publish}">test출판사</h4>
+            <h4 id="bookbirth" th:text="${info.birth}">테스트발행년도</h4>
+        </div>
+    </div>
+    <form role="form" action="/detail/buybooks" id="buyform" method="post">
+        <div class="orderplace">
+            <h4 th:text="${info.inventory}">테스트재고</h4>
+            <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="inventory"
+                            name="inventory" required="required">
+                <option selected>주문할 권 수를 선택해주세요</option>
+                <option value="1">1권</option>
+                <option value="2">2권</option>
+                <option value="3">3권</option>
+                <option value="4">4권</option>
+                <option value="5">5권</option>
+                <option value="6">6권</option>
+                <option value="7">7권</option>
+                <option value="8">8권</option>
+                <option value="9">9권</option>
+            </select>
+            <button type="submit" onclick="submit">주문하기</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
