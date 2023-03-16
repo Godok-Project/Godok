@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>Main</title>
+</head>
+
+<style>
+    .title-box {
+        width: 380px;
+        text-align: center;
+        margin: 30px auto auto auto;
+        font-family: Arial;
+        font-size: 50px;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #title  {
+        text-align: center;
+        margin: 10px auto auto 120px;
+    }
+
+    #log-in {
+        width: 150px;
+        font-size: 15px;
+        margin: -30px auto auto 700px;
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .search {
+        position: relative;
+        width: 400px;
+    }
+
+    input {
+        width: 100%;
+        border: 1px solid #bbb;
+        border-radius: 5px;
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+
+    img {
+        position : absolute;
+        width: 22px;
+        top: 10px;
+        right: 12px;
+        margin: 0;
+    }
+
+    .search-box {
+
+        background: green;
+        width: 1000px;
+        height: 100px;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        margin: 30px auto auto auto;
+
+        border-radius: 10px;
+
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    #category {
+
+        font-size: 0.7rem;
+        font-family: Arial;
+        font-weight: bold;
+
+        color: white;
+        background-color: lightslategrey;
+
+        padding: 1.6em 1.4em 1.5em 0.8em;
+        margin: 30px auto 25px 20px;
+
+        border: 1px solid #aaa;
+        border-radius: 0.5em;
+        box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    }
+
+    #baby-category {
+
+        font-size: 0.7rem;
+        font-family: Arial;
+        font-weight: bold;
+
+        color: white;
+        background-color: lightslategrey;
+
+        padding: 1.6em 1.4em 1.5em 0.8em;
+        margin: 30px auto 25px 30px;
+
+        border: 1px solid #aaa;
+        border-radius: 0.5em;
+        box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    }
+
+    #search_btn {
+
+        font-size: 0.7rem;
+        font-family: Arial;
+        font-weight: bold;
+
+        color: white;
+        background-color: lightslategrey;
+
+        padding: 1.6em 1.4em 1.5em 0.8em;
+        margin: 30px 30px 25px auto;
+
+        border: 1px solid #aaa;
+        border-radius: 0.5em;
+        box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    }
+
+    .search {
+        margin: 30px 20px 25px 30px;
+    }
+
+
+    .wrap {
+        width: 1400px;
+
+        margin: 50px auto 0px auto;
+    }
+
+    .book-box {
+        border: 1px black solid;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 20px 2% 20px 2%;
+        height: 200px;
+        display: flex;
+        width: 47%;
+    }
+
+    .image-area {
+        border-radius: 10px;
+        margin-right: 15px;
+        width: 20%;
+        position: relative;
+    }
+
+    .image-area > img {
+        position: absolute;
+        width: 90%;
+        top: -3%;
+    }
+
+    .desc-area {
+        border: 1px darkslategrey solid;
+        padding: 10px;
+        border-radius: 10px;
+        width: 78%;
+    }
+
+</style>
+
+<script>
+    $(document).ready(function() {
+        listing();
+    });
+
+    function listing() {
+        $.ajax({
+            type:"GET",
+            url: "/main",
+            data: {},
+            success: function (response) {
+                for (let i = 0; i < rows.length; i++){
+                    let image = rows[i]['image']
+                    let title = rows[i]['title']
+                    let price = rows[i]['price']
+                    let author = rows[i]['author']
+                    let publish = rows[i]['publish']
+                    let star = rows[i]['star']
+                    let year = rows[i]['year']
+                    let month = rows[i]['month']
+
+                    let temp_html = <div className="book-box">
+                        <div className="image-area">
+                            <img src="${image}" alt="My Image"/>
+                        </div>
+                        <div className="desc-area">
+                            <h5>${title}</h5>
+                            <h6>가격 : ${price} 원</h6>
+                            <h6>작가 : ${author}</h6>
+                            <h6>출판사 : #{publish}</h6>
+                            <h6>별점 : ${star} / 발행년도 : ${year}.${month}</h6>
+                        </div>
+                    </div>
+
+                    $('#book_info_area').append(temp_html)
+                }
+
+            }
+        })
+    }
+
+</script>
+
+<script>
+    function optionChange() {
+        var a = ['A-1','A-2','A-3'];
+        var b = ['B-1','B-2','B-3'];
+        var c = ['A-1','A-2','A-3'];
+        var d = ['B-1','B-2','B-3'];
+        var e = ['A-1','A-2','A-3'];
+        var f = ['B-1','B-2','B-3'];
+        var g = ['A-1','A-2','A-3'];
+        var h = ['B-1','B-2','B-3'];
+        var i = ['A-1','A-2','A-3'];
+        var j = ['B-1','B-2','B-3'];
+        var k = ['A-1','A-2','A-3'];
+        var l = ['B-1','B-2','B-3'];
+        var m = ['A-1','A-2','A-3'];
+        var n = ['B-1','B-2','B-3'];
+        var o = ['A-1','A-2','A-3'];
+        var p = ['B-1','B-2','B-3'];
+        var q = ['A-1','A-2','A-3'];
+        var r = ['B-1','B-2','B-3'];
+        var s = ['A-1','A-2','A-3'];
+        var t = ['B-1','B-2','B-3'];
+        var u = ['A-1','A-2','A-3'];
+        var v = ['B-1','B-2','B-3'];
+        var w = ['A-1','A-2','A-3'];
+        var x = ['B-1','B-2','B-3'];
+        var y = ['A-1','A-2','A-3'];
+        var z = ['B-1','B-2','B-3'];
+
+        var vv = $( '#category' ).val();
+        var oo;
+        if ( vv == 'a' ) {
+            oo = a;
+        } else if ( vv == 'b' ) {
+            oo = b;
+        } else if ( vv == 'c' ) {
+            oo = c;
+        } else if ( vv == 'd' ) {
+            oo = d;
+        } else if ( vv == 'e' ) {
+            oo = e;
+        } else if ( vv == 'f' ) {
+            oo = f;
+        } else if ( vv == 'g' ) {
+            oo = g;
+        } else if ( vv == 'h' ) {
+            oo = h;
+        } else if ( vv == 'i' ) {
+            oo = i;
+        } else if ( vv == 'j' ) {
+            oo = j;
+        } else if ( vv == 'k' ) {
+            oo = k;
+        } else if ( vv == 'l' ) {
+            oo = l;
+        } else if ( vv == 'm' ) {
+            oo = m;
+        } else if ( vv == 'n' ) {
+            oo = n;
+        } else if ( vv == 'o' ) {
+            oo = o;
+        } else if ( vv == 'p' ) {
+            oo = p;
+        } else if ( vv == 'q' ) {
+            oo = q;
+        } else if ( vv == 'r' ) {
+            oo = r;
+        } else if ( vv == 's' ) {
+            oo = s;
+        } else if ( vv == 't' ) {
+            oo = t;
+        } else if ( vv == 'u' ) {
+            oo = u;
+        } else if ( vv == 'v' ) {
+            oo = v;
+        } else if ( vv == 'w' ) {
+            oo = w;
+        } else if ( vv == 'x' ) {
+            oo = x;
+        } else if ( vv == 'y' ) {
+            oo = y;
+        } else if ( vv == 'z' ) {
+            oo = z;
+        } else {
+            oo = [];
+        }
+        $( '#baby-category' ).empty();
+        $( '#baby-category' ).append( '<option></option>' );
+        for ( var i = 0; i < o.length; i++ ) {
+            $( '#baby-category' ).append( '<option>' + oo[ i ] + '</option>' );
+        }
+    }
+</script>
+
+<body>
+<div class="title-box">
+    <h1 id="title">Godok</h1>
+    <button id="log-in" onclick="location.href='signin.html'">로그인</button>
+</div>
+</body>
+
+<body>
+<div class="search-box">
+
+    <form action = "./result.html" name="searchData" method="get">
+        <select id="category" name="category" onchange="optionChange();" style="font-size: 13px; width:150px; height:60px;">
+        <option style="color: white">대분류</option>
+        <option value="a">건강 취미</option>
+        <option value="b">경제 경영</option>
+        <option value="c">대학교재</option>
+        <option value="d">소설 시 희곡</option>
+        <option value="e">어린이</option>
+        <option value="f">에세이</option>
+        <option value="g">여행</option>
+        <option value="h">역사</option>
+        <option value="i">자기계발</option>
+        <option value="j">잡지</option>
+        <option value="k">청소년</option>
+        <option value="l">초등참고서</option>
+        <option value="m">과학</option>
+        <option value="n">유아</option>
+        <option value="o">가정 살림</option>
+        <option value="p">국어 외국어 사전</option>
+        <option value="q">만화 라이트노벨</option>
+        <option value="r">사회 정치</option>
+        <option value="s">수험서 자격증</option>
+        <option value="t">예술</option>
+        <option value="u">인문학</option>
+        <option value="v">전집</option>
+        <option value="w">종교 역학</option>
+        <option value="x">IT 모바일</option>
+        <option value="y">중고등참고서</option>
+        <option value="z">달력 기타</option>
+    </select>
+
+        <select id="baby-category" name="babyCategory" style="font-size: 13px; width:150px; height:60px;">
+        <option>소분류</option>
+    </select>
+
+        <input class="search" name="title" type="text" placeholder="검색어 입력" style="width: 470px">
+
+        <button id="search_btn" type="submit" value="search" style="font-size: 13px; width:70px; height:60px;">검색</button>
+    </form>
+</div>
+
+</body>
+<div class="wrap">
+    <div id="book_info_area" class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="book-box">
+            <div class="image-area">
+                <img src="https://image.aladin.co.kr/product/1604/31/cover200/8982032002_1.jpg" alt="My Image" />
+            </div>
+            <div class="desc-area">
+                <h5>에밀</h5>
+                <h6>가격 : 35000 원</h6>
+                <h6>작가 : 장 자크 루소</h6>
+                <h6>출판사 : 육문사</h6>
+                <h6>별점 : 8 / 발행년도 : 2012.3</h6>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</html>
