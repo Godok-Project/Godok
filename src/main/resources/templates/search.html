@@ -85,6 +85,10 @@
             justify-content: center;
         }
 
+        .star-point {
+            margin-left: 3%;
+        }
+
         .price-area {
             /*background-color: blueviolet;*/
             margin-top: 30px;
@@ -125,12 +129,17 @@
             width: 100%;
         }
 
-        #publish-box {
+        #publish {
             width: 100%;
         }
 
-        #author-box {
+        #author {
             width: 100%;
+        }
+
+        #year {
+            width: 80%;
+            justify-content: center;
         }
 
         /*책 정보 영역*/
@@ -175,93 +184,93 @@
     <input class="btn btn-primary" type="button" value="뒤로가기">
 </div>
 <div class="search-area">
-    <select class="form-select" aria-label="Default select example">
-        <option selected>대분류</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+    <select id="category" class="form-select" aria-label="Default select example">
+        <option selected value="">대분류</option>
+        <option value="건강">건강</option>
+        <option value="에세이">에세이</option>
+        <option value="인문학">인문학</option>
     </select>
-    <select class="form-select" aria-label="Default select example">
-        <option selected>소분류</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+    <select id="babyCategory" class="form-select" aria-label="Default select example">
+        <option selected value="">소분류</option>
+        <option value="헬스">헬스</option>
+        <option value="한국 에세이">한국 에세이</option>
+        <option value="교양 인문학">교양 인문학</option>
     </select>
 
     <input type="email" class="form-control" id="search-box" placeholder="검색">
 
     <input class="btn btn-primary" type="button" value="검색">
 
-    <select class="form-select" aria-label="Default select example">
-        <option selected>정렬</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+    <select id="sort" class="form-select" aria-label="Default select example">
+        <option selected value="0">정렬</option>
+        <option value="1">이름순</option>
+        <option value="2">가격 높은순</option>
+        <option value="3">가격 낮은순</option>
     </select>
 </div>
 <div class="mid-area">
     <div class="filter-area">
-        <select class="form-select" aria-label="Default select example">
-            <option selected>발행년도</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+        <select id="year" class="form-select" aria-label="Default select example">
+            <option selected value="">발행년도</option>
+            <option value="2010">2010</option>
+            <option value="2000">2000</option>
+            <option value="1990">1990</option>
         </select>
         <div class="star-area">
-            <h3>별점</h3>
+            <h3 class="star-point">별점</h3>
             <div class="star-box">
                 <div class="star-box-left">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                               value="option1">
-                        <label class="form-check-label" for="inlineRadio1">1</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star1"
+                               value="1">
+                        <label class="form-check-label" for="star1">1</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
-                               value="option2">
-                        <label class="form-check-label" for="inlineRadio1">2</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star2"
+                               value="2">
+                        <label class="form-check-label" for="star2">2</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
-                               value="option3">
-                        <label class="form-check-label" for="inlineRadio1">3</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star3"
+                               value="3">
+                        <label class="form-check-label" for="star3">3</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4"
-                               value="option4">
-                        <label class="form-check-label" for="inlineRadio1">4</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star4"
+                               value="4">
+                        <label class="form-check-label" for="star4">4</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5"
-                               value="option5">
-                        <label class="form-check-label" for="inlineRadio1">5</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star5"
+                               value="5">
+                        <label class="form-check-label" for="star5">5</label>
                     </div>
                 </div>
                 <div class="star-box-right">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6"
-                               value="option6">
-                        <label class="form-check-label" for="inlineRadio2">6</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star6"
+                               value="6">
+                        <label class="form-check-label" for="star6">6</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio7"
-                               value="option7">
-                        <label class="form-check-label" for="inlineRadio2">7</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star7"
+                               value="7">
+                        <label class="form-check-label" for="star7">7</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio8"
-                               value="option8">
-                        <label class="form-check-label" for="inlineRadio2">8</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star8"
+                               value="8">
+                        <label class="form-check-label" for="star8">8</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio9"
-                               value="option9">
-                        <label class="form-check-label" for="inlineRadio2">9</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star9"
+                               value="9">
+                        <label class="form-check-label" for="star9">9</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio10"
-                               value="option10">
-                        <label class="form-check-label" for="inlineRadio2">10</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star10"
+                               value="10">
+                        <label class="form-check-label" for="star10">10</label>
                     </div>
                 </div>
             </div>
@@ -280,7 +289,7 @@
         <div class="publish-area">
             <h3>출판사</h3>
             <div class="price-input">
-                <input class="form-control form-control-sm" id="publish-box" type="text"
+                <input class="form-control form-control-sm" id="publish" type="text"
                        placeholder="출판사"
                        aria-label=".form-control-sm example">
             </div>
@@ -288,12 +297,12 @@
         <div class="author-area">
             <h3>작가</h3>
             <div class="price-input">
-                <input class="form-control form-control-sm" id="author-box" type="text"
+                <input class="form-control form-control-sm" id="author" type="text"
                        placeholder="작가"
                        aria-label=".form-control-sm example">
             </div>
         </div>
-        <input class="btn btn-primary" type="button" value="적용">
+        <input class="btn btn-primary" type="button" value="적용" onclick="applyFilter()">
     </div>
     <div class="info-area">
         <tr th:each="book : ${result}">
@@ -313,11 +322,92 @@
                 </div>
             </div>
         </tr>
+        <p th:text="'cid = '+${cid} + ', '"></p>
+        <p th:text="'query = '+${query} + ', '"></p>
+        <p th:text="'sort = '+${sort} + ', '"></p>
+        <p th:text="'year = '+${year} + ', '"></p>
+        <p th:text="'month = '+${month} + ', '"></p>
+        <p th:text="'star = '+${star} + ', '"></p>
+        <p th:text="'minprice = '+${minprice} + ', '"></p>
+        <p th:text="'maxprice = '+${maxprice} + ', '"></p>
+        <p th:text="'publish = '+${publish} + ', '"></p>
+        <p th:text="'author = '+${author}"></p>
     </div>
 
 </div>
-
 </body>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let cid = [[${cid}]];
+    let query = [[${query}]];
+    let sort = [[${sort}]];
+    let year = [[${year}]];
+    let month = [[${month}]];
+    let star = [[${star}]];
+    let minprice = [[${minprice}]];
+    let maxprice = [[${maxprice}]];
+    let publish = [[${publish}]];
+    let author = [[${author}]];
+
+    function applyFilter() {
+        minprice = $("#min-price").val();
+        maxprice = $("#max-price").val();
+        if (checkPrice(minprice, maxprice)) {
+            publish = $("#publish").val();
+            author = $("#author").val();
+            sort = $("#sort option:selected").val();
+            year = $("#year option:selected").val();
+            selectStar()
+
+            location.href = "/result/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author;
+        }
+    }
+
+    function selectStar() {
+        if ($('input[id=star10]:checked').val()) {
+            star = $('input[id=star10]:checked').val();
+        } else if ($('input[id=star9]:checked').val()) {
+            star = $('input[id=star9]:checked').val();
+        } else if ($('input[id=star8]:checked').val()) {
+            star = $('input[id=star8]:checked').val();
+        } else if ($('input[id=star7]:checked').val()) {
+            star = $('input[id=star7]:checked').val();
+        } else if ($('input[id=star6]:checked').val()) {
+            star = $('input[id=star6]:checked').val();
+        } else if ($('input[id=star5]:checked').val()) {
+            star = $('input[id=star5]:checked').val();
+        } else if ($('input[id=star4]:checked').val()) {
+            star = $('input[id=star4]:checked').val();
+        } else if ($('input[id=star3]:checked').val()) {
+            star = $('input[id=star3]:checked').val();
+        } else if ($('input[id=star2]:checked').val()) {
+            star = $('input[id=star2]:checked').val();
+        } else if ($('input[id=star1]:checked').val()) {
+            star = $('input[id=star1]:checked').val();
+        } else {
+            star = ""
+        }
+    }
+
+    function checkPrice(min, max) {
+        let isNumber = /^[0-9]+$/;
+        if (min.length == 0) {
+            min = '0'
+        }
+        if (max.length == 0) {
+            max = '999999999'
+        }
+        if (!(isNumber.test(min) && isNumber.test(max))) {
+            alert("가격 필터에는 숫자만 입력해주세요.");
+            return false;
+        }
+        if (Number(min) > Number(max)) {
+            alert("최대 가격은 최소 가격보다 커야합니다.")
+            return false;
+        }
+        return true;
+    }
+
+    /*]]>*/
 </script>
 </html>
