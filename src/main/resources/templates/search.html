@@ -349,6 +349,13 @@
     let publish = [[${publish}]];
     let author = [[${author}]];
 
+    
+    function searchBook() {
+        query = $('#search-box').val();
+        // cid는 카테고리 대/소분류 구현해야 적용 가능
+        location.href = "/result/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author;
+    }
+
     function applyFilter() {
         minprice = $("#min-price").val();
         maxprice = $("#max-price").val();
