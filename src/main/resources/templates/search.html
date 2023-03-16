@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>검색 페이지</title>
+    <style>
+        /*뒤로가기 영역*/
+        .top-area {
+            margin: 30px;
+        }
+
+        /*검색 영역*/
+        .search-area {
+            display: flex;
+            justify-content: center;
+            height: 50px;
+            margin: auto;
+            margin-bottom: 40px;
+            width: 90%;
+        }
+
+        .form-select {
+            width: 200px;
+            height: 50px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .form-control {
+            width: 500px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .mid-area {
+            display: flex;
+            /*justify-content: center;*/
+            max-width: 2500px;
+            width: 100%;
+            height: 1350px;
+            margin: auto;
+            /*background-color: darkseagreen;*/
+        }
+
+        /*상세 필터 영역*/
+        .filter-area {
+            background-color: whitesmoke;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 300px;
+            width: 20%;
+            margin-right: 2%;
+            margin-left: 2%;
+            border: 1px darkblue solid;
+            border-radius: 8px;
+            height: 800px
+            /*min-height: 1500px;*/
+        }
+
+        .star-area {
+            /*background-color: brown;*/
+            border: 1px slategray solid;
+            border-radius: 5px;
+            display: flex;
+            margin-top: 30px;
+            align-items: center;
+            justify-content: center;
+            /*top: 50%;*/
+        }
+
+        .star-box {
+            /*background-color: darkorange;*/
+            width: 70%;
+            height: 200px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .star-point {
+            margin-left: 3%;
+        }
+
+        .price-area {
+            /*background-color: blueviolet;*/
+            margin-top: 30px;
+        }
+
+        .publish-area {
+            /*background-color: darkslategray;*/
+            margin-top: 30px;
+        }
+
+        .author-area {
+            /*background-color: gold;*/
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .star-box-left {
+            display: flex;
+            flex-direction: column;
+            margin: 0 20px 0 10px;
+        }
+
+        .star-box-right {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-input {
+            width: 80%;
+        }
+
+        #min-price {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #max-price {
+            width: 100%;
+        }
+
+        #publish {
+            width: 100%;
+        }
+
+        #author {
+            width: 100%;
+        }
+
+        #year {
+            width: 80%;
+            justify-content: center;
+        }
+
+        /*책 정보 영역*/
+        .info-area {
+            background-color: whitesmoke;
+            border-radius: 5px;
+            padding-top: 10px;
+            width: 75%;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: center;
+        }
+
+        .book-box {
+            border: 1px black solid;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px 2% 20px 2%;
+            height: 200px;
+            display: flex;
+            /*width: 47%;*/
+            width: 500px;
+        }
+
+        .image-area {
+            border-radius: 10px;
+            margin-right: 7%;
+            width: 20%;
+        }
+
+        .desc-area {
+            border: 1px darkslategrey solid;
+            padding: 10px;
+            border-radius: 10px;
+            width: 78%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="top-area">
+    <a href="/main">
+        <input class="btn btn-primary" type="button" value="뒤로가기">
+    </a>
+</div>
+<div class="search-area">
+    <select id="category" class="form-select" aria-label="Default select example">
+        <option selected value="">대분류</option>
+        <option value="건강">건강</option>
+        <option value="에세이">에세이</option>
+        <option value="인문학">인문학</option>
+    </select>
+    <select id="babyCategory" class="form-select" aria-label="Default select example">
+        <option selected value="">소분류</option>
+        <option value="헬스">헬스</option>
+        <option value="한국 에세이">한국 에세이</option>
+        <option value="교양 인문학">교양 인문학</option>
+    </select>
+
+    <input type="email" class="form-control" id="search-box" placeholder="검색">
+
+    <input class="btn btn-primary" type="button" onclick="searchBook()" value="검색">
+
+    <select id="sort" class="form-select" aria-label="Default select example">
+        <option selected value="0">정렬</option>
+        <option value="1">이름순</option>
+        <option value="2">가격 높은순</option>
+        <option value="3">가격 낮은순</option>
+    </select>
+</div>
+<div class="mid-area">
+    <div class="filter-area">
+        <select id="year" class="form-select" aria-label="Default select example">
+            <option selected value="">발행년도</option>
+            <option value="2010">2010</option>
+            <option value="2000">2000</option>
+            <option value="1990">1990</option>
+        </select>
+        <div class="star-area">
+            <h3 class="star-point">별점</h3>
+            <div class="star-box">
+                <div class="star-box-left">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star1"
+                               value="1">
+                        <label class="form-check-label" for="star1">1</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star2"
+                               value="2">
+                        <label class="form-check-label" for="star2">2</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star3"
+                               value="3">
+                        <label class="form-check-label" for="star3">3</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star4"
+                               value="4">
+                        <label class="form-check-label" for="star4">4</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star5"
+                               value="5">
+                        <label class="form-check-label" for="star5">5</label>
+                    </div>
+                </div>
+                <div class="star-box-right">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star6"
+                               value="6">
+                        <label class="form-check-label" for="star6">6</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star7"
+                               value="7">
+                        <label class="form-check-label" for="star7">7</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star8"
+                               value="8">
+                        <label class="form-check-label" for="star8">8</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star9"
+                               value="9">
+                        <label class="form-check-label" for="star9">9</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="star10"
+                               value="10">
+                        <label class="form-check-label" for="star10">10</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="price-area">
+            <h3>가격 범위</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="min-price" type="text" placeholder="최소 가격"
+                       aria-label=".form-control-sm example">
+            </div>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="max-price" type="text" placeholder="최대 가격"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <div class="publish-area">
+            <h3>출판사</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="publish" type="text"
+                       placeholder="출판사"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <div class="author-area">
+            <h3>작가</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="author" type="text"
+                       placeholder="작가"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <input class="btn btn-primary" type="button" value="적용" onclick="applyFilter()">
+    </div>
+    <div class="info-area">
+        <tr th:each="book : ${result}">
+            <div class="book-box" type="button" th:onclick="moveToDetail(${book.getId()})">
+                <div class="image-area">
+                    <a th:href="@{/detail/{id}(id=${book.getId()})}">
+                        <img th:src="${book.getImage()}" alt="My Image" width="97">
+                    </a>
+                </div>
+                <div class="desc-area">
+                    <h5 th:text="${book.getTitle()}">에밀</h5>
+                    <h6 th:text="'가격 : '+${book.getPrice()}+' 원'">35000</h6>
+                    <h6 th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</h6>
+                    <h6 th:text="'출판사 : '+${book.getAuthor()}">육문사</h6>
+                    <h6 th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
+                        82012.3</h6>
+                </div>
+            </div>
+        </tr>
+    </div>
+
+</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let cid = [[${cid}]];
+    let query = [[${query}]];
+    let sort = [[${sort}]];
+    let year = [[${year}]];
+    let month = [[${month}]];
+    let star = [[${star}]];
+    let minprice = [[${minprice}]];
+    let maxprice = [[${maxprice}]];
+    let publish = [[${publish}]];
+    let author = [[${author}]];
+
+    function searchBook() {
+        query = $('#search-box').val();
+        // cid는 카테고리 대/소분류 구현해야 적용 가능
+        location.href = "/result/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author;
+    }
+
+    function applyFilter() {
+        minprice = $("#min-price").val();
+        maxprice = $("#max-price").val();
+        if (checkPrice(minprice, maxprice)) {
+            publish = $("#publish").val();
+            author = $("#author").val();
+            sort = $("#sort option:selected").val();
+            year = $("#year option:selected").val();
+            selectStar()
+
+            location.href = "/result/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author;
+        }
+    }
+
+    function selectStar() {
+        if ($('input[id=star10]:checked').val()) {
+            star = $('input[id=star10]:checked').val();
+        } else if ($('input[id=star9]:checked').val()) {
+            star = $('input[id=star9]:checked').val();
+        } else if ($('input[id=star8]:checked').val()) {
+            star = $('input[id=star8]:checked').val();
+        } else if ($('input[id=star7]:checked').val()) {
+            star = $('input[id=star7]:checked').val();
+        } else if ($('input[id=star6]:checked').val()) {
+            star = $('input[id=star6]:checked').val();
+        } else if ($('input[id=star5]:checked').val()) {
+            star = $('input[id=star5]:checked').val();
+        } else if ($('input[id=star4]:checked').val()) {
+            star = $('input[id=star4]:checked').val();
+        } else if ($('input[id=star3]:checked').val()) {
+            star = $('input[id=star3]:checked').val();
+        } else if ($('input[id=star2]:checked').val()) {
+            star = $('input[id=star2]:checked').val();
+        } else if ($('input[id=star1]:checked').val()) {
+            star = $('input[id=star1]:checked').val();
+        } else {
+            star = ""
+        }
+    }
+
+    function checkPrice(min, max) {
+        let isNumber = /^[0-9]+$/;
+        if (min.length == 0) {
+            min = '0'
+        }
+        if (max.length == 0) {
+            max = '999999999'
+        }
+        if (!(isNumber.test(min) && isNumber.test(max))) {
+            alert("가격 필터에는 숫자만 입력해주세요.");
+            return false;
+        }
+        if (Number(min) > Number(max)) {
+            alert("최대 가격은 최소 가격보다 커야합니다.")
+            return false;
+        }
+        return true;
+    }
+
+    /*]]>*/
+</script>
+</html>
