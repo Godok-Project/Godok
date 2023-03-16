@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -377,8 +377,31 @@
                 <h6>별점 : 8 / 발행년도 : 2012.3</h6>
             </div>
         </div>
-
+        <div class="book-box">
+            <div  class="image-area">
+                <img th:src="${image}" alt="My Image" width="97"/>
+            </div>
+            <div class="desc-area">
+                <h5 th:text="${title}" >에밀</h5>
+                <h6 th:text="${price} + ' 원'">가격 : 35000 원</h6>
+                <h6 th:text="'작가 : '+ ${author}">작가 : 장 자크 루소</h6>
+                <h6 th:text="'출판사 : '+${publish}">출판사 : 육문사</h6>
+                <h6 th:text="'별점 : ' + ${star} + ' / 발행년도 : ' + ${year} + '.' + ${month}">별점 : 8 / 발행년도 : 2012.3</h6>
+            </div>
+        </div>
     </div>
+
+<!--    <h3 th:text="Test">Hello World, Thymeleaf Project.</h3>-->
+
+<!--    <div th:with="firstValue=${'타임리프'}">-->
+<!--        <h3 th:text="${firstValue}"></h3>-->
+<!--    </div>-->
+
+<!--    Hello <span th:text="${data1}"></span>-->
+
+    <h3 th:text="${name}"></h3>
+    <h3 th:text="${age}"></h3>
+
 </div>
 
 </html>
