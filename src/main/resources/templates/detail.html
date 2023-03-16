@@ -1,96 +1,229 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Detailpage</title>
+  <meta charset="UTF-8" />
+  <meta
+          name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+  />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Detailpage</title>
 
-    <style>
-        .title{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+  <style>
+    .allbox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+    }
 
-        .inputplace{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
+    .title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .orderplace{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
+    .book-image {
+      min-width: 300px;
+    }
 
-        .bookdetail{
-            margin-left: 20px;
-            font-size: 20px;
-        }
+    li {
+      text-decoration: none;
+    }
 
-        .explain{
-            font-weight: bold;
-            display: flex;
-            flex-direction: row;
-        }
+    .inputplace {
+      width: 100%;
+      display: flex;
+      gap: 30px; /* 책 사진과 오른쪽 정보들 간격은 여길 수정하시면 됩니다. */
+      justify-content: center;
+    }
 
-    </style>
-    <script>
-    </script>
+    .orderplace {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bookdetail {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 400px;
+    }
+
+    .explain {
+      font-weight: bold;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .book-info-wrapper {
+      display: flex;
+      font-size: 18px;
+      padding: 15px;
+      border-radius: 5px;
+      background: rgba(161, 161, 161, 0.2);
+    }
+
+    .info-constant {
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      width: 80px;
+      gap: 10px;
+      padding: 10px 0;
+    }
+
+    .info-variable {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+      gap: 10px;
+      margin-left: 15px; /* 간격 바꾸고 싶으면 이 친구 바꾸시면 됩니다*/
+    }
+
+    /* order-form */
+    .order-form {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .select-form {
+      border-radius: 3px;
+    }
+
+    .form-input-container {
+      height: 100%;
+      display: flex;
+      gap: 10px;
+    }
+
+    .order-btn {
+      border: none;
+      background: #111;
+      padding: 10px;
+      color: white;
+      border-radius: 5px;
+      font-weight: 600;
+      transition: ease-in-out 0.15s;
+    }
+
+    .order-btn:hover {
+      color: #111;
+      cursor: pointer;
+      background: #dedede;
+    }
+
+    .storage-count {
+      font-weight: 600;
+    }
+  </style>
+  <script></script>
 </head>
 <!--참조 문서-->
 <!--thymeleaf+html 연동하기-->
 <!--https://lifere.tistory.com/entry/Spring-Boot-Thymeleaf-PathVariable-url-%EA%B2%BD%EB%A1%9C%EC%9D%98-%EA%B0%92%EC%9D%84-%EB%B3%80%EC%88%98%EB%A1%9C-%EB%B0%9B%EA%B8%B0-->
 <body>
-    <header class = 'container'>
-        <button class = 'back' onclick = 'window.history.back()'>⬅</button>
-        <h1 class = 'title'>GODOK</h1>
-    </header>
-<div id="allbox">
-    <div class = 'inputplace'>
-        <div>
-            <img th:src="${info.image}" src="https://image.aladin.co.kr/product/22460/28/cover200/8994492046_1.jpg" width="300" >
+<header class="container">
+  <button class="back" onclick="window.history.back()">
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+    >
+      <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+      />
+    </svg>
+  </button>
+  <h1 class="title">GODOK</h1>
+</header>
+<div class="allbox">
+  <div class="inputplace">
+    <img
+            class="book-image"
+            th:src="${info.image}"
+            src="https://image.aladin.co.kr/product/22460/28/cover200/8994492046_1.jpg"
+            width="300"
+    />
+    <div class="bookdetail">
+      <div class="book-info-wrapper">
+        <div class="info-constant">
+          <div class="info">
+            제목
+          </div>
+          <div class="info">
+            가격
+          </div>
+          <div class="info">
+            작가
+          </div>
+          <div class="info">
+            출판사
+          </div>
+          <div class="info">
+            발행년도
+          </div>
         </div>
-        <div class="bookdetail">
-            <ul>
-                <li class="explain">
-                    <div>가격 : </div>
-                    <div th:text="${info.price}">test가격</div>
-                </li>
-            </ul>
-            <h4 id="booktitle" th:text="${info.title}">test제목</h4>
-            <h4 id="bookprice" th:text="${info.price}">test가아격</h4>
-            <h4 id="bookauthor" th:text="${info.author}">test작가</h4>
-            <h4 id="bookpublish" th:text="${info.publish}">test출판사</h4>
-            <h4 id="bookbirth" th:text="${info.birth}">테스트발행년도</h4>
-        </div>
-    </div>
-    <form role="form" action="/detail/buybooks" id="buyform" method="post">
-        <div class="orderplace">
-            <h4 th:text="${info.inventory}">테스트재고</h4>
-            <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="inventory"
-                            name="inventory" required="required">
-                <option selected>주문할 권 수를 선택해주세요</option>
-                <option value="1">1권</option>
-                <option value="2">2권</option>
-                <option value="3">3권</option>
-                <option value="4">4권</option>
-                <option value="5">5권</option>
-                <option value="6">6권</option>
-                <option value="7">7권</option>
-                <option value="8">8권</option>
-                <option value="9">9권</option>
-            </select>
-            <button type="submit" onclick="submit">주문하기</button>
-        </div>
-    </form>
-</div>
 
+        <div class="info-variable">
+          <div class="info" id="booktitle" th:text="${info.title}"></div>
+          <div class="info" id="bookprice" th:text="${info.price}"></div>
+          <div class="info" id="bookauthor" th:text="${info.author}"></div>
+          <div class="info" id="bookpublish" th:text="${info.publish}"></div>
+          <div class="info" id="bookbirth" th:text="${info.birth}"></div>
+        </div>
+      </div>
+      <form
+              class="order-form"
+              role="form"
+              action="/detail/buybooks"
+              id="buyform"
+              method="post"
+      >
+        <div>남은 재고 : </div>
+        <div class="storage-count" th:text="${info.inventory}">
+
+        </div>
+        <div class="form-input-container">
+          <select
+                  class="form-select form-select-sm select-form"
+                  aria-label=".form-select-sm example"
+                  id="inventory"
+                  name="inventory"
+                  required="required"
+          >
+            <option selected>주문할 권 수</option>
+            <option value="1">1권</option>
+            <option value="2">2권</option>
+            <option value="3">3권</option>
+            <option value="4">4권</option>
+            <option value="5">5권</option>
+            <option value="6">6권</option>
+            <option value="7">7권</option>
+            <option value="8">8권</option>
+            <option value="9">9권</option>
+          </select>
+          <button class="order-btn" type="submit" onclick="submit">
+            주문하기
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 </body>
 </html>
