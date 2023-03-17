@@ -126,7 +126,7 @@
       font-weight: 600;
     }
   </style>
-  <script></script>
+
 </head>
 <!--참조 문서-->
 <!--thymeleaf+html 연동하기-->
@@ -177,6 +177,9 @@
           <div class="info">
             발행년도
           </div>
+          <div class="info">
+            책번호
+          </div>
         </div>
 
         <div class="info-variable">
@@ -187,25 +190,15 @@
           <div class="info" id="bookbirth" th:text="${info.birth}"></div>
         </div>
       </div>
-      <form
-              class="order-form"
-              role="form"
-              action="/detail/buybooks"
-              id="buyform"
-              method="post"
-      >
+      <form class="order-form">
+        <div>BN : </div>
+        <div class="storage-count" th:text="${info.bookid}">
+        </div>
         <div>남은 재고 : </div>
         <div class="storage-count" th:text="${info.inventory}">
-
         </div>
         <div class="form-input-container">
-          <select
-                  class="form-select form-select-sm select-form"
-                  aria-label=".form-select-sm example"
-                  id="inventory"
-                  name="inventory"
-                  required="required"
-          >
+          <select id="inventory" class="form-select form-select-sm select-form" aria-label=".form-select-sm example" >
             <option selected>주문할 권 수</option>
             <option value="1">1권</option>
             <option value="2">2권</option>
@@ -217,7 +210,7 @@
             <option value="8">8권</option>
             <option value="9">9권</option>
           </select>
-          <button class="order-btn" type="submit" onclick="submit">
+          <button class="order-btn" type="button" onclick="buybook()">
             주문하기
           </button>
         </div>
@@ -226,4 +219,24 @@
   </div>
 </div>
 </body>
+<script>
+
+  const url = window.location.href
+  console.log(url)
+  const nums = url.split("/")[4].split("?")[0]
+  console.log(nums)
+
+  function buybook() {
+
+    var inventory = document.getElementById("inventory")
+    var value = (inventory.options[inventory.selectedIndex].value);
+
+
+
+    console.log("nums : ",nums)
+    console.log("qq : ",value)
+
+    location.href = "/detail/buybooks/" + nums + "/" + value;
+  }
+</script>
 </html>
