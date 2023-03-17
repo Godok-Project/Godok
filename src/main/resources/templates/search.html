@@ -183,7 +183,7 @@
 <body>
 <div class="top-area">
     <a href="/main">
-        <input class="btn btn-primary" type="button" value="뒤로가기">
+        <input class="btn btn-primary" type="button" value="메인 페이지">
     </a>
 </div>
 <div class="search-area">
@@ -213,6 +213,9 @@
 </div>
 <div class="mid-area">
     <div class="filter-area">
+        <div>
+            <h5 style="text-align: center" th:text="' 총 검색 결과 : ' + ${result.getTotalCount()}"></h5>
+        </div>
         <select id="year" class="form-select" aria-label="Default select example">
             <option selected value="">발행년도</option>
             <option value="2010">2010</option>
@@ -308,7 +311,7 @@
         <input class="btn btn-primary" type="button" value="적용" onclick="applyFilter()">
     </div>
     <div class="info-area">
-        <tr th:each="book : ${result}">
+        <tr th:each="book : ${result.getBooks()}">
             <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
                 <div class="image-area">
                     <img th:src="${book.getImage()}" alt="My Image" width="97">
@@ -324,14 +327,23 @@
                 </div>
             </div>
         </tr>
+        <div class="page-button">
+            <button id="before-button" onclick="movePage(page-1)"> 이전 페이지</button>
+            <button id="after-button" onclick="movePage(page+1)"> 다음 페이지</button>
+        </div>
     </div>
 
 </div>
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    let cid = [[${cid}]];
-    let query = [[${query}]];
+    const params = new URLSearchParams(location.search)
+
+    let cid = params.get('cid');
+    let query = params.get('query');
+    let totalRow = params.get('totalRow');
+    if (totalRow == null)
+        totalRow = '10';
     let sort = [[${sort}]];
     let year = [[${year}]];
     let month = [[${month}]];
@@ -340,11 +352,23 @@
     let maxprice = [[${maxprice}]];
     let publish = [[${publish}]];
     let author = [[${author}]];
+    let page = [[${result.getPage()}]];
+    let totalCount = [[${result.getTotalCount()}]]
+
+    if (page == 0) {
+        $('#before-button').hide()
+    } else if (Math.floor(totalCount / totalRow) == page || totalCount % totalRow == 0 && Math.floor(totalCount / totalRow) - 1 == page) {
+        $('#after-button').hide()
+    }
+
+    function movePage(changedPage) {
+        location.href = "/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=" + changedPage;
+    }
 
     function searchBook() {
         query = $('#search-box').val();
         // cid는 카테고리 대/소분류 구현해야 적용 가능
-        location.href = "/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author;
+        location.href = "/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
     }
 
     function applyFilter() {
@@ -357,7 +381,7 @@
             year = $("#year option:selected").val();
             selectStar()
 
-            location.href = "/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author;
+            location.href = "/search?cid=" + cid + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minprice=" + minprice + "&maxprice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
         }
     }
 
