@@ -2,8 +2,8 @@ package com.baechu.book.repository;
 
 import java.util.Optional;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +14,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
 	Optional<Book> findById(Long id);
 
-	@Query(value = "select * from book as b where b.title like concat('%',:query,'%') limit 10", nativeQuery = true)
-	List<Book> findBooksByWord(@Param("query") String query);
+	@Query(value = "select b from Book b where b.title like concat('%',:query,'%')")
+	Page<Book> findBooksByWord(@Param("query") String query, Pageable pageable);
 }
