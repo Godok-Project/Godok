@@ -1,13 +1,16 @@
 package com.baechu.book.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookRepository;
@@ -51,4 +54,10 @@ public class BookService {
 
 		return new BookListDto(page, totalCount, books);
 	}
+
+	public Page<Book> bookList(Pageable pageable) {
+		return bookRepository.findAll(pageable);
+	}
+
+
 }
