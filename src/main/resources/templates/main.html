@@ -183,15 +183,15 @@
             url: "/main",
             data: {},
             success: function (response) {
-                for (let i = 0; i < rows.length; i++){
-                    let image = rows[i]['image']
-                    let title = rows[i]['title']
-                    let price = rows[i]['price']
-                    let author = rows[i]['author']
-                    let publish = rows[i]['publish']
-                    let star = rows[i]['star']
-                    let year = rows[i]['year']
-                    let month = rows[i]['month']
+                for (let i = 0; i < response.length; i++){
+                    let image = response[i]['image']
+                    let title = response[i]['title']
+                    let price = response[i]['price']
+                    let author = response[i]['author']
+                    let publish = response[i]['publish']
+                    let star = response[i]['star']
+                    let year = response[i]['year']
+                    let month = response[i]['month']
 
                     let temp_html = <div className="book-box">
                         <div className="image-area">
@@ -312,7 +312,7 @@
 <body>
 <div class="title-box">
     <h1 id="title">Godok</h1>
-    <button id="log-in" onclick="location.href='signin.html'">로그인</button>
+    <button id="log-in" onclick="location.href='login'">로그인</button>
 </div>
 </body>
 
@@ -361,22 +361,31 @@
 </div>
 
 </body>
+
 <div class="wrap">
     <div id="book_info_area" class="row row-cols-1 row-cols-md-2 g-4">
-
+        <tr th:each="book:${list}">
             <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${id})}'|">
                 <div  class="image-area">
-                        <img th:src="${image}" alt="My Image" width="110" height="170"/>
+                        <img th:src="${book.image}" alt="My Image" width="110" height="170"/>
                 </div>
                 <div class="desc-area">
-                    <h5 th:text="${title}" >에밀</h5>
-                    <h6 th:text="${price} + ' 원'">가격 : 35000 원</h6>
-                    <h6 th:text="'작가 : '+ ${author}">작가 : 장 자크 루소</h6>
-                    <h6 th:text="'출판사 : '+${publish}">출판사 : 육문사</h6>
-                    <h6 th:text="'별점 : ' + ${star} + ' / 발행년도 : ' + ${year} + '.' + ${month}">별점 : 8 / 발행년도 : 2012.3</h6>
+                    <h5 th:text="${book.title}" >에밀</h5>
+                    <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
+                    <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
+                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>
+                    <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>
                 </div>
             </div>
+        </tr>
     </div>
+
+    <th:block th:each="page:${#numbers.sequence(startPage,endPage)}">
+        <a th:if="${page != nowPage}"
+           th:href="@{/main(page=${page-1})}"
+           th:text="${page}"></a>
+        <strong th:if="${page==nowPage}" th:text="${page}" style="color: red"></strong>
+    </th:block>
 
 </div>
 
