@@ -223,26 +223,25 @@
 <script>
 
   const url = window.location.href
-  console.log(url)
-  const bookidd = url.split("/")[4].split("?")[0]
-  console.log(bookidd)
+  // console.log(url)
+  const bookid = url.split("/")[4].split("?")[0]
+  // console.log(bookid)
 
 
   function buybook() {
 
-    var bookrestover = document.getElementById("bookrestover")
-    var bookrest = bookrestover.textContent
-    // var bookrest = $('#bookrestover').val();
+    const bookrestover = document.getElementById("bookrestover")
+    const bookrest = bookrestover.textContent
 
-    var inventory = document.getElementById("inventory")
-    var value = (inventory.options[inventory.selectedIndex].value);
+    const inventory = document.getElementById("inventory")
+    const value = (inventory.options[inventory.selectedIndex].value);
 
-    console.log("bookid : ",bookidd)
-    console.log("책재고량 : ",bookrest)
-    console.log("책주문량 : ",value)
+    // console.log("bookid : ",bookid)
+    // console.log("책재고량 : ",bookrest)
+    // console.log("책주문량 : ",value)
 
-    var vv = parseInt(value)
-    var ii = parseInt(bookrest)
+    const vv = parseInt(value)
+    const ii = parseInt(bookrest)
 
 
     if (vv>ii){
@@ -250,7 +249,7 @@
       window.location.reload();
     } else {
       alert("주문성공했다능")
-      location.href = "/detail/buybooks/" + bookidd + "/" + value;
+      location.href = "/detail/buybooks/" + bookid + "/" + value;
     }
   }
 </script>

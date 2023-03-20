@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class BookService {
 	private final BookRepository bookRepository;
 
+	@Transactional(readOnly = true)
 	public Map<String, Object> bookdetail(Long bookid) {
 		Map<String, Object> info = new HashMap<>();
 		Book book = bookRepository.findById(bookid).orElseThrow(
@@ -39,6 +40,7 @@ public class BookService {
 		return info;
 	}
 
+	@Transactional(readOnly = true)
 	public BookListDto searchByWord(String query, Integer page, Integer totalRow) {
 		if (query.isEmpty()) {
 			return new BookListDto();
@@ -54,6 +56,8 @@ public class BookService {
 		return new BookListDto(page, totalCount, books);
 	}
 
+
+	@Transactional(readOnly = true)
 	public Page<Book> bookList(Pageable pageable) {
 		return bookRepository.findAll(pageable);
 	}
