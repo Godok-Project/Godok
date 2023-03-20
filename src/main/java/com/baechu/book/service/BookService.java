@@ -1,6 +1,5 @@
 package com.baechu.book.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookRepository;
@@ -35,7 +34,7 @@ public class BookService {
 		info.put("publish", book.getPublish());
 		String birth = book.getYear() + "년 " + book.getMonth() + "월";
 		info.put("birth", birth);
-		info.put("inventory", 7);
+		info.put("inventory", book.getInventory());
 
 		return info;
 	}
@@ -60,4 +59,18 @@ public class BookService {
 	}
 
 
+	@Transactional
+	public void bookOrder(Long bookid, Long bookcall) {
+		Book book = bookRepository.findById(bookid).orElseThrow(
+			() -> new IllegalArgumentException("해당 아이디의 책은 없습니다.")
+		);
+
+		Long inventory = book.getInventory();
+		Long restover = inventory-bookcall;
+		if (restover>=0){
+			book.setInventory(restover);
+		}else {
+			System.out.println("프론트에서 한번 재고량 체크를 해줬지만, 책재고가 부족하다는 에러 내뱉어야함");
+		}
+	}
 }

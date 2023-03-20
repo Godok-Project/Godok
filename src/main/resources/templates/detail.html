@@ -6,6 +6,7 @@
           name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
   />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Detailpage</title>
 
@@ -195,9 +196,9 @@
         <div class="storage-count" th:text="${info.bookid}">
         </div>
         <div>남은 재고 : </div>
-        <div class="storage-count" th:text="${info.inventory}">
+        <div class="storage-count" name= "bookrestover" id="bookrestover" th:text="${info.inventory}">
         </div>
-        <div class="form-input-container">
+        <div class="form-input-container" id="bookcount">
           <select id="inventory" class="form-select form-select-sm select-form" aria-label=".form-select-sm example" >
             <option selected>주문할 권 수</option>
             <option value="1">1권</option>
@@ -223,20 +224,34 @@
 
   const url = window.location.href
   console.log(url)
-  const nums = url.split("/")[4].split("?")[0]
-  console.log(nums)
+  const bookidd = url.split("/")[4].split("?")[0]
+  console.log(bookidd)
+
 
   function buybook() {
+
+    var bookrestover = document.getElementById("bookrestover")
+    var bookrest = bookrestover.textContent
+    // var bookrest = $('#bookrestover').val();
 
     var inventory = document.getElementById("inventory")
     var value = (inventory.options[inventory.selectedIndex].value);
 
+    console.log("bookid : ",bookidd)
+    console.log("책재고량 : ",bookrest)
+    console.log("책주문량 : ",value)
+
+    var vv = parseInt(value)
+    var ii = parseInt(bookrest)
 
 
-    console.log("nums : ",nums)
-    console.log("qq : ",value)
-
-    location.href = "/detail/buybooks/" + nums + "/" + value;
+    if (vv>ii){
+      alert("현재 재고량보다 많이 주문할 수 없습니다.")
+      window.location.reload();
+    } else {
+      alert("주문성공했다능")
+      location.href = "/detail/buybooks/" + bookidd + "/" + value;
+    }
   }
 </script>
 </html>

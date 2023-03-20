@@ -1,5 +1,6 @@
 package com.baechu.book.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.service.BookService;
@@ -25,25 +27,25 @@ public class BookController {
 	private final BookService bookService;
 
 	@GetMapping("/detail/{id}")
-	public ModelAndView detailPage(@PathVariable Long id) {
-
-		ModelAndView modelAndView = new ModelAndView("detail");
+	public String detailPage(Model model,@PathVariable Long id) {
 
 		Map<String, Object> info = bookService.bookdetail(id);
 
-		modelAndView.addObject("info", info);
+		model.addAttribute("info", info);
 
-		return modelAndView;
+		return "detail";
 	}
 
 	@GetMapping("/detail/buybooks/{bookid}/{quantity}")
-	public ModelAndView Buybook(@PathVariable String bookid, @PathVariable String quantity) {
+	public String Buybook(@PathVariable Long bookid, @PathVariable Long quantity) {
 
-		ModelAndView modelAndView = new ModelAndView("main");
+		bookService.bookOrder(bookid, quantity);
 
 		String ans = bookid + "번 책을 " + quantity + " 권 주문한다용";
 		System.out.println(ans);
-		return modelAndView;
+
+		return "redirect:/main";
+
 	}
 
 	@GetMapping("/search")
