@@ -41,6 +41,14 @@
         border-radius: 5px;
         text-align: center;
     }
+    #log-out {
+        width: 150px;
+        font-size: 15px;
+        margin: -30px auto auto 700px;
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
     .search {
         position: relative;
         width: 400px;
@@ -309,11 +317,38 @@
     }
 </script>
 
+<script>
+    const href = location.href;
+    const queryString = href.substring(href.indexOf("?") + 1)
+    if (queryString === 'error') {
+        const errorDiv = document.getElementById('log-out-failed')
+        errorDiv.style.display = 'block';
+    }
+
+    function logout(){
+        $.ajax({
+            type: "POST",
+            url : '/logout',
+            success: function (){
+                console.log("logout success")
+                alert('로그아웃 되셨습니다.')
+                window.location.reload();
+            },
+            error:function (response){
+                alert('로그아웃 실패')
+            }
+        })
+    }
+</script>
+
 <body>
 <div class="title-box">
     <h1 id="title">Godok</h1>
-    <button id="log-in" onclick="location.href='login'">로그인</button>
+    <button id="log-in" onclick="location.href='login' "th:if="${#strings.isEmpty(session.loginMember)}">로그인</button>
+    <button id="log-out" onclick="logout()" th:if="${not #strings.isEmpty(session.loginMember)}">로그아웃</button>
+
 </div>
+
 </body>
 
 <body>

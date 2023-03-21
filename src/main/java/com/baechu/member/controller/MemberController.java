@@ -1,12 +1,13 @@
 package com.baechu.member.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.baechu.common.dto.BaseResponse;
 import com.baechu.member.dto.LoginDto;
@@ -21,16 +22,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@PostMapping("/login")
-	@ResponseBody
-	public ResponseEntity<BaseResponse> login(@RequestBody LoginDto loginDto) {
-		return memberService.login(loginDto);
-	}
 
-	@GetMapping("/login")
-	public ModelAndView loginPage() {
-		return new ModelAndView("login");
-	}
 
 	@PostMapping("/signin")
 	@ResponseBody
@@ -42,6 +34,28 @@ public class MemberController {
 	public String signinPage() {
 		return "signin";
 	}
+
+	@PostMapping("/login")
+	@ResponseBody
+	public ResponseEntity<BaseResponse> login(@RequestBody LoginDto loginDto, HttpServletRequest request) {
+
+		return memberService.login(loginDto,request);
+	}
+
+	@GetMapping("/login")
+	public String loginPage() {
+		return "login";
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<BaseResponse> logout(HttpServletRequest request){
+		return memberService.logout(request);
+	}
+
+	// @GetMapping("/logout")
+	// public String logout() {
+	// 	return "main";
+	// }
 }
 
 // 10 대부터 0 시작
