@@ -35,11 +35,9 @@ public class Book {
 	private Integer star;
 
 	@Column(nullable = false)
-	@ColumnDefault("작가 미상")
 	private String author;
 
 	@Column(nullable = false)
-	@ColumnDefault("출판사 미상")
 	private String publish;
 
 	@Column(columnDefinition = "TEXT")
