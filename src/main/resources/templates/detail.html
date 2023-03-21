@@ -211,9 +211,9 @@
             <option value="8">8권</option>
             <option value="9">9권</option>
           </select>
-          <button class="order-btn" type="button" onclick="buybook()">
-            주문하기
-          </button>
+          <button class="order-btn" type="button" onclick="buybook()" th:if="${not #strings.isEmpty(session.loginMember)}">주문하기</button>
+          <button class="order-btn" type="button" onclick="location.href='../login'" th:if="${#strings.isEmpty(session.loginMember)}">로그인먼저</button>
+
         </div>
       </form>
     </div>
@@ -243,8 +243,7 @@
     const vv = parseInt(value)
     const ii = parseInt(bookrest)
 
-
-    if (vv>ii){
+     if (vv>ii){
       alert("현재 재고량보다 많이 주문할 수 없습니다.")
       window.location.reload();
     } else {

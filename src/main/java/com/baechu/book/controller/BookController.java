@@ -3,10 +3,13 @@ package com.baechu.book.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,14 +40,19 @@ public class BookController {
 	}
 
 	@GetMapping("/detail/buybooks/{bookid}/{quantity}")
-	public String Buybook(@PathVariable Long bookid, @PathVariable Long quantity) {
+	public String Buybook(@PathVariable Long bookid, @PathVariable Long quantity, HttpServletRequest request) {
 
-		bookService.bookOrder(bookid, quantity);
+		HttpStatus result = bookService.bookOrder(bookid, quantity, request).getStatusCode();
 
-		String ans = bookid + "번 책을 " + quantity + " 권 주문한다용";
-		System.out.println(ans);
-
-		return "redirect:/main";
+		if(result.isError()) {
+			System.out.println("--------------forbidden");
+			return "redirect:/login";
+		}
+		else {
+			String ans = bookid + "번 책을 " + quantity + " 권 주문한다용";
+			System.out.println(ans);
+			return "redirect:/main";
+		}
 
 	}
 
