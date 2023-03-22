@@ -178,6 +178,14 @@
         width: 78%;
     }
 
+    .long-title{
+        width: 100%;
+        display: inline-block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
 </style>
 
 <script>
@@ -404,8 +412,8 @@
                 <div  class="image-area">
                         <img th:src="${book.image}" alt="My Image" width="110" height="170"/>
                 </div>
-                <div class="desc-area">
-                    <h5 th:text="${book.title}" >에밀</h5>
+                <div  class="desc-area">
+                    <h5 class="long-title" th:text="${book.title}" >에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h5>
                     <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
                     <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
                     <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>

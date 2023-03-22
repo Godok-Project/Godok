@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,6 @@ import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
 import com.baechu.common.dto.BaseResponse;
-import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 import com.baechu.common.exception.SuccessCode;
 import com.baechu.member.entity.Member;
@@ -69,10 +69,11 @@ public class BookService {
 		Random r = new Random();
 
 		for (int i = 0; i < 8; i++) {
-			random = (long)r.nextInt(10000000);
-			Book book = bookRepository.findById(random).orElseThrow(
-				()-> new CustomException(ErrorCode.Forbidden));
-			bookList.add(book);
+			random = (long)r.nextInt(4000000);
+			Optional<Book> book = bookRepository.findById(random);
+			if (book.isPresent()) {
+				bookList.add(book.get());
+			}else i--;
 		}
 
 		return bookList;
