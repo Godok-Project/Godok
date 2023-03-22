@@ -77,7 +77,7 @@ public class BookController {
 	}
 
 	@GetMapping("/main")
-	public String bookList(Model model, @PageableDefault(page = 0, size = 10, sort = "id",
+	public String bookList(Model model, @PageableDefault(page = 0, size = 8, sort = "id",
 		direction = Sort.Direction.DESC) Pageable pageable) {
 
 		Page<Book> list = bookService.bookList(pageable);
