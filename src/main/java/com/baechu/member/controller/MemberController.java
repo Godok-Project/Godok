@@ -22,8 +22,6 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-
-
 	@PostMapping("/signin")
 	@ResponseBody
 	public ResponseEntity<BaseResponse> signin(@RequestBody SigninDto signinDto) {
@@ -39,7 +37,7 @@ public class MemberController {
 	@ResponseBody
 	public ResponseEntity<BaseResponse> login(@RequestBody LoginDto loginDto, HttpServletRequest request) {
 
-		return memberService.login(loginDto,request);
+		return memberService.login(loginDto, request);
 	}
 
 	@GetMapping("/login")
@@ -48,16 +46,8 @@ public class MemberController {
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<BaseResponse> logout(HttpServletRequest request){
+	public ResponseEntity<BaseResponse> logout(HttpServletRequest request) {
 		return memberService.logout(request);
 	}
 
-	// @GetMapping("/logout")
-	// public String logout() {
-	// 	return "main";
-	// }
 }
-
-// 10 대부터 0 시작
-// 비밀번호 4 ~ 12이하
-// 주소 지우기
