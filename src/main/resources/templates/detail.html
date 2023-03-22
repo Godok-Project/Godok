@@ -189,12 +189,13 @@
           <div class="info" id="bookauthor" th:text="${info.author}"></div>
           <div class="info" id="bookpublish" th:text="${info.publish}"></div>
           <div class="info" id="bookbirth" th:text="${info.birth}"></div>
+          <div class="info" id="bookid" th:text="${info.bookid}"></div>
         </div>
       </div>
       <form class="order-form">
-        <div>BN : </div>
-        <div class="storage-count" th:text="${info.bookid}">
-        </div>
+<!--        <div>BN : </div>-->
+<!--        <div class="storage-count" th:text="${info.bookid}">11-->
+<!--        </div>-->
         <div>남은 재고 : </div>
         <div class="storage-count" name= "bookrestover" id="bookrestover" th:text="${info.inventory}">
         </div>
