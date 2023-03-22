@@ -143,15 +143,26 @@
         }
 
         #year {
-            width: 100%;
+            width: 80%;
+        }
+
+        #sort {
+            width: 80%
         }
 
         /*책 정보 영역*/
+        .body-area {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .info-area {
             background-color: whitesmoke;
             border-radius: 5px;
             padding-top: 10px;
-            width: 75%;
+            padding-bottom: 10px;
             display: flex;
             flex-wrap: wrap;
             align-content: flex-start;
@@ -283,11 +294,23 @@
         </div>
         <div class="publish-area">
             <h3>발행년도</h3>
-            <div class="price-input">
-                <input class="form-control form-control-sm" id="year" type="text"
-                       placeholder="1900년부터 입력 가능"
-                       aria-label=".form-control-sm example">
-            </div>
+            <select id="year" class="form-select" aria-label="Default select example" style="height: 40px">
+                <option selected value="0">선택</option>
+                <option value="2020">2020년 이후</option>
+                <option value="2010">2010년</option>
+                <option value="2000">2000년</option>
+                <option value="1990">1990년</option>
+                <option value="1980">1980년</option>
+                <option value="1970">1970년</option>
+                <option value="1960">1960년</option>
+                <option value="1950">1950년</option>
+                <option value="1940">1940년</option>
+                <option value="1930">1930년</option>
+                <option value="1920">1920년</option>
+                <option value="1910">1910년</option>
+                <option value="1900">1900년</option>
+                <option value="1899">1900년 이전</option>
+            </select>
         </div>
         <div class="price-area">
             <h3>가격 범위</h3>
@@ -318,29 +341,30 @@
         </div>
         <input class="btn btn-primary" type="button" value="적용" onclick="applyFilter()">
     </div>
-    <div class="info-area">
-        <tr th:each="book : ${result.getBooks()}">
-            <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
-                <div class="image-area">
-                    <img th:src="${book.getImage()}" alt="My Image" width="97">
-                </div>
-                <div class="desc-area">
-                    <h6 th:text="${book.getTitle()}">에밀</h6>
-                    <span th:text="'가격 : '+${book.getPrice()}+' 원'">35000</span><br>
-                    <span th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
-                    <span th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
-                    <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
+    <div class="body-area">
+        <div class="info-area">
+            <tr th:each="book : ${result.getBooks()}">
+                <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
+                    <div class="image-area">
+                        <img th:src="${book.getImage()}" alt="My Image" width="97">
+                    </div>
+                    <div class="desc-area">
+                        <h6 th:text="${book.getTitle()}">에밀</h6>
+                        <span th:text="'가격 : '+${book.getPrice()}+' 원'">35000</span><br>
+                        <span th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
+                        <span th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
+                        <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
                         82012.3
                     </span>
+                    </div>
                 </div>
-            </div>
-        </tr>
+            </tr>
+        </div>
         <div class="page-button">
             <button id="before-button" onclick="movePage(page-1)"> 이전 페이지</button>
             <button id="after-button" onclick="movePage(page+1)"> 다음 페이지</button>
         </div>
     </div>
-
 </div>
 </body>
 <script th:inline="javascript">
@@ -351,7 +375,7 @@
     let query = params.get('query') == null ? '' : params.get('query');
     let totalRow = params.get('totalRow') == null ? '10' : params.get('totalRow');
     let sort = params.get('sort') == null ? '0' : params.get('sort');
-    let year = params.get('year') == null ? '' : params.get('year');
+    let year = params.get('year') == null ? '0' : params.get('year');
     let month = params.get('month') == null ? '' : params.get('month');
     let star = params.get('star') == null ? '' : params.get('star');
     let minprice = params.get('minPrice') == null ? '' : params.get('minPrice');
@@ -367,7 +391,7 @@
     $('#publish').attr("value", publish);
     $('#min-price').attr("value", minprice);
     $('#max-price').attr("value", maxprice);
-    $('#year').attr("value", year);
+    $('#year').val(year).prop('selected', true);
     $('#sort').val(sort).prop('selected', true);
     $('#search-box').attr("value", query);
     $('#' + star_name).prop('checked', true);
@@ -392,7 +416,7 @@
         // cid는 카테고리 대/소분류 구현해야 적용 가능
         cid = '';
         sort = '0';
-        year = '';
+        year = '0';
         month = '';
         star = '';
         minprice = '';
@@ -405,11 +429,11 @@
     function applyFilter() {
         minprice = $("#min-price").val();
         maxprice = $("#max-price").val();
-        if (checkPrice(minprice, maxprice) && checkYear($("#year").val())) {
+        if (checkPrice(minprice, maxprice)) {
             publish = $("#publish").val();
             author = $("#author").val();
             sort = $("#sort option:selected").val();
-            year = $("#year").val();
+            year = $("#year option:selected").val();
             if ($('input[name=star]:checked').val()) {
                 star = $('input[name=star]:checked').val();
             }
@@ -431,22 +455,6 @@
         }
         if (Number(min) > Number(max)) {
             alert("최대 가격은 최소 가격보다 커야합니다.")
-            return false;
-        }
-        return true;
-    }
-
-    function checkYear(year) {
-        let isNumber = /^[0-9]+$/;
-        if (year.length == 0) {
-            year = 1901
-        }
-        if (year < 1900) {
-            alert("발행년도는 1900년 이후부터 입력이 가능합니다.");
-            return false;
-        }
-        if (!isNumber.test(year)) {
-            alert("발행년도는 숫자만 입력이 가능합니다.");
             return false;
         }
         return true;

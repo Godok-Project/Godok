@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baechu.book.dto.BookListDto;
+import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
+import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
 import com.baechu.common.dto.BaseResponse;
 import com.baechu.common.exception.ErrorCode;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BookService {
 	private final BookRepository bookRepository;
+	private final BookDSLRepository bookDSLRepository;
 
 	@Transactional(readOnly = true)
 	public Map<String, Object> bookdetail(Long bookid) {
@@ -50,26 +53,17 @@ public class BookService {
 	}
 
 	@Transactional(readOnly = true)
-	public BookListDto searchByWord(String query, Integer page, Integer totalRow) {
-		if (query.isEmpty()) {
-			return new BookListDto();
-		}
-		PageRequest pageRequest = PageRequest.of(page, totalRow);
-		Page<Book> bookPages = bookRepository.findBooksByWord(query, pageRequest);
-		long totalCount = bookPages.getTotalElements();
-		List<Book> books = bookPages.getContent();
-
-		System.out.println("page = " + page);
-		System.out.println("totalCount = " + totalCount);
-
-		return new BookListDto(page, totalCount, books);
+	public BookListDto searchByWord(FilterDto filter) {
+		PageRequest pageRequest = PageRequest.of(filter.getPage(), filter.getTotalRow());
+		List<Book> books = bookDSLRepository.searchBooks(filter, pageRequest);
+		Long totalCount = bookDSLRepository.getCount(filter);
+		return new BookListDto(filter.getPage(), totalCount, books);
 	}
 
 	@Transactional(readOnly = true)
 	public Page<Book> bookList(Pageable pageable) {
 		return bookRepository.findAll(pageable);
 	}
-
 
 	@Transactional
 	public ResponseEntity<BaseResponse> bookOrder(Long bookid, Long bookcall, HttpServletRequest request) {
@@ -78,7 +72,7 @@ public class BookService {
 		if (session == null) {
 			System.out.println("로그인 하세요");
 			return BaseResponse.toResponseEntity(ErrorCode.Forbidden);
-		}else {
+		} else {
 			Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
 			System.out.println(loginMember.getEmail() + "회원님 주문하세용");
 
@@ -87,10 +81,10 @@ public class BookService {
 			);
 
 			Long inventory = book.getInventory();
-			Long restover = inventory-bookcall;
-			if (restover>=0){
+			Long restover = inventory - bookcall;
+			if (restover >= 0) {
 				book.setInventory(restover);
-			}else {
+			} else {
 				System.out.println("프론트에서 한번 재고량 체크를 해줬지만, 책재고가 부족하다는 에러 내뱉어야함");
 			}
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
