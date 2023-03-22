@@ -1,15 +1,15 @@
 package com.baechu.book.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +20,7 @@ import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
 import com.baechu.common.dto.BaseResponse;
+import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 import com.baechu.common.exception.SuccessCode;
 import com.baechu.member.entity.Member;
@@ -61,8 +62,20 @@ public class BookService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Book> bookList(Pageable pageable) {
-		return bookRepository.findAll(pageable);
+	public List<Book> bookList() {
+
+		List<Book> bookList = new ArrayList<>();
+		Long random;
+		Random r = new Random();
+
+		for (int i = 0; i < 8; i++) {
+			random = (long)r.nextInt(10000000);
+			Book book = bookRepository.findById(random).orElseThrow(
+				()-> new CustomException(ErrorCode.Forbidden));
+			bookList.add(book);
+		}
+
+		return bookList;
 	}
 
 	@Transactional

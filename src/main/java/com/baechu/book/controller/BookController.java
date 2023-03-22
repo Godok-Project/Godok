@@ -1,5 +1,6 @@
 package com.baechu.book.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,19 +76,10 @@ public class BookController {
 	}
 
 	@GetMapping("/main")
-	public String bookList(Model model, @PageableDefault(page = 0, size = 8, sort = "id",
-		direction = Sort.Direction.DESC) Pageable pageable) {
+	public String bookList(Model model) {
 
-		Page<Book> list = bookService.bookList(pageable);
-
-		int nowPage = list.getPageable().getPageNumber() + 1;
-		int startPage = Math.max(nowPage - 4, 1);
-		int endPage = Math.min(nowPage + 9, list.getTotalPages());
-
+		List<Book> list = bookService.bookList();
 		model.addAttribute("list", list);
-		model.addAttribute("nowPage", nowPage);
-		model.addAttribute("startPage", startPage);
-		model.addAttribute("endPage", endPage);
 
 		return "main";
 	}
