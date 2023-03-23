@@ -29,6 +29,8 @@ public class BookDSLRepository {
 	public List<Book> searchBooks(FilterDto filter, Pageable pageable) {
 		return queryFactory.selectFrom(book)
 			.where(
+				categoryResult(filter.getCategory()),
+				babyCategoryResult(filter.getBabyCategory()),
 				titleResult(filter.getQuery()),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
@@ -54,6 +56,20 @@ public class BookDSLRepository {
 				authorResult(filter.getAuthor())
 			)
 			.fetchOne();
+	}
+
+	private Predicate categoryResult(String category) {
+		if (category == null || category.isEmpty()) {
+			return null;
+		}
+		return book.category.eq(category);
+	}
+
+	private Predicate babyCategoryResult(String babyCategory) {
+		if (babyCategory == null || babyCategory.isEmpty()) {
+			return null;
+		}
+		return book.babyCategory.eq(babyCategory);
 	}
 
 	private Predicate titleResult(String query) {
