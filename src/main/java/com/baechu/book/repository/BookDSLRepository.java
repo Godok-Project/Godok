@@ -91,18 +91,14 @@ public class BookDSLRepository {
 	}
 
 	private Predicate PriceResult(Integer minPrice, Integer maxPrice) {
-		// 둘 다 null
 		if (minPrice == null & maxPrice == null) {
 			return null;
 		}
 		if (minPrice == null) {
-			// 최대만 존재
 			return book.price.loe(maxPrice);
 		} else if (maxPrice == null) {
-			// 최소만 존재
 			return book.price.goe(minPrice);
 		} else {
-			//둘 다 있음
 			return book.price.between(minPrice, maxPrice);
 		}
 	}

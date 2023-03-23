@@ -14,9 +14,5 @@ import com.baechu.book.entity.Book;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
 	Optional<Book> findById(Long id);
-
-	@Query(value = "select b from Book b where b.title like concat('%',:query,'%')")
-	Page<Book> findBooksByWord(@Param("query") String query, Pageable pageable);
-
 	List<Book> findAll();
 }

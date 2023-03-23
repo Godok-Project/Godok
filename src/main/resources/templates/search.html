@@ -389,9 +389,6 @@
     $('#search-box').attr("value", query);
     $('#' + star_name).prop('checked', true);
 
-    console.log(category)
-    console.log(babyCategory)
-
     if (page == 0) {
         $('#before-button').hide();
     } else if (Math.floor(totalCount / totalRow) == page || totalCount % totalRow == 0 && Math.floor(totalCount / totalRow) - 1 == page) {

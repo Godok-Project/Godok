@@ -63,7 +63,6 @@ public class BookController {
 		@RequestParam(value = "category", defaultValue = "") String category,
 		@RequestParam(value = "babyCategory", defaultValue = "") String babyCategory
 	) {
-		// 카테고리 제외한 필터 검색
 		FilterDto filter = createDto(query, sort, year, star, minPrice, maxPrice, publish, author, page, totalRow,
 			category, babyCategory);
 		BookListDto result = bookService.searchByWord(filter);
