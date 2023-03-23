@@ -34,17 +34,14 @@ public class BookController {
 		return "detail";
 	}
 
-	@GetMapping("/detail/buybooks/{bookid}/{quantity}")
-	public String Buybook(@PathVariable Long bookid, @PathVariable Long quantity, HttpServletRequest request) {
+	@GetMapping("/detail/buybooks/{bookId}/{quantity}")
+	public String buyBook(@PathVariable Long bookId, @PathVariable Long quantity, HttpServletRequest request) {
 
-		HttpStatus result = bookService.bookOrder(bookid, quantity, request).getStatusCode();
+		HttpStatus result = bookService.bookOrder(bookId, quantity, request).getStatusCode();
 
 		if (result.isError()) {
-			System.out.println("--------------forbidden");
 			return "redirect:/login";
 		} else {
-			String ans = bookid + "번 책을 " + quantity + " 권 주문한다용";
-			System.out.println(ans);
 			return "redirect:/main";
 		}
 
