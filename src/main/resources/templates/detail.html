@@ -127,14 +127,10 @@
       font-weight: 600;
     }
   </style>
-
 </head>
-<!--참조 문서-->
-<!--thymeleaf+html 연동하기-->
-<!--https://lifere.tistory.com/entry/Spring-Boot-Thymeleaf-PathVariable-url-%EA%B2%BD%EB%A1%9C%EC%9D%98-%EA%B0%92%EC%9D%84-%EB%B3%80%EC%88%98%EB%A1%9C-%EB%B0%9B%EA%B8%B0-->
 <body>
 <header class="container">
-  <button class="back" onclick="window.history.back()">
+  <button class="back" onclick="window.history.back()">뒤로가기
     <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -193,9 +189,6 @@
         </div>
       </div>
       <form class="order-form">
-<!--        <div>BN : </div>-->
-<!--        <div class="storage-count" th:text="${info.bookid}">11-->
-<!--        </div>-->
         <div>남은 재고 : </div>
         <div class="storage-count" name= "bookrestover" id="bookrestover" th:text="${info.inventory}">
         </div>
@@ -224,10 +217,7 @@
 <script>
 
   const url = window.location.href
-  // console.log(url)
   const bookid = url.split("/")[4].split("?")[0]
-  // console.log(bookid)
-
 
   function buybook() {
 
@@ -236,10 +226,6 @@
 
     const inventory = document.getElementById("inventory")
     const value = (inventory.options[inventory.selectedIndex].value);
-
-    // console.log("bookid : ",bookid)
-    // console.log("책재고량 : ",bookrest)
-    // console.log("책주문량 : ",value)
 
     const vv = parseInt(value)
     const ii = parseInt(bookrest)
