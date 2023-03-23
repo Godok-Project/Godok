@@ -15,10 +15,12 @@ public class FilterDto {
 	private String author;
 	private Integer page;
 	private Integer totalRow;
+	private String category;
+	private String babyCategory;
 
 	@Builder
 	public FilterDto(String query, Integer sort, Integer year, Integer star, Integer minPrice, Integer maxPrice,
-		String publish, String author, Integer page, Integer totalRow) {
+		String publish, String author, Integer page, Integer totalRow, String category, String babyCategory) {
 		this.query = query;
 		this.sort = sort;
 		this.year = year;
@@ -29,7 +31,7 @@ public class FilterDto {
 		this.author = author;
 		this.page = page;
 		this.totalRow = totalRow;
+		this.category = category;
+		this.babyCategory = babyCategory;
 	}
 }
-
-//query, sort, year, star, minPrice, maxPrice, publish, author, page, totalRow

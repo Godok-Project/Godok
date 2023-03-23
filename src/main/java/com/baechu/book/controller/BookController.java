@@ -5,10 +5,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,10 +62,13 @@ public class BookController {
 		@RequestParam(value = "publish", defaultValue = "") String publish,
 		@RequestParam(value = "author", defaultValue = "") String author,
 		@RequestParam(value = "totalRow", defaultValue = "10") Integer totalRow,
-		@RequestParam(value = "page", defaultValue = "0") Integer page
+		@RequestParam(value = "page", defaultValue = "0") Integer page,
+		@RequestParam(value = "category", defaultValue = "") String category,
+		@RequestParam(value = "babyCategory", defaultValue = "") String babyCategory
 	) {
 		// 카테고리 제외한 필터 검색
-		FilterDto filter = createDto(query, sort, year, star, minPrice, maxPrice, publish, author, page, totalRow);
+		FilterDto filter = createDto(query, sort, year, star, minPrice, maxPrice, publish, author, page, totalRow,
+			category, babyCategory);
 		BookListDto result = bookService.searchByWord(filter);
 		model.addAttribute("result", result);
 		return "search";
@@ -85,7 +84,8 @@ public class BookController {
 	}
 
 	private FilterDto createDto(String query, Integer sort, Integer year, Integer star, Integer minPrice,
-		Integer maxPrice, String publish, String author, Integer page, Integer totalRow) {
+		Integer maxPrice, String publish, String author, Integer page, Integer totalRow, String category,
+		String babyCategory) {
 		// 나중에 RequestParam을 따로 받지말고 하나의 객체로 받도록 수정 필요.
 		return FilterDto.builder()
 			.query(query)
@@ -98,6 +98,8 @@ public class BookController {
 			.author(author)
 			.page(page)
 			.totalRow(totalRow)
+			.category(category)
+			.babyCategory(babyCategory)
 			.build();
 	}
 }
