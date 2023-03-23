@@ -21,10 +21,9 @@ import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
 import com.baechu.common.dto.BaseResponse;
+import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 import com.baechu.common.exception.SuccessCode;
-import com.baechu.member.entity.Member;
-import com.baechu.session.SessionConst;
 
 import lombok.RequiredArgsConstructor;
 
@@ -80,26 +79,22 @@ public class BookService {
 	}
 
 	@Transactional
-	public ResponseEntity<BaseResponse> bookOrder(Long bookid, Long bookcall, HttpServletRequest request) {
+	public ResponseEntity<BaseResponse> bookOrder(Long bookId, Long bookCall, HttpServletRequest request) {
 
 		HttpSession session = request.getSession(false);
 		if (session == null) {
-			System.out.println("로그인 하세요");
 			return BaseResponse.toResponseEntity(ErrorCode.Forbidden);
 		} else {
-			Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
-			System.out.println(loginMember.getEmail() + "회원님 주문하세용");
 
-			Book book = bookRepository.findById(bookid).orElseThrow(
-				() -> new IllegalArgumentException("해당 아이디의 책은 없습니다.")
-			);
+			Book book = bookRepository.findById(bookId).orElseThrow(
+				() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
 			Long inventory = book.getInventory();
-			Long restover = inventory - bookcall;
-			if (restover >= 0) {
-				book.setInventory(restover);
+			Long restOver = inventory - bookCall;
+			if (restOver >= 0) {
+				book.setInventory(restOver);
 			} else {
-				System.out.println("프론트에서 한번 재고량 체크를 해줬지만, 책재고가 부족하다는 에러 내뱉어야함");
+				throw new CustomException(ErrorCode.INVALIDATION_ORDER);
 			}
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}
