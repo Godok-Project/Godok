@@ -50,4 +50,8 @@ public class MemberController {
 		return memberService.logout(request);
 	}
 
+	@GetMapping("/")
+	public String main() {
+		return "redirect:/main";
+	}
 }
