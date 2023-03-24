@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>검색 페이지</title>
+    <style>
+        /*뒤로가기 영역*/
+        .top-area {
+            margin: 30px;
+        }
+
+        /*검색 영역*/
+        .search-area {
+            display: flex;
+            justify-content: center;
+            height: 50px;
+            margin: auto;
+            margin-bottom: 40px;
+            width: 90%;
+        }
+
+        .form-select {
+            width: 200px;
+            height: 50px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .form-control {
+            width: 500px;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+
+        .mid-area {
+            display: flex;
+            /*justify-content: center;*/
+            max-width: 2500px;
+            width: 100%;
+            height: 1350px;
+            margin: auto;
+            /*background-color: darkseagreen;*/
+        }
+
+        /*상세 필터 영역*/
+        .filter-area {
+            background-color: whitesmoke;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 300px;
+            width: 20%;
+            margin-right: 2%;
+            margin-left: 2%;
+            border: 1px darkblue solid;
+            border-radius: 8px;
+            height: 900px
+            /*min-height: 1500px;*/
+        }
+
+        .star-area {
+            /*background-color: brown;*/
+            border: 1px slategray solid;
+            border-radius: 5px;
+            display: flex;
+            margin-top: 30px;
+            align-items: center;
+            justify-content: center;
+            /*top: 50%;*/
+        }
+
+        .star-select {
+            width: 30%;
+            margin-left: 20px;
+        }
+
+        .star-box {
+            /*background-color: darkorange;*/
+            width: 70%;
+            height: 200px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .star-point {
+            margin-left: 3%;
+        }
+
+        .price-area {
+            /*background-color: blueviolet;*/
+            margin-top: 30px;
+        }
+
+        .publish-area {
+            /*background-color: darkslategray;*/
+            margin-top: 30px;
+        }
+
+        .author-area {
+            /*background-color: gold;*/
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .star-box-left {
+            display: flex;
+            flex-direction: column;
+            margin: 0 20px 0 10px;
+        }
+
+        .star-box-right {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-input {
+            width: 80%;
+        }
+
+        #min-price {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #max-price {
+            width: 100%;
+        }
+
+        #publish {
+            width: 100%;
+        }
+
+        #author {
+            width: 100%;
+        }
+
+        #year {
+            width: 80%;
+        }
+
+        #sort {
+            width: 80%
+        }
+
+        /*책 정보 영역*/
+        .body-area {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-area {
+            background-color: whitesmoke;
+            border-radius: 5px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: center;
+        }
+
+        .book-box {
+            border: 1px black solid;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px 2% 20px 2%;
+            height: 200px;
+            display: flex;
+            /*width: 47%;*/
+            width: 500px;
+        }
+
+        .image-area {
+            border-radius: 10px;
+            margin-right: 7%;
+            width: 20%;
+        }
+
+        .desc-area {
+            border: 1px darkslategrey solid;
+            padding: 10px;
+            border-radius: 10px;
+            width: 78%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="top-area">
+    <a href="/main">
+        <input class="btn btn-primary" type="button" value="메인 페이지">
+    </a>
+</div>
+<div class="search-area">
+    <select id="category" class="form-select" aria-label="Default select example" onchange="babyCategoryListing()">
+        <option selected value="">대분류</option>
+    </select>
+    <select id="babyCategory" class="form-select" aria-label="Default select example">
+        <option selected value="">소분류</option>
+    </select>
+
+    <input type="text" class="form-control" id="search-box" placeholder="검색">
+
+    <input class="btn btn-primary" type="button" onclick="searchBook()" value="검색">
+</div>
+<div class="mid-area">
+    <div class="filter-area">
+        <div>
+            <h5 style="text-align: center" th:text="' 총 검색 결과 : ' + ${result.getTotalCount()}"></h5>
+        </div>
+        <select id="sort" class="form-select" aria-label="Default select example">
+            <option selected value="0">정렬</option>
+            <option value="1">이름순</option>
+            <option value="2">가격 높은순</option>
+            <option value="3">가격 낮은순</option>
+        </select>
+        <div class="star-area">
+            <div class="star-select">
+                <h3 class="star-point">별점</h3>
+                <button style="font-size: 0.6em" onclick="deselect()">선택 해제</button>
+            </div>
+            <div class="star-box">
+                <div class="star-box-left">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star1"
+                               value="1">
+                        <label class="form-check-label" for="star1">1</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star2"
+                               value="2">
+                        <label class="form-check-label" for="star2">2</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star3"
+                               value="3">
+                        <label class="form-check-label" for="star3">3</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star4"
+                               value="4">
+                        <label class="form-check-label" for="star4">4</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star5"
+                               value="5">
+                        <label class="form-check-label" for="star5">5</label>
+                    </div>
+                </div>
+                <div class="star-box-right">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star6"
+                               value="6">
+                        <label class="form-check-label" for="star6">6</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star7"
+                               value="7">
+                        <label class="form-check-label" for="star7">7</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star8"
+                               value="8">
+                        <label class="form-check-label" for="star8">8</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star9"
+                               value="9">
+                        <label class="form-check-label" for="star9">9</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="star" id="star10"
+                               value="10">
+                        <label class="form-check-label" for="star10">10</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="publish-area">
+            <h3>발행년도</h3>
+            <select id="year" class="form-select" aria-label="Default select example" style="height: 40px">
+                <option selected value="0">선택</option>
+                <option value="2020">2020년 이후</option>
+                <option value="2010">2010년</option>
+                <option value="2000">2000년</option>
+                <option value="1990">1990년</option>
+                <option value="1980">1980년</option>
+                <option value="1970">1970년</option>
+                <option value="1960">1960년</option>
+                <option value="1950">1950년</option>
+                <option value="1940">1940년</option>
+                <option value="1930">1930년</option>
+                <option value="1920">1920년</option>
+                <option value="1910">1910년</option>
+                <option value="1900">1900년</option>
+                <option value="1899">1900년 이전</option>
+            </select>
+        </div>
+        <div class="price-area">
+            <h3>가격 범위</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="min-price" type="text" placeholder="최소 가격"
+                       aria-label=".form-control-sm example">
+            </div>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="max-price" type="text" placeholder="최대 가격"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <div class="publish-area">
+            <h3>출판사</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="publish" type="text"
+                       placeholder="출판사"
+                       aria-label=".form-control-sm example">
+            </div>
+        </div>
+        <div class="author-area">
+            <h3>작가</h3>
+            <div class="price-input">
+                <input class="form-control form-control-sm" id="author" type="text"
+                       placeholder="작가"
+                       aria-label=".form-control-sm example" value="">
+            </div>
+        </div>
+        <input class="btn btn-primary" type="button" value="적용" onclick="applyFilter()">
+    </div>
+    <div class="body-area">
+        <div class="info-area">
+            <tr th:each="book : ${result.getBooks()}">
+                <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
+                    <div class="image-area">
+                        <img th:src="${book.getImage()}" alt="My Image" width="97">
+                    </div>
+                    <div class="desc-area">
+                        <h6 class="long-title" th:text="${book.getTitle()}">에밀</h6>
+                        <span th:text="'가격 : '+${book.getPrice()}+' 원'">35000</span><br>
+                        <span th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
+                        <span th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
+                        <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
+                        82012.3
+                    </span>
+                    </div>
+                </div>
+            </tr>
+        </div>
+        <div class="page-button">
+            <button id="before-button" onclick="movePage(page-1)"> 이전 페이지</button>
+            <button id="after-button" onclick="movePage(page+1)"> 다음 페이지</button>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const params = new URLSearchParams(location.search);
+    let category = params.get('category') == null ? '' : params.get('category');
+    let babyCategory = params.get('babyCategory') == null ? '' : params.get('babyCategory');
+    let query = params.get('query') == null ? '' : params.get('query');
+    let totalRow = params.get('totalRow') == null ? '10' : params.get('totalRow');
+    let sort = params.get('sort') == null ? '0' : params.get('sort');
+    let year = params.get('year') == null ? '0' : params.get('year');
+    let month = params.get('month') == null ? '' : params.get('month');
+    let star = params.get('star') == null ? '' : params.get('star');
+    let minprice = params.get('minPrice') == null ? '' : params.get('minPrice');
+    let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
+    let publish = params.get('publish') == null ? '' : params.get('publish');
+    let author = params.get('author') == null ? '' : params.get('author');
+    let page = [[${result.getPage()}]];
+    let totalCount = [[${result.getTotalCount()}]];
+    let star_name = 'star' + star;
+
+    $('#author').attr("value", author);
+    $('#publish').attr("value", publish);
+    $('#min-price').attr("value", minprice);
+    $('#max-price').attr("value", maxprice);
+    $('#year').val(year).prop('selected', true);
+    $('#sort').val(sort).prop('selected', true);
+    $('#search-box').attr("value", query);
+    $('#' + star_name).prop('checked', true);
+
+    if (page == 0) {
+        $('#before-button').hide();
+    } else if (Math.floor(totalCount / totalRow) == page || totalCount % totalRow == 0 && Math.floor(totalCount / totalRow) - 1 == page) {
+        $('#after-button').hide();
+    }
+
+    const categories = {
+        '건강 취미': ['건강', '구기', '공예', '퍼즐 컬러링북', '취미', '운동', '의학', '등산 여행', '스포츠', '반려동물', '질병치료와 예방', '취미 기타', '건강 기타', '질병과 치료법', '스포츠/레크레이션', '공예/취미', '수집'],
+        '경제 경영': ['경제', '기업', '마케팅', '창업', '투자', 'CEO', '경영', '비즈니스', '기타', '개인', '비서 교육', '비영리 기구', '비즈니스 역사', '비즈니스 작문', '사무관리', '사무비품', '사무자동화', '산업', '성공학', '요리', '전망'],
+        '수험서 자격증': ['국가자격', '민간자격', '공무원', '역량평가', '공인중개', '고등고시', '임용', '취업'],
+        '달력 기타': ['2022년 가계부', '2022년 달력', '2021년 가계부', '영어로 쓰인 한국서적', '오디오북', '출판사 제작 상품', '큰글자책'],
+        '대학교재 전문서적': ['경상계열', '공학계열', '법학계열', '사범계열', '사회과학계열', '기타', '어문학계열', '예체능계열', '의학계열', '인문계열', '자연과학계열', '방송통신대학교'],
+        '만화 라이트노벨': ['화보집 캐릭터상품', '교양만화 비평 작법', '그래픽노블', '역사/대하/서사', '만화그리기와 읽기', '본격장르만화', '성인', '학원/소년만화', '순정만화', '스포츠만화', '동물만화', '유럽/서구만화', '요리만화', '취미와 직업', '논픽션/휴먼만화', '인디만화', '웹툰', '코믹/명랑만화', '라이트노벨', '판타지', '드라마', 'SF 밀리터리', '공포 추리', '액션', '각색', '문집/선집', '세계의 문학', '요리', '일본만화', '일반'],
+        '사회 정치': ['비평/칼럼', '사회문제', '생태 환경', '교육학', '사회운동/NGO', '사회사상/사회사상사', '미래학', '지리학/지정학', '정치학/외교학/행정학', '한국정치사정/정치사', '사회학', '여성학/젠더', '언론/미디어', '법과 생활', '통일/북한관계', '국방/군사학', '계간지/무크'],
+        '소설 시 희곡': ['한국소설', '동양소설', '서양/유럽소설', '스페인/중남미소설', '세계의 문학', '추리/공포소설', '라이트 노벨', 'SF/판타지소설', '역사/무협소설', '액션/스릴러소설', '로맨스소설', '시/희곡', '기타문학', '고전문학', '문학의 이해', '테마문학', '소설', '비평 창작 이론'],
+        '어린이': ['초등 한국사', '초등1~2학년', '초등3~4학년', '초등5~6학년', '초등학습', '교과서 수록도서', '동화/명작/고전', '아동,문학론', '과학/수학/컴퓨터', '사회/역사/철학', '문화/예술/인물', '어린이 영어', '어린이 한자/중국어', '책읽기/글쓰기', '어린이 사전/도감', 'TV/만화/영화', '게임 만화/캐릭터도감', '학습만화', '어린이 문학', '어린이 교양', '어린이 세트', '교과서수록도서', '어린이 정가제 Free', '교과학습', '그림책', '논픽션', '리더스', '챕터북'],
+        '에세이': ['한국에세이', '외국 에세이', '동물 에세이', '명상 치유 에세이', '심리치유 에세이', '예술에세이', '음식 에세이', '여행 에세이', '독서에세이', '종교에세이', '사랑/연애 에세이', '노년을 위한 에세이', '자연 에세이', '명언/잠언록', '일기/편지', '유머/풍자/우화', '작은 이야기 모음', '명사 연예인 에세이', '삶의 자세와 지혜', '여성 에세이', '포토 에세이', '휴먼 에세이'],
+        '여행': ['국내 여행에세이', '국내여행', '기타여행', '북미여행', '중남미여행', '유럽여행', '독일여행', '중동여행', '아프리카여행', '동아시아여행', '동남아시아여행', '호주/뉴질랜드여행', '괌/사이판/하와이여행', '세계일주여행', '테마여행', '유학/해외연수/이민/워킹홀리데이', '지도', '해외여행', '여행회화', '남아메리카', '유렵여행', '아시아사', '아프리카 중동 중남미 오세아니아 역사', '여행 에세이', '여행일반', '기타', '동남아여행'],
+        '역사': ['동양사 동양문화', '한국사 한국문화', '역사학 이론 비평', '중국사', '일본사', '아시아사', '서양사', '유럽사', '아프리카 중동 중남미 오세아니아 역사', '세계사 세계문화', '전쟁/분쟁사', '테마로 보는 역사', '고고학', '역사와 문화 교양서', '학회/무크/계간지', '서양사 서양문화', '주제로 읽는 역사', '세계일주여행', '북미여행', '유럽여행', '중동여행', '기타'],
+        '외국도서': ['독일 도서', 'Lexile_Grade1', 'Lexile_Grade2', 'Lexile_Grade3', 'Lexile_Grade4', 'Lexile_Grade5', 'Garde10(905L-1195L)', 'Garde11(940L-1210L)', 'Garde6(665L-1000L)', 'Garde7(735L-1065L)', 'Garde8(805L-1100L)', 'Garde9(855L-1165L)'],
+        '중국도서': ['어린이', '인문 사회 역사', '참고서 수험서 교재'],
+        'ELT어학사전': ['과학기술 영어', '교사용 자료', '독학교재', '독해/듣기/문법/어휘/작문', '리더스', '아카데미 영어', '회화', '워크북', '제2외국어', 'ELT 관련'],
+        '요리': ['요리', '기타'],
+        'IT 모바일': ['인터넷 비즈니스', '운영체제', 'IT 기타', '멀티미디어', '모바일', '오피스', '웹', '코딩 교육', '컴퓨터 공학', '프로그래밍', '컴퓨터 수험서', '데이터베이스', '게임', '네트워크', '웹 사이트'],
+        '가정 살림': ['가계부', '환경', '요리', '가족', '교육', '바느질', '리빙/육아', '임신 출산', '특수교육', '가정 기타', '가정', '원예'],
+        '국어 외국어 사전': ['스피킹', '기타 동양어', '기타 서양어', '독일어', '러시아어', '스페인어', '사전', '영문법', '영어독해', '영어시험대비', '영어어휘', '외국어 기타', '영작문', '국어', '이탈리아어', '일본어', '중국어', '프랑스어', '영어전문교재'],
+        '유아': ['영아', '그림책', '4~7세', '책읽기', '놀이책', '캐릭터', '예비초등', '유아 학습', '유아 기타', '유아 그림책', '정가제'],
+        '인문학': ['교양', '기호학 언어학', '논리 비판', '철학', '문화', '학자', '출판', '신화 종교학', '심리학', '인류학', '인문 에세이', '인문학 전문사전', '독서 글쓰기', '학회', '윤리학', '종교학', '주제로 읽는 인문학', '경영자', '과학자/지식인', '교육인/언론인', '인물 기타', '문학인', '사상가/철학가', '역사 시대적인물', '예술인', '정치인', '종교인'],
+        '자기계발': ['20대의 자기계발', '기획/시간관리', '리더십', '성공', '여성 자기계발', '인간관계', '정리', '중년의 자기계발', '두뇌계발', '취업/유망직업', '화술/협상/회의', '행복/힐링', '유학/이민', '처세술/삶의자세'],
+        '잡지': ['건강/의학', '경제/시사', '과학/기술', '교양/문예/인문', '교육', '예술', '기타', '리빙/육아', '연예/영화/만화', '어린이/청소년', '여성/남성', '여행/스포츠/취미', '요리', '정기구독', '종교', '컴퓨터/게임/그래픽', '컴퓨터/과학/게임'],
+        '전집': ['0-3세', '4-7세', '단행본 전집', '초등 저학년', '초등 고학년', '출판사별보기', '토이북 교구', '문학/논술/고전', '영어 학습', '인물/역사/사회', '자연/과학/수학', '전래 명작동화', '창작동화', '영아', '청소년 일반'],
+        '종교 역학': ['천주교', '기독교', '명상', '불교', '세계종교', '역학', '일반', '성경'],
+        '중고등참고서': ['EBS-고등', 'EBS-중등', '고등-문제집', '고등-자습서', '고등-영어전문', '고등학교 출판사별', '중등-논술', '고등-수시논술', '고등-수능기출', '예비고등', '중1-문제집', '중1-자습서', '중2-문제집', '중2-자습서', '중3-문제집', '중3-자습서', '중등-경시대회', '중학교 출판사별', '중등-국어독해', '중등-수학전문', '중등-영어전문', '특목고대비', '학습/기타', '고등-입시'],
+        '청소년': ['교육', '시험', '인문', '문학', '문화', '공부', '역사', '자기계발', '철학', '기타'],
+        '초등참고서': ['1학년', '2학년', '3학년', '4학년', '5학년', '6학년', 'EBS 초등', '경시 올림피아드', '국어전문교재', '수학전문교재', '미취학아동', '서술형.논술형', '영재교육원대비', '예비중', '전과 자습서', '영어전문교재', '초등학교 출판사별', '초등한국사', '중국어', '학습교구', '학습월간지(초등)', 'EBS초등학교/영어', '미취학아동/기타', '초등 학습자료 교구'],
+        '예술': ['미디어', '건축', '대중문화', '무용', '미술 음악', '취미', '공연', '예술기행', '일반', '예술치료', '디자인'],
+        '과학': ['공학', '교양과학', '농업', '의학', '물리학', '생명과학', '수학', '지구과학', '천문학', '화학'],
+    }
+
+    categoryListing();
+    $('#category').val(category).prop('selected', true);
+    babyCategoryListing();
+    $('#babyCategory').val(babyCategory).prop('selected', true);
+
+    function deselect() {
+        $('input:radio[name=star]:checked').prop('checked', false);
+        star = '';
+    }
+
+    function movePage(changedPage) {
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=" + changedPage;
+    }
+
+    function searchBook() {
+        query = $('#search-box').val();
+        category = $("#category option:selected").val();
+        babyCategory = $("#babyCategory option:selected").val();
+        sort = '0';
+        year = '0';
+        month = '';
+        star = '';
+        minprice = '';
+        maxprice = '';
+        publish = '';
+        author = '';
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
+    }
+
+    function applyFilter() {
+        minprice = $("#min-price").val();
+        maxprice = $("#max-price").val();
+        if (checkPrice(minprice, maxprice)) {
+            publish = $("#publish").val();
+            author = $("#author").val();
+            sort = $("#sort option:selected").val();
+            year = $("#year option:selected").val();
+            if ($('input[name=star]:checked').val()) {
+                star = $('input[name=star]:checked').val();
+            }
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
+        }
+    }
+
+    function checkPrice(min, max) {
+        let isNumber = /^[0-9]+$/;
+        if (min.length == 0) {
+            min = '0'
+        }
+        if (max.length == 0) {
+            max = '999999999'
+        }
+        if (!(isNumber.test(min) && isNumber.test(max))) {
+            alert("가격 필터에는 숫자만 입력해주세요.");
+            return false;
+        }
+        if (Number(min) > Number(max)) {
+            alert("최대 가격은 최소 가격보다 커야합니다.")
+            return false;
+        }
+        return true;
+    }
+
+    function categoryListing() {
+        let html = `<option value="">대분류</option>`
+        for (const category of Object.keys(categories)) {
+            html += `<option value="${category}">${category}</option>`
+        }
+        $('#category').html(html)
+    }
+
+    function babyCategoryListing() {
+        let key = $("#category option:selected").val()
+        let html = `<option value="">소분류</option>`
+        if (key.length != 0) {
+            for (const value of categories[key])
+                html += `<option value="${value}">${value}</option>\``
+        }
+        $('#babyCategory').html(html)
+    }
+
+    /*]]>*/
+</script>
+</html>

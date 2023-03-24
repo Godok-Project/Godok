@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+          name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+  />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Detailpage</title>
+
+  <style>
+    .allbox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+    }
+
+    .title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .book-image {
+      min-width: 300px;
+    }
+
+    li {
+      text-decoration: none;
+    }
+
+    .inputplace {
+      width: 100%;
+      display: flex;
+      gap: 30px; /* 책 사진과 오른쪽 정보들 간격은 여길 수정하시면 됩니다. */
+      justify-content: center;
+    }
+
+    .orderplace {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bookdetail {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 400px;
+    }
+
+    .explain {
+      font-weight: bold;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .book-info-wrapper {
+      display: flex;
+      font-size: 18px;
+      padding: 15px;
+      border-radius: 5px;
+      background: rgba(161, 161, 161, 0.2);
+    }
+
+    .info-constant {
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      width: 80px;
+      gap: 10px;
+      padding: 10px 0;
+    }
+
+    .info-variable {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+      gap: 10px;
+      margin-left: 15px; /* 간격 바꾸고 싶으면 이 친구 바꾸시면 됩니다*/
+    }
+
+    /* order-form */
+    .order-form {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .select-form {
+      border-radius: 3px;
+    }
+
+    .form-input-container {
+      height: 100%;
+      display: flex;
+      gap: 10px;
+    }
+
+    .order-btn {
+      border: none;
+      background: #111;
+      padding: 10px;
+      color: white;
+      border-radius: 5px;
+      font-weight: 600;
+      transition: ease-in-out 0.15s;
+    }
+
+    .order-btn:hover {
+      color: #111;
+      cursor: pointer;
+      background: #dedede;
+    }
+
+    .storage-count {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<header class="container">
+  <button class="back" onclick="window.history.back()">뒤로가기
+    <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+    >
+      <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+      />
+    </svg>
+  </button>
+  <h1 class="title">GODOK</h1>
+</header>
+<div class="allbox">
+  <div class="inputplace">
+    <img
+            class="book-image"
+            th:src="${info.image}"
+            src="https://image.aladin.co.kr/product/22460/28/cover200/8994492046_1.jpg"
+            width="300"
+    />
+    <div class="bookdetail">
+      <div class="book-info-wrapper">
+        <div class="info-constant">
+          <div class="info">
+            제목
+          </div>
+          <div class="info">
+            가격
+          </div>
+          <div class="info">
+            작가
+          </div>
+          <div class="info">
+            출판사
+          </div>
+          <div class="info">
+            발행년도
+          </div>
+          <div class="info">
+            책번호
+          </div>
+        </div>
+
+        <div class="info-variable">
+          <div class="info" id="booktitle" th:text="${info.title}"></div>
+          <div class="info" id="bookprice" th:text="${info.price}"></div>
+          <div class="info" id="bookauthor" th:text="${info.author}"></div>
+          <div class="info" id="bookpublish" th:text="${info.publish}"></div>
+          <div class="info" id="bookbirth" th:text="${info.birth}"></div>
+          <div class="info" id="bookid" th:text="${info.bookid}"></div>
+        </div>
+      </div>
+      <form class="order-form">
+        <div>남은 재고 : </div>
+        <div class="storage-count" name= "bookrestover" id="bookrestover" th:text="${info.inventory}">
+        </div>
+        <div class="form-input-container" id="bookcount">
+          <select id="inventory" class="form-select form-select-sm select-form" aria-label=".form-select-sm example" >
+            <option selected>주문할 권 수</option>
+            <option value="1">1권</option>
+            <option value="2">2권</option>
+            <option value="3">3권</option>
+            <option value="4">4권</option>
+            <option value="5">5권</option>
+            <option value="6">6권</option>
+            <option value="7">7권</option>
+            <option value="8">8권</option>
+            <option value="9">9권</option>
+          </select>
+          <button class="order-btn" type="button" onclick="buybook()" th:if="${not #strings.isEmpty(session.loginMember)}">주문하기</button>
+          <button class="order-btn" type="button" onclick="location.href='../login'" th:if="${#strings.isEmpty(session.loginMember)}">로그인먼저</button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+  const url = window.location.href
+  const bookid = url.split("/")[4].split("?")[0]
+
+  function buybook() {
+
+    const bookrestover = document.getElementById("bookrestover")
+    const bookrest = bookrestover.textContent
+
+    const inventory = document.getElementById("inventory")
+    const value = (inventory.options[inventory.selectedIndex].value);
+
+    const vv = parseInt(value)
+    const ii = parseInt(bookrest)
+
+     if (vv>ii){
+      alert("현재 재고량보다 많이 주문할 수 없습니다.")
+      window.location.reload();
+    } else {
+      alert("주문성공했다능")
+      location.href = "/detail/buybooks/" + bookid + "/" + value;
+    }
+  }
+</script>
+</html>
