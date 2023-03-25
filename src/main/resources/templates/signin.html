@@ -71,8 +71,6 @@
         let year = date.getFullYear()-10;
         let html = `<option selected value="">출생연도를 선택해 주세요.</option>`
 
-        $("#age").html(html);
-
         for(let i =year; i >= 1950; i --){
             html += `<option value="${i}">${i}</option>`
         }
