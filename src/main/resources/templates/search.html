@@ -60,18 +60,18 @@
             margin-left: 2%;
             border: 1px darkblue solid;
             border-radius: 8px;
-            height: 900px
+            height: 800px
             /*min-height: 1500px;*/
         }
 
         .star-area {
             /*background-color: brown;*/
-            border: 1px slategray solid;
-            border-radius: 5px;
-            display: flex;
+            /*border: 1px slategray solid;*/
+            /*border-radius: 5px;*/
+            /*display: flex;*/
             margin-top: 30px;
-            align-items: center;
-            justify-content: center;
+            /*align-items: center;*/
+            /*justify-content: center;*/
             /*top: 50%;*/
         }
 
@@ -150,6 +150,10 @@
             width: 80%
         }
 
+        #star {
+            width: 80%;
+        }
+
         /*책 정보 영역*/
         .body-area {
             width: 75%;
@@ -215,76 +219,28 @@
 </div>
 <div class="mid-area">
     <div class="filter-area">
-        <div>
-            <h5 style="text-align: center" th:text="' 총 검색 결과 : ' + ${result.getTotalCount()}"></h5>
-        </div>
+        <h3>정렬</h3>
         <select id="sort" class="form-select" aria-label="Default select example">
-            <option selected value="0">정렬</option>
+            <option selected value="0">선택</option>
             <option value="1">이름순</option>
             <option value="2">가격 높은순</option>
             <option value="3">가격 낮은순</option>
         </select>
         <div class="star-area">
-            <div class="star-select">
-                <h3 class="star-point">별점</h3>
-                <button style="font-size: 0.6em" onclick="deselect()">선택 해제</button>
-            </div>
-            <div class="star-box">
-                <div class="star-box-left">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star1"
-                               value="1">
-                        <label class="form-check-label" for="star1">1</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star2"
-                               value="2">
-                        <label class="form-check-label" for="star2">2</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star3"
-                               value="3">
-                        <label class="form-check-label" for="star3">3</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star4"
-                               value="4">
-                        <label class="form-check-label" for="star4">4</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star5"
-                               value="5">
-                        <label class="form-check-label" for="star5">5</label>
-                    </div>
-                </div>
-                <div class="star-box-right">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star6"
-                               value="6">
-                        <label class="form-check-label" for="star6">6</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star7"
-                               value="7">
-                        <label class="form-check-label" for="star7">7</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star8"
-                               value="8">
-                        <label class="form-check-label" for="star8">8</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star9"
-                               value="9">
-                        <label class="form-check-label" for="star9">9</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star10"
-                               value="10">
-                        <label class="form-check-label" for="star10">10</label>
-                    </div>
-                </div>
-            </div>
+            <h3>별점 <span style="font-size: 0.6em">(이상)</span></h3>
+            <select id="star" class="form-select" aria-label="Default select example" style="height: 40px">
+                <option selected value="0">선택</option>
+                <option value="10">10점</option>
+                <option value="9">9점</option>
+                <option value="8">8점</option>
+                <option value="7">7점</option>
+                <option value="6">6점</option>
+                <option value="5">5점</option>
+                <option value="4">4점</option>
+                <option value="3">3점</option>
+                <option value="2">2점</option>
+                <option value="1">1점</option>
+            </select>
         </div>
         <div class="publish-area">
             <h3>발행년도</h3>
@@ -371,14 +327,13 @@
     let sort = params.get('sort') == null ? '0' : params.get('sort');
     let year = params.get('year') == null ? '0' : params.get('year');
     let month = params.get('month') == null ? '' : params.get('month');
-    let star = params.get('star') == null ? '' : params.get('star');
+    let star = params.get('star') == null ? '0' : params.get('star');
     let minprice = params.get('minPrice') == null ? '' : params.get('minPrice');
     let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
     let publish = params.get('publish') == null ? '' : params.get('publish');
     let author = params.get('author') == null ? '' : params.get('author');
     let page = [[${result.getPage()}]];
     let totalCount = [[${result.getTotalCount()}]];
-    let star_name = 'star' + star;
 
     $('#author').attr("value", author);
     $('#publish').attr("value", publish);
@@ -386,8 +341,10 @@
     $('#max-price').attr("value", maxprice);
     $('#year').val(year).prop('selected', true);
     $('#sort').val(sort).prop('selected', true);
+    $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
-    $('#' + star_name).prop('checked', true);
+
+    console.log(star)
 
     if (page == 0) {
         $('#before-button').hide();
@@ -433,10 +390,6 @@
     babyCategoryListing();
     $('#babyCategory').val(babyCategory).prop('selected', true);
 
-    function deselect() {
-        $('input:radio[name=star]:checked').prop('checked', false);
-        star = '';
-    }
 
     function movePage(changedPage) {
         location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=" + changedPage;
@@ -449,7 +402,7 @@
         sort = '0';
         year = '0';
         month = '';
-        star = '';
+        star = '0';
         minprice = '';
         maxprice = '';
         publish = '';
@@ -465,9 +418,8 @@
             author = $("#author").val();
             sort = $("#sort option:selected").val();
             year = $("#year option:selected").val();
-            if ($('input[name=star]:checked').val()) {
-                star = $('input[name=star]:checked').val();
-            }
+            star = $("#star option:selected").val();
+            console.log(star)
             location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
         }
     }
