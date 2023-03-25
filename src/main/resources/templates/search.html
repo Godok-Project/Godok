@@ -40,12 +40,10 @@
 
         .mid-area {
             display: flex;
-            /*justify-content: center;*/
             max-width: 2500px;
             width: 100%;
             height: 1350px;
             margin: auto;
-            /*background-color: darkseagreen;*/
         }
 
         /*상세 필터 영역*/
@@ -61,18 +59,10 @@
             border: 1px darkblue solid;
             border-radius: 8px;
             height: 800px
-            /*min-height: 1500px;*/
         }
 
         .star-area {
-            /*background-color: brown;*/
-            /*border: 1px slategray solid;*/
-            /*border-radius: 5px;*/
-            /*display: flex;*/
             margin-top: 30px;
-            /*align-items: center;*/
-            /*justify-content: center;*/
-            /*top: 50%;*/
         }
 
         .star-select {
@@ -81,7 +71,6 @@
         }
 
         .star-box {
-            /*background-color: darkorange;*/
             width: 70%;
             height: 200px;
             margin: 10px;
@@ -90,35 +79,17 @@
             justify-content: center;
         }
 
-        .star-point {
-            margin-left: 3%;
-        }
-
         .price-area {
-            /*background-color: blueviolet;*/
             margin-top: 30px;
         }
 
         .publish-area {
-            /*background-color: darkslategray;*/
             margin-top: 30px;
         }
 
         .author-area {
-            /*background-color: gold;*/
             margin-top: 30px;
             margin-bottom: 30px;
-        }
-
-        .star-box-left {
-            display: flex;
-            flex-direction: column;
-            margin: 0 20px 0 10px;
-        }
-
-        .star-box-right {
-            display: flex;
-            flex-direction: column;
         }
 
         .price-input {
@@ -180,7 +151,6 @@
             padding: 20px 2% 20px 2%;
             height: 200px;
             display: flex;
-            /*width: 47%;*/
             width: 500px;
         }
 
@@ -344,8 +314,6 @@
     $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
 
-    console.log(star)
-
     if (page == 0) {
         $('#before-button').hide();
     } else if (Math.floor(totalCount / totalRow) == page || totalCount % totalRow == 0 && Math.floor(totalCount / totalRow) - 1 == page) {
@@ -419,7 +387,6 @@
             sort = $("#sort option:selected").val();
             year = $("#year option:selected").val();
             star = $("#star option:selected").val();
-            console.log(star)
             location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
         }
     }
