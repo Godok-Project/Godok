@@ -215,6 +215,7 @@
 <body>
 <div class="title-box">
     <h1 id="title">Godok</h1>
+    <button id="jumoon-in" onclick="location.href='jumoon' "th:if="${not #strings.isEmpty(session.loginMember)}">주문이력</button>
     <button id="log-in" onclick="location.href='login' "th:if="${#strings.isEmpty(session.loginMember)}">로그인</button>
     <button id="log-out" onclick="logout()" th:if="${not #strings.isEmpty(session.loginMember)}">로그아웃</button>
 </div>

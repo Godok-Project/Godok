@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>JUMOON</title>
+</head>
+<style>
+    .title-box {
+        width: 380px;
+        text-align: center;
+        margin: 30px auto auto auto;
+        font-family: Arial;
+        font-size: 50px;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #title  {
+        text-align: center;
+        margin: 10px auto auto 120px;
+    }
+
+    #log-in {
+        width: 150px;
+        font-size: 15px;
+        margin: -30px auto auto 700px;
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+    #log-out {
+        width: 150px;
+        font-size: 15px;
+        margin: -30px auto auto 700px;
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .mybox {
+        width: 95%;
+        max-width: 700px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px 0px lightblue;
+        margin: 20px auto;
+
+        /*display: flex;*/
+        /*flex-direction: row;*/
+        /*align-items: center;*/
+        /*justify-content: center;*/
+    }
+
+    .bookbox {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    .top-area {
+        margin: 30px;
+    }
+
+</style>
+
+
+<body>
+<div class="top-area">
+    <a href="/main">
+        <input class="btn btn-primary" type="button" value="메인 페이지">
+    </a>
+</div>
+<div class="title-box">
+    <h1 id="title">주문 이력</h1>
+    <button id="log-in" onclick="location.href='login' "th:if="${#strings.isEmpty(session.loginMember)}">로그인</button>
+    <button id="log-out" onclick="logout()" th:if="${not #strings.isEmpty(session.loginMember)}">로그아웃</button>
+</div>
+</body>
+<body>
+<div class="mybox" id="book-list">
+
+
+    <tr th:each="jumoon:${list}">
+        <div class="bookbox">
+<!--            <form role="form" th:action="@{/jumoon/${jumoon.id}}" action="#" method="post">-->
+                <h2 th:text="'제목 : '+${jumoon.title}">제목 : 자바의 정석2권</h2>
+                <h2 th:text="'주문량 : '+${jumoon.quantity}">주문 권수 : 3권</h2>
+                <button type="button" th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|"  >주문 취소</button>
+<!--            <button type="button" th:onclick="|location.href='jomoon/'+@{jumoon(uid=${jumoon.id})}|"  >주문 취소</button>-->
+<!--            </form>-->
+        </div>
+    </tr>
+
+
+</div>
+</body>
+<script>
+
+
+
+    // function canclejumoon(num){
+    //     ssurl = '/jumoon/'+num
+    //     $.ajax({
+    //         type: "POST",
+    //         url : ssurl,
+    //         success: function (){
+    //             console.log("logout success")
+    //             alert('주문이 취소되었습니다.')
+    //             window.location.reload()
+    //         },
+    //         error:function (response){
+    //             alert('주문 취소 실패')
+    //             window.location.reload()
+    //         }
+    //     })
+    // }
+
+
+    function logout(){
+        $.ajax({
+            type: "POST",
+            url : '/logout',
+            success: function (){
+                console.log("logout success")
+                alert('로그아웃 되셨습니다.')
+                window.location.href = "/main";
+            },
+            error:function (response){
+                alert('로그아웃 실패')
+            }
+        })
+    }
+
+</script>
+
+
+</html>
