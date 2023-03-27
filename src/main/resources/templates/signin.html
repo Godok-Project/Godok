@@ -28,7 +28,11 @@
             margin-right: 10px;
         }
     </style>
+
 </head>
+
+
+
 <body>
 <div class="allDiv">
     <h1>회원가입</h1>
@@ -43,14 +47,7 @@
         </div>
 
         <div class="selectData">
-            <select id="age" class="form-select" aria-label="Default select example" required>
-                <option selected value="">나이를 선택해주세요.</option>
-                <option value="0">10대</option>
-                <option value="1">20대</option>
-                <option value="2">30대</option>
-                <option value="3">40대</option>
-                <option value="4">50대</option>
-                <option value="5">60대 이상</option>
+            <select id="age" name="age"  class="form-select" aria-label="Default select example" required>
             </select>
 
             <input type="radio" class="btn-check" name="options" id="man" autocomplete="off" required>
@@ -67,7 +64,20 @@
 
 </div>
 </body>
+
 <script>
+    function getAge() {
+        let date = new Date();
+        let year = date.getFullYear()-10;
+        let html = `<option selected value="">출생연도를 선택해 주세요.</option>`
+
+        for(let i =year; i >= 1950; i --){
+            html += `<option value="${i}">${i}</option>`
+        }
+        $("#age").html(html);
+    }
+    getAge();
+
     function dataSend() {
         if (checkValidation()) {
             let isMan = $('input[id=man]:checked').val();
@@ -123,4 +133,5 @@
         return false;
     });
 </script>
+
 </html>

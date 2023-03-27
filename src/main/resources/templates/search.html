@@ -40,12 +40,10 @@
 
         .mid-area {
             display: flex;
-            /*justify-content: center;*/
             max-width: 2500px;
             width: 100%;
             height: 1350px;
             margin: auto;
-            /*background-color: darkseagreen;*/
         }
 
         /*상세 필터 영역*/
@@ -60,19 +58,11 @@
             margin-left: 2%;
             border: 1px darkblue solid;
             border-radius: 8px;
-            height: 900px
-            /*min-height: 1500px;*/
+            height: 800px
         }
 
         .star-area {
-            /*background-color: brown;*/
-            border: 1px slategray solid;
-            border-radius: 5px;
-            display: flex;
             margin-top: 30px;
-            align-items: center;
-            justify-content: center;
-            /*top: 50%;*/
         }
 
         .star-select {
@@ -81,7 +71,6 @@
         }
 
         .star-box {
-            /*background-color: darkorange;*/
             width: 70%;
             height: 200px;
             margin: 10px;
@@ -90,35 +79,17 @@
             justify-content: center;
         }
 
-        .star-point {
-            margin-left: 3%;
-        }
-
         .price-area {
-            /*background-color: blueviolet;*/
             margin-top: 30px;
         }
 
         .publish-area {
-            /*background-color: darkslategray;*/
             margin-top: 30px;
         }
 
         .author-area {
-            /*background-color: gold;*/
             margin-top: 30px;
             margin-bottom: 30px;
-        }
-
-        .star-box-left {
-            display: flex;
-            flex-direction: column;
-            margin: 0 20px 0 10px;
-        }
-
-        .star-box-right {
-            display: flex;
-            flex-direction: column;
         }
 
         .price-input {
@@ -150,6 +121,10 @@
             width: 80%
         }
 
+        #star {
+            width: 80%;
+        }
+
         /*책 정보 영역*/
         .body-area {
             width: 75%;
@@ -176,7 +151,6 @@
             padding: 20px 2% 20px 2%;
             height: 200px;
             display: flex;
-            /*width: 47%;*/
             width: 500px;
         }
 
@@ -215,76 +189,28 @@
 </div>
 <div class="mid-area">
     <div class="filter-area">
-        <div>
-            <h5 style="text-align: center" th:text="' 총 검색 결과 : ' + ${result.getTotalCount()}"></h5>
-        </div>
+        <h3>정렬</h3>
         <select id="sort" class="form-select" aria-label="Default select example">
-            <option selected value="0">정렬</option>
+            <option selected value="0">선택</option>
             <option value="1">이름순</option>
             <option value="2">가격 높은순</option>
             <option value="3">가격 낮은순</option>
         </select>
         <div class="star-area">
-            <div class="star-select">
-                <h3 class="star-point">별점</h3>
-                <button style="font-size: 0.6em" onclick="deselect()">선택 해제</button>
-            </div>
-            <div class="star-box">
-                <div class="star-box-left">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star1"
-                               value="1">
-                        <label class="form-check-label" for="star1">1</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star2"
-                               value="2">
-                        <label class="form-check-label" for="star2">2</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star3"
-                               value="3">
-                        <label class="form-check-label" for="star3">3</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star4"
-                               value="4">
-                        <label class="form-check-label" for="star4">4</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star5"
-                               value="5">
-                        <label class="form-check-label" for="star5">5</label>
-                    </div>
-                </div>
-                <div class="star-box-right">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star6"
-                               value="6">
-                        <label class="form-check-label" for="star6">6</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star7"
-                               value="7">
-                        <label class="form-check-label" for="star7">7</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star8"
-                               value="8">
-                        <label class="form-check-label" for="star8">8</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star9"
-                               value="9">
-                        <label class="form-check-label" for="star9">9</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="star" id="star10"
-                               value="10">
-                        <label class="form-check-label" for="star10">10</label>
-                    </div>
-                </div>
-            </div>
+            <h3>별점 <span style="font-size: 0.6em">(이상)</span></h3>
+            <select id="star" class="form-select" aria-label="Default select example" style="height: 40px">
+                <option selected value="0">선택</option>
+                <option value="10">10점</option>
+                <option value="9">9점</option>
+                <option value="8">8점</option>
+                <option value="7">7점</option>
+                <option value="6">6점</option>
+                <option value="5">5점</option>
+                <option value="4">4점</option>
+                <option value="3">3점</option>
+                <option value="2">2점</option>
+                <option value="1">1점</option>
+            </select>
         </div>
         <div class="publish-area">
             <h3>발행년도</h3>
@@ -354,9 +280,9 @@
                 </div>
             </tr>
         </div>
-        <div class="page-button">
-            <button id="before-button" onclick="movePage(page-1)"> 이전 페이지</button>
-            <button id="after-button" onclick="movePage(page+1)"> 다음 페이지</button>
+        <div>
+            <button id="before-button" onclick="previousPage()"> 이전 페이지</button>
+            <button id="after-button" onclick="nextPage()"> 다음 페이지</button>
         </div>
     </div>
 </div>
@@ -371,14 +297,13 @@
     let sort = params.get('sort') == null ? '0' : params.get('sort');
     let year = params.get('year') == null ? '0' : params.get('year');
     let month = params.get('month') == null ? '' : params.get('month');
-    let star = params.get('star') == null ? '' : params.get('star');
+    let star = params.get('star') == null ? '0' : params.get('star');
     let minprice = params.get('minPrice') == null ? '' : params.get('minPrice');
     let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
     let publish = params.get('publish') == null ? '' : params.get('publish');
     let author = params.get('author') == null ? '' : params.get('author');
-    let page = [[${result.getPage()}]];
-    let totalCount = [[${result.getTotalCount()}]];
-    let star_name = 'star' + star;
+    let cursor = [[${result.getCursor()}]] == null ? '1' : [[${result.getCursor()}]];
+    let cursorList = localStorage.getItem('cursorList') == null ? [] : JSON.parse(localStorage.getItem('cursorList'));
 
     $('#author').attr("value", author);
     $('#publish').attr("value", publish);
@@ -386,13 +311,16 @@
     $('#max-price').attr("value", maxprice);
     $('#year').val(year).prop('selected', true);
     $('#sort').val(sort).prop('selected', true);
+    $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
-    $('#' + star_name).prop('checked', true);
 
-    if (page == 0) {
+    if (cursorList.length == 0) {
         $('#before-button').hide();
-    } else if (Math.floor(totalCount / totalRow) == page || totalCount % totalRow == 0 && Math.floor(totalCount / totalRow) - 1 == page) {
+    } else if (cursor == -1) {
         $('#after-button').hide();
+    } else if (cursor == 0) {
+        $('#after-button').hide();
+        $('#before-button').hide();
     }
 
     const categories = {
@@ -426,38 +354,52 @@
         '초등참고서': ['1학년', '2학년', '3학년', '4학년', '5학년', '6학년', 'EBS 초등', '경시 올림피아드', '국어전문교재', '수학전문교재', '미취학아동', '서술형.논술형', '영재교육원대비', '예비중', '전과 자습서', '영어전문교재', '초등학교 출판사별', '초등한국사', '중국어', '학습교구', '학습월간지(초등)', 'EBS초등학교/영어', '미취학아동/기타', '초등 학습자료 교구'],
         '예술': ['미디어', '건축', '대중문화', '무용', '미술 음악', '취미', '공연', '예술기행', '일반', '예술치료', '디자인'],
         '과학': ['공학', '교양과학', '농업', '의학', '물리학', '생명과학', '수학', '지구과학', '천문학', '화학'],
-    }
+    };
 
     categoryListing();
     $('#category').val(category).prop('selected', true);
     babyCategoryListing();
     $('#babyCategory').val(babyCategory).prop('selected', true);
 
-    function deselect() {
-        $('input:radio[name=star]:checked').prop('checked', false);
-        star = '';
+
+    function nextPage() {
+        cursorList.push(cursor);
+        localStorage.setItem('cursorList', JSON.stringify(cursorList))
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
     }
 
-    function movePage(changedPage) {
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=" + changedPage;
+    function previousPage() {
+        cursorList.pop()
+        let previousCursor = ''
+        if (cursorList.length == 0) {
+            previousCursor = '1';
+            window.localStorage.clear()
+        } else {
+            previousCursor = cursorList[cursorList.length - 1];
+            localStorage.setItem('cursorList', JSON.stringify(cursorList))
+        }
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + previousCursor;
     }
 
     function searchBook() {
+        window.localStorage.clear();
         query = $('#search-box').val();
         category = $("#category option:selected").val();
         babyCategory = $("#babyCategory option:selected").val();
         sort = '0';
         year = '0';
+        cursor = '1';
         month = '';
-        star = '';
+        star = '0';
         minprice = '';
         maxprice = '';
         publish = '';
         author = '';
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
     }
 
     function applyFilter() {
+        window.localStorage.clear();
         minprice = $("#min-price").val();
         maxprice = $("#max-price").val();
         if (checkPrice(minprice, maxprice)) {
@@ -465,10 +407,9 @@
             author = $("#author").val();
             sort = $("#sort option:selected").val();
             year = $("#year option:selected").val();
-            if ($('input[name=star]:checked').val()) {
-                star = $('input[name=star]:checked').val();
-            }
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
+            star = $("#star option:selected").val();
+            cursor = '1';
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
         }
     }
 
