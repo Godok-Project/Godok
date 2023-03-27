@@ -15,6 +15,8 @@ import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Repository
@@ -32,6 +34,8 @@ public class BookDSLRepository {
 				categoryResult(filter.getCategory()),
 				babyCategoryResult(filter.getBabyCategory()),
 				titleResult(filter.getQuery()),
+				// full-text query
+				// fulltextTitle(filter.getQuery()).gt(0),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
 				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
@@ -60,6 +64,14 @@ public class BookDSLRepository {
 
 	private Predicate titleResult(String query) {
 		return book.title.contains(query);
+	}
+
+	// full-text query
+	private NumberTemplate fulltextTitle(String query) {
+		NumberTemplate template = Expressions.numberTemplate(
+			Double.class,
+			"function('match,{0},{1})", book.title, "+" + query + "*");
+		return template;
 	}
 
 	private Predicate starResult(Integer star) {
