@@ -79,28 +79,6 @@ public class BookService {
 		return bookList;
 	}
 
-	@Transactional
-	public ResponseEntity<BaseResponse> bookOrder(Long bookId, Long bookCall, HttpServletRequest request) {
-
-		HttpSession session = request.getSession(false);
-		if (session == null) {
-			return BaseResponse.toResponseEntity(ErrorCode.Forbidden);
-		} else {
-
-			Book book = bookRepository.findById(bookId).orElseThrow(
-				() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-
-			Long inventory = book.getInventory();
-			Long restOver = inventory - bookCall;
-			if (restOver >= 0) {
-				book.setInventory(restOver);
-			} else {
-				throw new CustomException(ErrorCode.INVALIDATION_ORDER);
-			}
-			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
-		}
-	}
-
 	private Book getLastBook(Long id) {
 		return bookRepository.findById(id).orElseThrow(
 			() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)

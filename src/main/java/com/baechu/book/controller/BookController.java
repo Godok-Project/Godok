@@ -34,19 +34,6 @@ public class BookController {
 		return "detail";
 	}
 
-	@GetMapping("/detail/buybooks/{bookId}/{quantity}")
-	public String buyBook(@PathVariable Long bookId, @PathVariable Long quantity, HttpServletRequest request) {
-
-		HttpStatus result = bookService.bookOrder(bookId, quantity, request).getStatusCode();
-
-		if (result.isError()) {
-			return "redirect:/login";
-		} else {
-			return "redirect:/main";
-		}
-
-	}
-
 	@GetMapping("/search")
 	public String searchByWord(
 		Model model,
