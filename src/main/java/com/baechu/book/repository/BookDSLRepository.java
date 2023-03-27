@@ -33,9 +33,9 @@ public class BookDSLRepository {
 			.where(
 				categoryResult(filter.getCategory()),
 				babyCategoryResult(filter.getBabyCategory()),
-				titleResult(filter.getQuery()),
+				// titleResult(filter.getQuery()),
 				// full-text query
-				// fulltextTitle(filter.getQuery()).gt(0),
+				fulltextTitle(filter.getQuery()).gt(0),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
 				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
@@ -68,9 +68,9 @@ public class BookDSLRepository {
 
 	// full-text query
 	private NumberTemplate fulltextTitle(String query) {
-		NumberTemplate template = Expressions.numberTemplate(
-			Double.class,
-			"function('match,{0},{1})", book.title, "+" + query + "*");
+		NumberTemplate template = Expressions.numberTemplate(Double.class,
+			"function('match',{0},{1})", book.title, "+" + query + "*");
+
 		return template;
 	}
 
