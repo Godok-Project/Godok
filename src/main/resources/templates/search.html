@@ -280,9 +280,9 @@
                 </div>
             </tr>
         </div>
-        <div class="page-button">
-            <button id="before-button" onclick="movePage(page-1)"> 이전 페이지</button>
-            <button id="after-button" onclick="movePage(page+1)"> 다음 페이지</button>
+        <div>
+            <button id="before-button" onclick="previousPage()"> 이전 페이지</button>
+            <button id="after-button" onclick="nextPage()"> 다음 페이지</button>
         </div>
     </div>
 </div>
@@ -302,8 +302,8 @@
     let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
     let publish = params.get('publish') == null ? '' : params.get('publish');
     let author = params.get('author') == null ? '' : params.get('author');
-    let page = [[${result.getPage()}]];
-    let totalCount = [[${result.getTotalCount()}]];
+    let cursor = [[${result.getCursor()}]] == null ? '1' : [[${result.getCursor()}]];
+    let cursorList = localStorage.getItem('cursorList') == null ? [] : JSON.parse(localStorage.getItem('cursorList'));
 
     $('#author').attr("value", author);
     $('#publish').attr("value", publish);
@@ -314,10 +314,8 @@
     $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
 
-    if (page == 0) {
+    if (cursorList.length == 0) {
         $('#before-button').hide();
-    } else if (Math.floor(totalCount / totalRow) == page || totalCount % totalRow == 0 && Math.floor(totalCount / totalRow) - 1 == page) {
-        $('#after-button').hide();
     }
 
     const categories = {
@@ -359,26 +357,44 @@
     $('#babyCategory').val(babyCategory).prop('selected', true);
 
 
-    function movePage(changedPage) {
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=" + changedPage;
+    function nextPage() {
+        cursorList.push(cursor);
+        localStorage.setItem('cursorList', JSON.stringify(cursorList))
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+    }
+
+    function previousPage() {
+        cursorList.pop()
+        let previousCursor = ''
+        if (cursorList.length == 0) {
+            previousCursor = '1';
+            window.localStorage.clear()
+        } else {
+            previousCursor = cursorList[cursorList.length - 1];
+            localStorage.setItem('cursorList', JSON.stringify(cursorList))
+        }
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + previousCursor;
     }
 
     function searchBook() {
+        window.localStorage.clear();
         query = $('#search-box').val();
         category = $("#category option:selected").val();
         babyCategory = $("#babyCategory option:selected").val();
         sort = '0';
         year = '0';
+        cursor = '1';
         month = '';
         star = '0';
         minprice = '';
         maxprice = '';
         publish = '';
         author = '';
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
     }
 
     function applyFilter() {
+        window.localStorage.clear();
         minprice = $("#min-price").val();
         maxprice = $("#max-price").val();
         if (checkPrice(minprice, maxprice)) {
@@ -387,7 +403,8 @@
             sort = $("#sort option:selected").val();
             year = $("#year option:selected").val();
             star = $("#star option:selected").val();
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&page=0";
+            cursor = '1';
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
         }
     }
 
