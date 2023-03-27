@@ -56,7 +56,7 @@ public class BookService {
 	public BookListDto searchByCursor(FilterDto filter) {
 		Book lastBook = getLastBook(filter.getCursor());
 		List<Book> books = bookDSLRepository.searchByCursor(filter, lastBook);
-		Long cursor = getCursor(books);
+		Long cursor = getCursor(books, filter.getTotalRow());
 		return new BookListDto(books, cursor);
 	}
 
@@ -107,7 +107,11 @@ public class BookService {
 		);
 	}
 
-	private Long getCursor(List<Book> books) {
+	private Long getCursor(List<Book> books, Integer totalRow) {
+		if (books.isEmpty()) {
+			return 0L;
+		} else if (books.size() < totalRow)
+			return -1L;
 		return books.get(books.size() - 1).getId();
 	}
 }
