@@ -2,11 +2,11 @@ package com.baechu.book.repository;
 
 import static com.baechu.book.entity.QBook.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.baechu.book.dto.FilterDto;
@@ -26,7 +26,7 @@ public class BookDSLRepository {
 		this.queryFactory = new JPAQueryFactory(entityManager);
 	}
 
-	public List<Book> searchBooks(FilterDto filter, Pageable pageable) {
+	public List<Book> searchByCursor(FilterDto filter, Book lastBook) {
 		return queryFactory.selectFrom(book)
 			.where(
 				categoryResult(filter.getCategory()),
@@ -36,26 +36,12 @@ public class BookDSLRepository {
 				yearResult(filter.getYear()),
 				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
 				publishResult(filter.getPublish()),
-				authorResult(filter.getAuthor())
+				authorResult(filter.getAuthor()),
+				cursorPaging(filter, lastBook)
 			)
-			.orderBy(getSort(filter.getSort()))
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
+			.orderBy(getCursorSort(filter.getSort()))
+			.limit(filter.getTotalRow())
 			.fetch();
-	}
-
-	public Long getCount(FilterDto filter) {
-		return queryFactory.select(book.count())
-			.from(book)
-			.where(
-				titleResult(filter.getQuery()),
-				starResult(filter.getStar()),
-				yearResult(filter.getYear()),
-				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
-				publishResult(filter.getPublish()),
-				authorResult(filter.getAuthor())
-			)
-			.fetchOne();
 	}
 
 	private Predicate categoryResult(String category) {
@@ -77,7 +63,8 @@ public class BookDSLRepository {
 	}
 
 	private Predicate starResult(Integer star) {
-		star = star == null ? 0 : star;
+		if (star == null || star == 0)
+			return null;
 		return book.star.goe(star);
 	}
 
@@ -111,16 +98,42 @@ public class BookDSLRepository {
 		return author.isEmpty() ? null : book.author.contains(author);
 	}
 
-	private OrderSpecifier<?> getSort(Integer sort) {
-		if (sort == null || sort == 0)
-			return new OrderSpecifier(Order.ASC, NullExpression.DEFAULT, OrderSpecifier.NullHandling.Default);
-		else if (sort == 1)
-			return book.title.asc();
-		else if (sort == 2)
-			return book.price.desc();
-		else if (sort == 3)
-			return book.price.asc();
-		else
-			return new OrderSpecifier(Order.ASC, NullExpression.DEFAULT, OrderSpecifier.NullHandling.Default);
+	private Predicate cursorPaging(FilterDto filter, Book lastBook) {
+		if (filter.getCursor() == 1) {
+			return null;
+		}
+		Integer sort = filter.getSort();
+		Long cursor = filter.getCursor();
+		if (sort == 0) {
+			return book.id.gt(cursor);
+		} else if (sort == 1) {
+			return book.title.lt(lastBook.getTitle()).or(book.title.eq(lastBook.getTitle()).and(book.id.lt(cursor)));
+		} else if (sort == 2) {
+			return book.price.lt(lastBook.getPrice()).or(book.price.eq(lastBook.getPrice()).and(book.id.lt(cursor)));
+		} else if (sort == 3) {
+			return book.price.gt(lastBook.getPrice()).or(book.price.eq(lastBook.getPrice()).and(book.id.gt(cursor)));
+		}
+		return null;
+	}
+
+	private OrderSpecifier<?>[] getCursorSort(Integer sort) {
+		List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+		if (sort == null || sort == 0) {
+			orderSpecifiers.add(
+				new OrderSpecifier(Order.ASC, NullExpression.DEFAULT, OrderSpecifier.NullHandling.Default));
+			return orderSpecifiers.toArray(OrderSpecifier<?>[]::new);
+		}
+
+		if (sort == 1) {
+			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.title));
+			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.id));
+		} else if (sort == 2) {
+			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.price));
+			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.id));
+		} else if (sort == 3) {
+			orderSpecifiers.add(new OrderSpecifier(Order.ASC, book.price));
+			orderSpecifiers.add(new OrderSpecifier(Order.ASC, book.id));
+		}
+		return orderSpecifiers.toArray(OrderSpecifier<?>[]::new);
 	}
 }

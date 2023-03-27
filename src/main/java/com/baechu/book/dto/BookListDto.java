@@ -15,13 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BookListDto {
 
-	private int page;
-	private long totalCount;
+	private Long cursor;
 	private List<BookDto> books = new ArrayList<>();
 
-	public BookListDto(int page, long totalCount, List<Book> entities) {
-		this.page = page;
-		this.totalCount = totalCount;
+	public BookListDto(List<Book> entities, Long cursor) {
+		this.cursor = cursor;
 		this.books = entities.stream().map(BookDto::new).collect(Collectors.toList());
 	}
 }

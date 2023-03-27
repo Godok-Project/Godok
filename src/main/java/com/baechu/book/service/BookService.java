@@ -10,7 +10,6 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,12 +51,13 @@ public class BookService {
 		return info;
 	}
 
+	// Cursor 기반 페이징
 	@Transactional(readOnly = true)
-	public BookListDto searchByWord(FilterDto filter) {
-		PageRequest pageRequest = PageRequest.of(filter.getPage(), filter.getTotalRow());
-		List<Book> books = bookDSLRepository.searchBooks(filter, pageRequest);
-		Long totalCount = bookDSLRepository.getCount(filter);
-		return new BookListDto(filter.getPage(), totalCount, books);
+	public BookListDto searchByCursor(FilterDto filter) {
+		Book lastBook = getLastBook(filter.getCursor());
+		List<Book> books = bookDSLRepository.searchByCursor(filter, lastBook);
+		Long cursor = getCursor(books);
+		return new BookListDto(books, cursor);
 	}
 
 	@Transactional(readOnly = true)
@@ -72,7 +72,8 @@ public class BookService {
 			Optional<Book> book = bookRepository.findById(random);
 			if (book.isPresent()) {
 				bookList.add(book.get());
-			}else i--;
+			} else
+				i--;
 		}
 
 		return bookList;
@@ -98,5 +99,15 @@ public class BookService {
 			}
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}
+	}
+
+	private Book getLastBook(Long id) {
+		return bookRepository.findById(id).orElseThrow(
+			() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+		);
+	}
+
+	private Long getCursor(List<Book> books) {
+		return books.get(books.size() - 1).getId();
 	}
 }
