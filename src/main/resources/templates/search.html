@@ -314,12 +314,14 @@
     $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
 
-    if (cursorList.length == 0) {
-        $('#before-button').hide();
-    } else if (cursor == -1) {
+    console.log(cursorList)
+
+    if (cursor == -1) {
         $('#after-button').hide();
     } else if (cursor == 0) {
         $('#after-button').hide();
+        $('#before-button').hide();
+    } else if (cursorList.length == 0) {
         $('#before-button').hide();
     }
 

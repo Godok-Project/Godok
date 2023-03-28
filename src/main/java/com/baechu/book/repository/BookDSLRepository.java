@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
-import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -132,7 +131,7 @@ public class BookDSLRepository {
 		List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 		if (sort == null || sort == 0) {
 			orderSpecifiers.add(
-				new OrderSpecifier(Order.ASC, NullExpression.DEFAULT, OrderSpecifier.NullHandling.Default));
+				new OrderSpecifier(Order.ASC, book.id));
 			return orderSpecifiers.toArray(OrderSpecifier<?>[]::new);
 		}
 
