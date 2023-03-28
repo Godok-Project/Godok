@@ -1,5 +1,6 @@
 package com.baechu.book.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +13,13 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.baechu.jumoon.entity.Jumoon;
+import com.baechu.member.entity.Member;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 public class Book {
 
 	@Id
@@ -61,4 +62,9 @@ public class Book {
 
 	@OneToMany(mappedBy = "book")
 	private List<Jumoon> jumoons = new ArrayList<>();
+
+	public void orderbook(Long inventory){
+		this.inventory = inventory;
+	}
+
 }
