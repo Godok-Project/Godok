@@ -7,22 +7,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baechu.book.dto.BookListDto;
+import com.baechu.book.dto.CursorBookDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
-import com.baechu.common.dto.BaseResponse;
-import com.baechu.common.exception.CustomException;
-import com.baechu.common.exception.ErrorCode;
-import com.baechu.common.exception.SuccessCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,7 +47,7 @@ public class BookService {
 	// Cursor 기반 페이징
 	@Transactional(readOnly = true)
 	public BookListDto searchByCursor(FilterDto filter) {
-		Book lastBook = getLastBook(filter.getCursor());
+		CursorBookDto lastBook = getLastBook(filter);
 		List<Book> books = bookDSLRepository.searchByCursor(filter, lastBook);
 		Long cursor = getCursor(books, filter.getTotalRow());
 		return new BookListDto(books, cursor);
@@ -79,10 +72,8 @@ public class BookService {
 		return bookList;
 	}
 
-	private Book getLastBook(Long id) {
-		return bookRepository.findById(id).orElseThrow(
-			() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
-		);
+	private CursorBookDto getLastBook(FilterDto filter) {
+		return bookDSLRepository.findScore(filter.getCursor(), filter.getQuery());
 	}
 
 	private Long getCursor(List<Book> books, Integer totalRow) {
