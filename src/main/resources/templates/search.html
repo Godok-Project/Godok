@@ -65,20 +65,6 @@
             margin-top: 30px;
         }
 
-        .star-select {
-            width: 30%;
-            margin-left: 20px;
-        }
-
-        .star-box {
-            width: 70%;
-            height: 200px;
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .price-area {
             margin-top: 30px;
         }
@@ -157,14 +143,22 @@
         .image-area {
             border-radius: 10px;
             margin-right: 7%;
-            width: 20%;
+            width: 100px;
         }
 
         .desc-area {
             border: 1px darkslategrey solid;
             padding: 10px;
             border-radius: 10px;
-            width: 78%;
+            width: 370px;
+        }
+
+        .long-title {
+            width: 300px;
+            display: inline-block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
     </style>
@@ -269,10 +263,10 @@
                         <img th:src="${book.getImage()}" alt="My Image" width="97">
                     </div>
                     <div class="desc-area">
-                        <h6 class="long-title" th:text="${book.getTitle()}">에밀</h6>
+                        <h6 class="long-title" th:text="${book.getTitle()}">에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h6>
                         <span th:text="'가격 : '+${book.getPrice()}+' 원'">35000</span><br>
-                        <span th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
-                        <span th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
+                        <span class="long-title" th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
+                        <span class="long-title" th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
                         <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
                         82012.3
                     </span>
