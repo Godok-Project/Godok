@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.baechu.book.dto.CursorBookDto;
 import com.baechu.book.dto.FilterDto;
-import com.baechu.book.dto.QCursorDto;
+import com.baechu.book.dto.QCursorBookDto;
 import com.baechu.book.entity.Book;
 import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.Order;
@@ -49,7 +49,7 @@ public class BookDSLRepository {
 	}
 
 	public CursorBookDto findScore(Long id, String query) {
-		return queryFactory.select(new QCursorDto(book.id, book.price, fulltextTitle(query), book.title))
+		return queryFactory.select(new QCursorBookDto(book.id, book.price, fulltextTitle(query), book.title))
 			.from(book)
 			.where(book.id.eq(id))
 			.fetchOne();
