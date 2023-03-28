@@ -316,11 +316,11 @@
 
     console.log(cursorList)
 
-    if (cursor == -1) {
-        $('#after-button').hide();
-    } else if (cursor == 0) {
+    if (cursor == 0 || cursor == -1 && cursorList.length == 0) {
         $('#after-button').hide();
         $('#before-button').hide();
+    } else if (cursor == -1) {
+        $('#after-button').hide();
     } else if (cursorList.length == 0) {
         $('#before-button').hide();
     }
@@ -457,11 +457,16 @@
     }
 
     function keywordValidation() {
-        if ($('#search-box').val().length == 0) {
+        let space = /\s{2}/;
+        let inputValue = $('#search-box').val()
+        if (inputValue.trim().length == 0) {
             alert("검색어를 입력해주세요.")
             return false
+        } else if (space.exec(inputValue)) {
+            alert("공백은 두 칸이상 사용할 수 없습니다")
+            return false
         }
-        return true
+        return true;
     }
 
     /*]]>*/
