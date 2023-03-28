@@ -185,6 +185,35 @@
         white-space: nowrap;
         overflow: hidden;
     }
+    .jumoon-box {
+        width: 380px;
+        text-align: center;
+        margin: 5px auto auto auto;
+        font-family: Arial;
+        font-size: 50px;
+        border-radius: 10px;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-jumoon{
+        width: 370px;
+        text-align: center;
+        font-family: Arial;
+        font-size: 35px;
+        border-radius: 10px;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0 550px;
+    }
 
 </style>
 
@@ -215,11 +244,15 @@
 <body>
 <div class="title-box">
     <h1 id="title">Godok</h1>
-    <button id="jumoon-in" onclick="location.href='jumoon' "th:if="${not #strings.isEmpty(session.loginMember)}">주문이력</button>
+
     <button id="log-in" onclick="location.href='login' "th:if="${#strings.isEmpty(session.loginMember)}">로그인</button>
     <button id="log-out" onclick="logout()" th:if="${not #strings.isEmpty(session.loginMember)}">로그아웃</button>
 </div>
-
+<div class="jumoon-box">
+    <div class="main-jumoon">
+        <button id="jumoon-in" onclick="location.href='jumoon' "th:if="${not #strings.isEmpty(session.loginMember)}">나의 주문이력</button>
+    </div>
+</div>
 </body>
 
 <body>
