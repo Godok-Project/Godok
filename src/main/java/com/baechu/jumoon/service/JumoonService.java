@@ -1,5 +1,6 @@
 package com.baechu.jumoon.service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +32,6 @@ import lombok.RequiredArgsConstructor;
 public class JumoonService {
 
 	private final BookRepository bookRepository;
-
-	private final MemberRepository memberRepository;
-
-	private final BookDSLRepository bookDSLRepository;
 
 	private final JumoonRepository jumoonRepository;
 
@@ -74,14 +71,13 @@ public class JumoonService {
 
 	@Transactional
 	public ResponseEntity<BaseResponse> cancelbook(Long jumoonId, HttpServletRequest request) {
-		System.out.println("서비스에 들어와");
 		Member member = (Member)request.getSession()
 			.getAttribute(SessionConst.LOGIN_MEMBER);
 
 		Jumoon jumoon = jumoonRepository.findByIdAndMember(jumoonId,member).orElseThrow(
 			() -> new CustomException(ErrorCode.JUMOON_NOT_FOUND));
 
-		if (jumoon.isOnc()){
+		if (jumoon.isJumoonconfirm()){
 			jumoon.cancel();
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}else {
@@ -107,8 +103,9 @@ public class JumoonService {
 
 		List<JumoonResponseDto> jumoonList = new ArrayList<>();
 		for (Jumoon i : jumoons){
-			if(i.isOnc()){
-				jumoonList.add(new JumoonResponseDto(i.getId(), i.getBook(), i.getQuantity()));
+			if(i.isJumoonconfirm()){
+				String paLDT = i.getJumoonat().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+				jumoonList.add(new JumoonResponseDto(i.getId(), i.getBook(), i.getQuantity(), paLDT));
 			}
 		}
 

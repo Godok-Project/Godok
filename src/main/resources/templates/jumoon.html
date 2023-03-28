@@ -31,7 +31,8 @@
 
     #title  {
         text-align: center;
-        margin: 10px auto auto 120px;
+        align-items: center;
+        justify-content: center;
     }
 
     #log-in {
@@ -57,11 +58,7 @@
         padding: 20px;
         box-shadow: 0px 0px 10px 0px lightblue;
         margin: 20px auto;
-
-        /*display: flex;*/
-        /*flex-direction: row;*/
-        /*align-items: center;*/
-        /*justify-content: center;*/
+        overflow-y: auto;
     }
 
     .bookbox {
@@ -72,6 +69,14 @@
     }
     .top-area {
         margin: 30px;
+    }
+
+    .show-table{
+        width: 700px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
 </style>
@@ -90,44 +95,34 @@
 </div>
 </body>
 <body>
-<div class="mybox" id="book-list">
-
-
-    <tr th:each="jumoon:${list}">
-        <div class="bookbox">
-<!--            <form role="form" th:action="@{/jumoon/${jumoon.id}}" action="#" method="post">-->
-                <h2 th:text="'제목 : '+${jumoon.title}">제목 : 자바의 정석2권</h2>
-                <h2 th:text="'주문량 : '+${jumoon.quantity}">주문 권수 : 3권</h2>
-                <button type="button" th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|"  >주문 취소</button>
-<!--            <button type="button" th:onclick="|location.href='jomoon/'+@{jumoon(uid=${jumoon.id})}|"  >주문 취소</button>-->
-<!--            </form>-->
-        </div>
-    </tr>
-
-
+<div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">주문 번호</th>
+            <th scope="col">첵 제목</th>
+            <th scope="col">주문 권수</th>
+            <th scope="col">주문 날짜</th>
+            <th scope="col">주문 취소</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="jumoon:${list}">
+            <div class="bookbox">
+                <th th:text="${jumoon.id}">1</th>
+                <th th:text="${jumoon.title}">자바의 정석2권</th>
+                <th th:text="${jumoon.quantity}">주문 권수 : 3권</th>
+                <th th:text="${jumoon.jumoonat}">yyyy-MM-dd HH:mm:ss</th>
+                <th>
+                <button type="button" th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|">주문 취소</button>
+                </th>
+            </div>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 <script>
-
-
-
-    // function canclejumoon(num){
-    //     ssurl = '/jumoon/'+num
-    //     $.ajax({
-    //         type: "POST",
-    //         url : ssurl,
-    //         success: function (){
-    //             console.log("logout success")
-    //             alert('주문이 취소되었습니다.')
-    //             window.location.reload()
-    //         },
-    //         error:function (response){
-    //             alert('주문 취소 실패')
-    //             window.location.reload()
-    //         }
-    //     })
-    // }
-
 
     function logout(){
         $.ajax({

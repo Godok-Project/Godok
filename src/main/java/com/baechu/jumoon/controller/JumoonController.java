@@ -49,7 +49,6 @@ public class JumoonController {
 
 	@GetMapping("/jumoon/{jumoonId}")
 	public String cancelbook(@PathVariable Long jumoonId, HttpServletRequest request){
-		System.out.println("주문 취소 하는데 들어옴");
 		jumoonService.cancelbook(jumoonId, request);
 		//페이지는 새로고침으로  html에서 해주자
 		return "redirect:/jumoon";

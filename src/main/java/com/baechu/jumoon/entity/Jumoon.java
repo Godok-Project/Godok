@@ -1,6 +1,8 @@
 package com.baechu.jumoon.entity;
 
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,10 +33,13 @@ public class Jumoon {
 	@Column(nullable = false)
 	private Integer quantity;
 
+	@Column(nullable = false)
+	private LocalDateTime jumoonat;
+
 	//주문이 들어가면 true, 취소되면 false 로 한다.
 	@Column(nullable = false)
 	@ColumnDefault(value = "true")
-	private boolean onc;
+	private boolean jumoonconfirm;
 
 	@ManyToOne
 	@JoinColumn(name =  "member_id", nullable = false)
@@ -48,11 +53,12 @@ public class Jumoon {
 		this.member = member;
 		this.book = book;
 		this.quantity = quantity;
-		this.onc = true;
+		this.jumoonconfirm = true;
+		this.jumoonat = LocalDateTime.now();
 	}
 
 	public void cancel(){
-		this.onc = false;
+		this.jumoonconfirm = false;
 	}
 
 }
