@@ -384,34 +384,38 @@
     }
 
     function searchBook() {
-        window.localStorage.clear();
-        query = $('#search-box').val();
-        category = $("#category option:selected").val();
-        babyCategory = $("#babyCategory option:selected").val();
-        sort = '0';
-        year = '0';
-        cursor = '1';
-        month = '';
-        star = '0';
-        minprice = '';
-        maxprice = '';
-        publish = '';
-        author = '';
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        if (keywordValidation()) {
+            window.localStorage.clear();
+            query = $('#search-box').val();
+            category = $("#category option:selected").val();
+            babyCategory = $("#babyCategory option:selected").val();
+            sort = '0';
+            year = '0';
+            cursor = '1';
+            month = '';
+            star = '0';
+            minprice = '';
+            maxprice = '';
+            publish = '';
+            author = '';
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        }
     }
 
     function applyFilter() {
-        window.localStorage.clear();
-        minprice = $("#min-price").val();
-        maxprice = $("#max-price").val();
-        if (checkPrice(minprice, maxprice)) {
-            publish = $("#publish").val();
-            author = $("#author").val();
-            sort = $("#sort option:selected").val();
-            year = $("#year option:selected").val();
-            star = $("#star option:selected").val();
-            cursor = '1';
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        if (keywordValidation()) {
+            window.localStorage.clear();
+            minprice = $("#min-price").val();
+            maxprice = $("#max-price").val();
+            if (checkPrice(minprice, maxprice)) {
+                publish = $("#publish").val();
+                author = $("#author").val();
+                sort = $("#sort option:selected").val();
+                year = $("#year option:selected").val();
+                star = $("#star option:selected").val();
+                cursor = '1';
+                location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+            }
         }
     }
 
@@ -450,6 +454,14 @@
                 html += `<option value="${value}">${value}</option>\``
         }
         $('#babyCategory').html(html)
+    }
+
+    function keywordValidation() {
+        if ($('#search-box').val().length == 0) {
+            alert("검색어를 입력해주세요.")
+            return false
+        }
+        return true
     }
 
     /*]]>*/
