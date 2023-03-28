@@ -244,20 +244,28 @@
 <script>
     function noSpaceForm(obj) {
         let str_space = /\s{2}/; // 공백 2칸 체크
+        let key_word = $('#search').val()
         if (str_space.exec(obj.value)) {
             alert("공백을 사용할 수 없습니다.");
             obj.focus();
             obj.value = obj.value.replace('  ', '');
             return false
         }
-
     }
 
     function search_keyword() {
         let key_word = $('#search').val()
-        key_word = key_word.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/gi, "");
-        $('#search').val(key_word);
-        window.localStorage.clear();
+            key_word = key_word.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/gi, "");
+            $('#search').val(key_word);
+            window.localStorage.clear();
+    }
+
+    function checkForm() {
+        let f = document.searchData
+        if (f.query.value === "") {
+            alert("검색어를 입력해주세요.")
+            return false
+        }
     }
 </script>
 
@@ -278,7 +286,7 @@
 <body>
 <div class="search-box">
 
-    <form action = "./search" name="searchData" method="get">
+    <form action = "./search" name="searchData" method="get" onsubmit="return checkForm()">
         <select id="category" name="category" onchange="babyCategoryListing();" style="font-size: 13px; width:150px; height:60px;">
             <option style="color: white" selected value="">대분류</option>
         </select>
