@@ -55,7 +55,7 @@ public class JumoonService {
 			Long inventory = book.getInventory();
 			Long restOver = inventory - quantity;
 			if (restOver >= 0) {
-				book.setInventory(restOver);
+				book.orderbook(restOver);
 			} else {
 				throw new CustomException(ErrorCode.INVALIDATION_ORDER);
 			}
