@@ -9,7 +9,9 @@ import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Repository;
 
+import com.baechu.book.dto.CursorBookDto;
 import com.baechu.book.dto.FilterDto;
+import com.baechu.book.dto.QCursorDto;
 import com.baechu.book.entity.Book;
 import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.Order;
@@ -28,13 +30,11 @@ public class BookDSLRepository {
 		this.queryFactory = new JPAQueryFactory(entityManager);
 	}
 
-	public List<Book> searchByCursor(FilterDto filter, Book lastBook) {
+	public List<Book> searchByCursor(FilterDto filter, CursorBookDto lastBook) {
 		return queryFactory.selectFrom(book)
 			.where(
 				categoryResult(filter.getCategory()),
 				babyCategoryResult(filter.getBabyCategory()),
-				// titleResult(filter.getQuery()),
-				// full-text query
 				fulltextTitle(filter.getQuery()).gt(0),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
@@ -46,6 +46,13 @@ public class BookDSLRepository {
 			.orderBy(getCursorSort(filter.getSort()))
 			.limit(filter.getTotalRow())
 			.fetch();
+	}
+
+	public CursorBookDto findScore(Long id, String query) {
+		return queryFactory.select(new QCursorDto(book.id, book.price, fulltextTitle(query), book.title))
+			.from(book)
+			.where(book.id.eq(id))
+			.fetchOne();
 	}
 
 	private Predicate categoryResult(String category) {
@@ -60,10 +67,6 @@ public class BookDSLRepository {
 			return null;
 		}
 		return book.babyCategory.eq(babyCategory);
-	}
-
-	private Predicate titleResult(String query) {
-		return book.title.contains(query);
 	}
 
 	// full-text query
@@ -110,14 +113,15 @@ public class BookDSLRepository {
 		return author.isEmpty() ? null : book.author.contains(author);
 	}
 
-	private Predicate cursorPaging(FilterDto filter, Book lastBook) {
+	private Predicate cursorPaging(FilterDto filter, CursorBookDto lastBook) {
 		if (filter.getCursor() == 1) {
 			return null;
 		}
 		Integer sort = filter.getSort();
 		Long cursor = filter.getCursor();
 		if (sort == 0) {
-			return book.id.gt(cursor);
+			return fulltextTitle(filter.getQuery()).lt(lastBook.getScore())
+				.or(fulltextTitle(filter.getQuery()).eq(lastBook.getScore()).and(book.id.gt(cursor)));
 		} else if (sort == 1) {
 			return book.title.lt(lastBook.getTitle()).or(book.title.eq(lastBook.getTitle()).and(book.id.lt(cursor)));
 		} else if (sort == 2) {
@@ -137,7 +141,7 @@ public class BookDSLRepository {
 		}
 
 		if (sort == 1) {
-			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.title));
+			orderSpecifiers.add(new OrderSpecifier(Order.ASC, book.title));
 			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.id));
 		} else if (sort == 2) {
 			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.price));

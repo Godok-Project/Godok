@@ -3,9 +3,6 @@ package com.baechu.book.controller;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +13,8 @@ import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.service.BookService;
+import com.baechu.common.exception.CustomException;
+import com.baechu.common.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -69,6 +68,8 @@ public class BookController {
 	private FilterDto createDto(String query, Integer sort, Integer year, Integer star, Integer minPrice,
 		Integer maxPrice, String publish, String author, Integer totalRow, String category,
 		String babyCategory, Long cursor) {
+		if (query.isEmpty())
+			throw new CustomException(ErrorCode.QUERY_NOT_FOUND);
 		// 나중에 RequestParam을 따로 받지말고 하나의 객체로 받도록 수정 필요.
 		return FilterDto.builder()
 			.query(query)
