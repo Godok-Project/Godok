@@ -79,6 +79,12 @@ public class JumoonService {
 
 		if (jumoon.isJumoonconfirm()){
 			jumoon.cancel();
+			int quantity = jumoon.getQuantity();
+			Book book = bookRepository.findById(jumoon.getBook().getId()).orElseThrow(
+			() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+			);
+			Long inven = book.getInventory()+quantity;
+			book.orderbook(inven);
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}else {
 			return BaseResponse.toResponseEntity(ErrorCode.INVALIDATION_JUMOON);

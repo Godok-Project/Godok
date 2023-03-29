@@ -1,23 +1,15 @@
 package com.baechu.book.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import com.baechu.jumoon.entity.Jumoon;
-
-import lombok.Getter;
-
 @Entity
-@Getter
-public class Book {
+public class Testbook {
+
 
 	@Id
 	@GeneratedValue
@@ -56,12 +48,5 @@ public class Book {
 	@Column(nullable = false)
 	@ColumnDefault("4")
 	private Long inventory;
-
-	@OneToMany(mappedBy = "book")
-	private List<Jumoon> jumoons = new ArrayList<>();
-
-	public void orderbook(Long inventory){
-		this.inventory = inventory;
-	}
 
 }
