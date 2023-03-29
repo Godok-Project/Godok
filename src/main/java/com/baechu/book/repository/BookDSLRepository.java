@@ -72,7 +72,7 @@ public class BookDSLRepository {
 	// full-text query
 	private NumberTemplate fulltextTitle(String query) {
 		NumberTemplate template = Expressions.numberTemplate(Double.class,
-			"function('match',{0},{1})", book.title, "+" + query + "*");
+			"function('match',{0},{1})", book.title, query + "*");
 
 		return template;
 	}
