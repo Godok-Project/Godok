@@ -106,11 +106,11 @@ public class BookDSLRepository {
 	}
 
 	private Predicate publishResult(String publish) {
-		return publish.isEmpty() ? null : book.publish.contains(publish);
+		return publish == null || publish.isEmpty() ? null : book.publish.contains(publish);
 	}
 
 	private Predicate authorResult(String author) {
-		return author.isEmpty() ? null : book.author.contains(author);
+		return author == null || author.isEmpty() ? null : book.author.contains(author);
 	}
 
 	private Predicate cursorPaging(FilterDto filter, CursorBookDto lastBook) {
