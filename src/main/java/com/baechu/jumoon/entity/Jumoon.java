@@ -1,6 +1,5 @@
 package com.baechu.jumoon.entity;
 
-
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -11,14 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import com.baechu.book.entity.Book;
 import com.baechu.member.entity.Member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -35,11 +31,6 @@ public class Jumoon {
 	@Column(nullable = false)
 	private LocalDateTime jumoonat;
 
-	//주문이 들어가면 true, 취소되면 false 로 한다.
-	@Column(nullable = false)
-	@ColumnDefault(value = "true")
-	private boolean jumoonconfirm;
-
 	@ManyToOne
 	@JoinColumn(name =  "member_id", nullable = false)
 	private Member member;
@@ -52,12 +43,7 @@ public class Jumoon {
 		this.member = member;
 		this.book = book;
 		this.quantity = quantity;
-		this.jumoonconfirm = true;
 		this.jumoonat = LocalDateTime.now();
-	}
-
-	public void cancel(){
-		this.jumoonconfirm = false;
 	}
 
 }
