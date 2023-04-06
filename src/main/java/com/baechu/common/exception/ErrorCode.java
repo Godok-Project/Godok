@@ -15,6 +15,7 @@ public enum ErrorCode {
 	INVALIDATION_PASSWORD(BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 	INVALIDATION_ORDER(BAD_REQUEST, "재고보다 많은 주문을 할 수 없습니다."),
 	INVALIDATION_JUMOON(BAD_REQUEST, "이미 취소된 주문을 또 취소 할 수 없습니다."),
+	INVALIDATION_NOT_ENOUGH(BAD_REQUEST, "재고량이 부족합니다."),
 
 	/* 403 Forbidden : 권한 없음 */
 	Forbidden(FORBIDDEN, "권한이 없습니다"),

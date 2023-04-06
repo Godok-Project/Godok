@@ -113,7 +113,7 @@
                 <th th:text="${jumoon.title}">자바의 정석2권</th>
                 <th th:text="${jumoon.quantity}">주문 권수 : 3권</th>
                 <th th:text="${jumoon.jumoonat}">yyyy-MM-dd HH:mm:ss</th>
-                <th>
+                <th th:if="${jumoon.wtc == 'Y'}">
                 <button type="button" th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|">주문 취소</button>
                 </th>
             </div>
