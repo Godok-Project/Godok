@@ -46,4 +46,11 @@ public class Jumoon {
 		this.jumoonat = LocalDateTime.now();
 	}
 
+	public Jumoon(Member member, Book book, Integer quantity, String jumoonat) {
+		this.member = member;
+		this.book = book;
+		this.quantity = quantity;
+		this.jumoonat = LocalDateTime.parse(jumoonat);
+	}
+
 }

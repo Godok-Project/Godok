@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class BookService {
 	private final BookRepository bookRepository;
 	private final BookDSLRepository bookDSLRepository;
+	private final RedisTemplate redisTemplate;
 
 	@Transactional(readOnly = true)
 	public Map<String, Object> bookdetail(Long bookid) {
@@ -57,16 +60,26 @@ public class BookService {
 	public List<Book> bookList() {
 
 		List<Book> bookList = new ArrayList<>();
-		Long random;
-		Random r = new Random();
+		ValueOperations<String, List<Integer>> values = redisTemplate.opsForValue();
 
-		for (int i = 0; i < 8; i++) {
-			random = (long)r.nextInt(4000000);
-			Optional<Book> book = bookRepository.findById(random);
-			if (book.isPresent()) {
+		if (values.get("rank")==null){
+			Long random;
+			Random r = new Random();
+
+			for (int i = 0; i < 8; i++) {
+				random = (long)r.nextInt(4000000);
+				Optional<Book> book = bookRepository.findById(random);
+				if (book.isPresent()) {
+					bookList.add(book.get());
+				} else
+					i--;
+			}
+		}else {
+			List<Integer> topbooks = values.get("rank");
+			for (int i : topbooks){
+				Optional<Book> book = bookRepository.findById((long)i);
 				bookList.add(book.get());
-			} else
-				i--;
+			}
 		}
 
 		return bookList;

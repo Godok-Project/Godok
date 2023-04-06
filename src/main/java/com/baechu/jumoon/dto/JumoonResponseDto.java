@@ -18,13 +18,15 @@ public class JumoonResponseDto {
 	private Integer quantity;
 
 	private String jumoonat;
+	private String wtc;
 
 	@Builder
-	public JumoonResponseDto(long id, Book book, Integer quantity, String jumoonat) {
+	public JumoonResponseDto(long id, Book book, Integer quantity, String jumoonat, String wtc) {
 		this.id = id;
 		this.title = book.getTitle();
 		this.quantity = quantity;
 		this.jumoonat = jumoonat;
+		this.wtc = wtc;
 	}
 
 }

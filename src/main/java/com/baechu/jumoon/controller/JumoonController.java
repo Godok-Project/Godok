@@ -43,15 +43,15 @@ public class JumoonController {
 		List<JumoonResponseDto> list = jumoonService.jumoonlist(request);
 		model.addAttribute("list", list);
 
-		return "/jumoon";
+		return "jumoon";
 	}
-
 
 	@GetMapping("/jumoon/{jumoonId}")
 	public String cancelbook(@PathVariable Long jumoonId, HttpServletRequest request){
 		jumoonService.cancelbook(jumoonId, request);
 		//페이지는 새로고침으로  html에서 해주자
 		return "redirect:/jumoon";
+
 	}
 
 }
