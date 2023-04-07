@@ -1,7 +1,16 @@
 package com.baechu.batch;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +27,7 @@ public class BatchScheduler {
 
 	@Autowired CycleConfig cycleConfig;
 
-
-	// @Scheduled(cron = "0 0/10 * * * *")
-	// @Scheduled(cron = "0 15 * * * *")
+	// @Scheduled(cron = "30 5 * * * *")
 	// public void runJob(){
 	//
 	// 	//Job parameter 설정
@@ -30,15 +37,14 @@ public class BatchScheduler {
 	//
 	// 	try{
 	// 		jobLauncher.run(fakejumoonConfig.job(), jobParameters);
-	// 	}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException | JobParametersInvalidException
-	// 	| org.springframework.batch.core.repository.JobRestartException e){
+	// 	}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException |
+	// 			JobParametersInvalidException
+	// 			| org.springframework.batch.core.repository.JobRestartException e){
 	// 		log.error(e.getMessage());
 	// 	}
 	// }
 
-	// @Scheduled(cron = "0 0 2 * * *")
-	// @Scheduled(cron = "0 5,15,25,35,45,55 * * * *")
-	// @Scheduled(cron = "30 15 * * * *")
+	// @Scheduled(cron = "30 7 * * * *")
 	// public void resetAndRank(){
 	//
 	// 	//Job parameter 설정

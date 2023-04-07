@@ -153,7 +153,7 @@ public class JumoonService {
 				String bookstate = (String)values.get("b"+bookid);
 				System.out.println("bookstate = " + bookstate);
 				Long f1 = Long.valueOf(bookstate.split(",")[0])-bookQ;
-				Long f2 = Long.valueOf(bookstate.split(",")[1])-bookQ;
+				Long f2 = Long.valueOf(bookstate.split(",")[1])+bookQ;
 				String nstate = f1+","+f2;
 				values.set("b"+bookid,nstate);
 				jumoons.remove(i);
