@@ -33,16 +33,6 @@ public class FakejumoonConfig {
 
 	private final JumoonService jumoonService;
 
-
-
-	// @Bean
-	// public Job job() {
-	// 	Job job = jobBuilderFactory.get("job")
-	// 		.start(stepNextConditionalStepB())
-	// 		.build();
-	// 	return job;
-	// }
-
 	int num = 1;
 
 	@Bean

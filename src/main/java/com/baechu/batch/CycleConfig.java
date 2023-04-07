@@ -98,7 +98,6 @@ public class CycleConfig {
 				while (keys.hasNext()){
 					String key = new String(keys.next());
 					key = key.substring(7); //key를 가져올 때 경로까지 가져오고 이거를 byte에서 string으로 바꾸면서 앞에 쓸때 없는 정보가 붙는다, 이것을 제거해주어야한다
-					System.out.println("key = " + key);
 					if (key.charAt(0)==98){
 						bookidkeys.add(key);
 					} else if (key.equals("rank")) {
@@ -147,7 +146,6 @@ public class CycleConfig {
 		return stepBuilderFactory.get("StepC")
 			.tasklet((contribution, chunkContext) -> {
 				log.info("Step3. 랭킹 매기기");
-				System.out.println("bookidkeys = " + bookidkeys);
 				Map<Integer, Integer> rankmap = new HashMap<>();
 
 				ValueOperations<String, String> values = redisTemplate.opsForValue();
@@ -160,7 +158,7 @@ public class CycleConfig {
 				List<Integer> keySetList = new ArrayList<>(rankmap.keySet());
 				Collections.sort(keySetList, (o1, o2) -> (rankmap.get(o2).compareTo(rankmap.get(o1))));
 
-				// 어제 주문된 책들이 8개 미만인 경우 1,2,3... 순으로 책으로 채워준다
+				// 어제 주문된 책들이 8개 미만인 경우 100,101,102... 순으로 책으로 채워준다
 				int cnt = 100;
 				while (keySetList.size()<8){
 					keySetList.add(cnt);
@@ -169,8 +167,6 @@ public class CycleConfig {
 
 				//top8 bookid를 순서대로 rankYesterday에 넣어준다.
 				for (int i = 0; i < 8; i++) {
-					log.info("등수 매기기" + keySetList.get(i));
-					System.out.println("등수 매기기" + keySetList.get(i));
 					rankYesterday.add(keySetList.get(i));
 				}
 				return RepeatStatus.FINISHED;
@@ -184,20 +180,13 @@ public class CycleConfig {
 			.tasklet((contribution, chunkContext) -> {
 				log.info("Step4. 재고량 채워 주기");
 
-				System.out.println("bookidkeys = " + bookidkeys);
-
 				//이 부분 Query DSL로 바꾸는게 좋을듯
 				for (String i: bookidkeys){
-					log.info("i = " + i);
-					log.info("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 					Book book = bookRepository.findById(Long.valueOf(i.substring(1))).orElseThrow(
 						()->new CustomException(ErrorCode.BOOK_NOT_FOUND)
 					);
-					log.info("book.getId() = " + book.getId());
 					book.orderbook(20L);
 				}
-				log.info("Step4. FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-
 				return RepeatStatus.FINISHED;
 			})
 			.build();
