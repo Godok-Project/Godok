@@ -12,12 +12,14 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.CursorBookDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
+import com.baechu.book.repository.ElasticRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +29,7 @@ public class BookService {
 	private final BookRepository bookRepository;
 	private final BookDSLRepository bookDSLRepository;
 	private final RedisTemplate redisTemplate;
+	private final ElasticRepository elasticRepository;
 
 	@Transactional(readOnly = true)
 	public Map<String, Object> bookdetail(Long bookid) {
@@ -43,11 +46,11 @@ public class BookService {
 		String birth = book.getYear() + "년 " + book.getMonth() + "월";
 		info.put("birth", birth);
 
-		String bookKey = "b"+bookid;
+		String bookKey = "b" + bookid;
 		ValueOperations<String, String> values = redisTemplate.opsForValue();
-		if (values.get(bookKey)==null){
+		if (values.get(bookKey) == null) {
 			info.put("inventory", book.getInventory());
-		}else {
+		} else {
 			info.put("inventory", values.get(bookKey).split(",")[1]);
 		}
 		return info;
@@ -62,13 +65,19 @@ public class BookService {
 		return new BookListDto(books, cursor);
 	}
 
+	// ES 검색
+	@Transactional(readOnly = true)
+	public void searchByES(FilterDto filter) {
+		List<BookDto> books = elasticRepository.searchByEs(filter);
+	}
+
 	@Transactional(readOnly = true)
 	public List<Book> bookList() {
 
 		List<Book> bookList = new ArrayList<>();
 		ValueOperations<String, List<Integer>> values = redisTemplate.opsForValue();
 
-		if (values.get("rank")==null){
+		if (values.get("rank") == null) {
 			Long random;
 			Random r = new Random();
 
@@ -80,9 +89,9 @@ public class BookService {
 				} else
 					i--;
 			}
-		}else {
+		} else {
 			List<Integer> topbooks = values.get("rank");
-			for (int i : topbooks){
+			for (int i : topbooks) {
 				Optional<Book> book = bookRepository.findById((long)i);
 				bookList.add(book.get());
 			}
