@@ -39,6 +39,14 @@ public class BookController {
 		return "search";
 	}
 
+	@GetMapping("/search/es")
+	public String searchByES(Model model, @ParamToDto FilterDto filter) {
+		filter.checkParameterValid();
+		BookListDto result = bookService.searchByCursor(filter);
+		model.addAttribute("result", result);
+		return "search";
+	}
+
 	@GetMapping("/main")
 	public String bookList(Model model) {
 
