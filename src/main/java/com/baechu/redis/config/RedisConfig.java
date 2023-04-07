@@ -32,8 +32,8 @@ public class RedisConfig {
 		RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
 
 		// 아래 두 라인을 작성하지 않으면, key값이 \xac\xed\x00\x05t\x00\x03sol 이렇게 조회된다.
-		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new StringRedisSerializer());
+		// redisTemplate.setKeySerializer(new StringRedisSerializer());
+		// redisTemplate.setValueSerializer(new StringRedisSerializer());
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 		return redisTemplate;
 	}
