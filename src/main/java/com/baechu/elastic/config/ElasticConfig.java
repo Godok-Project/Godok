@@ -1,6 +1,7 @@
 package com.baechu.elastic.config;
 
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -14,12 +15,21 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories
 public class ElasticConfig extends AbstractElasticsearchConfiguration {
 
+	@Value("${elastic.url}")
+	private String url;
+
+	@Value("${elastic.username}")
+	private String username;
+
+	@Value("${elastic.password}")
+	private String password;
+
 	@Override
 	@Bean
 	public RestHighLevelClient elasticsearchClient() {
 		ClientConfiguration configuration = ClientConfiguration.builder()
-			.connectedTo("3.36.123.129:9200")
-			.withBasicAuth("elastic", "097531")
+			.connectedTo(url)
+			.withBasicAuth(username, password)
 			.build();
 		return RestClients.create(configuration).rest();
 	}
