@@ -1,5 +1,7 @@
 package com.baechu.book.dto;
 
+import java.util.List;
+
 import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 
@@ -21,6 +23,8 @@ public class FilterDto {
 	private String category;
 	private String babyCategory;
 	private Long cursor;
+	private String searchAfterSort;
+	private Long searchAfterId;
 
 	public void checkParameterValid() {
 		if (query == null || query.isEmpty())

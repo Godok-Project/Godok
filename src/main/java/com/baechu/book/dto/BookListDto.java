@@ -17,9 +17,16 @@ public class BookListDto {
 
 	private Long cursor;
 	private List<BookDto> books = new ArrayList<>();
-
+	private String searchAfterSort;
+	private Long searchAfterId;
 	public BookListDto(List<Book> entities, Long cursor) {
 		this.cursor = cursor;
 		this.books = entities.stream().map(BookDto::new).collect(Collectors.toList());
+	}
+
+	public BookListDto(List<BookDto> entities, String searchAfterSort, Long searchAfterId) {
+		this.searchAfterSort = searchAfterSort;
+		this.searchAfterId =  searchAfterId;
+		this.books = entities;
 	}
 }

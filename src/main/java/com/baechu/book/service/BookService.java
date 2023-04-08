@@ -65,6 +65,13 @@ public class BookService {
 		return new BookListDto(books, cursor);
 	}
 
+	// ES 검색/////////////////////////
+	@Transactional(readOnly = true)
+	public BookListDto afterSearchByES(FilterDto filter) {
+		BookListDto books = elasticRepository.searchByEsAfter(filter);
+		return books;
+	}
+
 	// ES 검색
 	@Transactional(readOnly = true)
 	public void searchByES(FilterDto filter) {
