@@ -1,5 +1,9 @@
 package com.baechu.book.dto;
 
+import java.util.List;
+
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import com.baechu.book.entity.Book;
 
 import lombok.Builder;
@@ -10,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Document(indexName = "book")
 public class BookDto {
 	private long id;
 	private String image;
@@ -32,6 +37,8 @@ public class BookDto {
 		this.star = book.getStar();
 		this.year = book.getYear();
 		this.month = book.getMonth();
+
 	}
+
 
 }
