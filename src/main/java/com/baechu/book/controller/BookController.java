@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.baechu.book.dto.BookListDto;
+import com.baechu.book.dto.BookRankDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.service.BookService;
@@ -50,7 +51,7 @@ public class BookController {
 	@GetMapping("/main")
 	public String bookList(Model model) {
 
-		List<Book> list = bookService.bookList();
+		List<BookRankDto> list = bookService.bookList();
 		model.addAttribute("list", list);
 
 		return "main";

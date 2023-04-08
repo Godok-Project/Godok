@@ -372,9 +372,10 @@
                 </div>
                 <div  class="desc-area">
                     <h5 class="long-title" th:text="${book.title}" >에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h5>
+                    <h6 th:text="'어제 팔린 권수 : '+${book.sold}+' 권'">어제 팔린 권수 : 8 권</h6>
                     <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
                     <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
-                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>
+<!--                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>-->
                     <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>
                 </div>
             </div>

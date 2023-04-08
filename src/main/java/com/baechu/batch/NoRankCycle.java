@@ -1,5 +1,6 @@
 package com.baechu.batch;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,10 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-import com.baechu.book.entity.Book;
-import com.baechu.book.repository.BookRepository;
-import com.baechu.common.exception.CustomException;
-import com.baechu.common.exception.ErrorCode;
 import com.baechu.jumoon.entity.Jumoon;
 import com.baechu.jumoon.repository.JumoonRepository;
 
@@ -29,63 +26,54 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class CycleConfig {
+public class NoRankCycle {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-
-	private final BookRepository bookRepository;
-
 	private final JumoonRepository jumoonRepository;
-
-
 	private final RedisTemplate redisTemplate;
 
 	@Bean
-	public Job jobs() {
+	public Job norankjobs() {
 		Job job = jobBuilderFactory.get("job")
-			.start(StepA())
+			.start(StepA1())
 			.on("FAILED")
 			.end()
-			.from(StepA())
+			.from(StepA1())
 			.on("*")
-			.to(StepB())
-			.on("FAILED")
-			.end()
-			.from(StepB())
-			.on("*")
-			.to(StepC())
-			.on("FAILED")
-			.end()
-			.from(StepC())
-			.on("*")
-			.to(StepD())
+			.to(StepB2())
 			.end()
 			.build();
 		return job;
 	}
 
-	//필요한스텝
-	//데이터 주문들 check
-	//어떤 책이 얼마나 팔렸나 계산
-	//랭킹 매기기
-	//책들 다 endFine 로 true로 바꿔주기
-	//redis에 ranking 넣어주기
-
-
 	List<Long> bookidkeys = new ArrayList<>();
-
 	List<Jumoon> jumoons = new ArrayList<>();
 
-
-
 	@Bean
-	public Step StepA() {
+	public Step StepA1() {
 		return stepBuilderFactory.get("StepA")
 			.tasklet((contribution, chunkContext) -> {
-				log.info("Step1. Jumoontable에서 fine가 false인 책들만 가져오기");
+				log.info("Step1. Jumoontable에서 어제팔린책 가져오기");
 
-				jumoons = jumoonRepository.findAllByFine(false);
+				//오늘이 8일 17시 라면 7일 02시 부터 8일 02시 까지 팔린 책 가져와야함
+				//오늘이 8일 1시 라면 6일 02시 부터 7일 02시 까지 팔린 책 가져와야함
+				LocalDateTime now = LocalDateTime.now();
+
+				LocalDateTime starttime;
+				LocalDateTime endtime;
+
+				if (now.getHour()>=2){
+					LocalDateTime ytd = now.minusDays(1);
+					starttime = LocalDateTime.of(ytd.getYear(),ytd.getMonth(), ytd.getDayOfMonth(), ytd.getHour(), 0);
+					endtime = LocalDateTime.of(now.getYear(),now.getMonth(),now.getDayOfMonth(), now.getHour(), 0);
+				}else {
+					LocalDateTime yytd = now.minusDays(2);
+					LocalDateTime ytd = now.minusDays(1);
+					starttime = LocalDateTime.of(yytd.getYear(),yytd.getMonth(), yytd.getDayOfMonth(), yytd.getHour(), 0);
+					endtime = LocalDateTime.of(ytd.getYear(),ytd.getMonth(), ytd.getDayOfMonth(), ytd.getHour(), 0);
+				}
+				jumoons = jumoonRepository.findAllByJumoonatBetween(starttime,endtime);
 
 				return RepeatStatus.FINISHED;
 			})
@@ -93,7 +81,7 @@ public class CycleConfig {
 	}
 
 	@Bean
-	public Step StepB() {
+	public Step StepB2() {
 		return stepBuilderFactory.get("StepB")
 			.tasklet((contribution, chunkContext) -> {
 				log.info("Step2. 어떤 책이 얼마나 팔렸나 계산");
@@ -139,39 +127,6 @@ public class CycleConfig {
 				//랭크값 넣어주기
 				values.set("rank",bookrankAndsold);
 
-				return RepeatStatus.FINISHED;
-			})
-			.build();
-	}
-
-	@Bean
-	public Step StepC() {
-		return stepBuilderFactory.get("StepC")
-			.tasklet((contribution, chunkContext) -> {
-				log.info("Step3. 오늘 주문들 다 endFine로 true로 바꿔주기");
-
-				for(Jumoon i : jumoons){
-					i.endFine();
-				}
-
-				return RepeatStatus.FINISHED;
-			})
-			.build();
-	}
-
-	@Bean
-	public Step StepD() {
-		return stepBuilderFactory.get("StepD")
-			.tasklet((contribution, chunkContext) -> {
-				log.info("Step4. 재고량 채워 주기");
-
-				//이 부분 Query DSL로 바꾸는게 좋을듯
-				for (Long i: bookidkeys){
-					Book book = bookRepository.findById(i).orElseThrow(
-						()->new CustomException(ErrorCode.BOOK_NOT_FOUND)
-					);
-					book.orderbook(20L);
-				}
 				return RepeatStatus.FINISHED;
 			})
 			.build();
