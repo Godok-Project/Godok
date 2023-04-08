@@ -31,6 +31,9 @@ public class Jumoon {
 	@Column(nullable = false)
 	private LocalDateTime jumoonat;
 
+	@Column(nullable = false)
+	private boolean fine;
+
 	@ManyToOne
 	@JoinColumn(name =  "member_id", nullable = false)
 	private Member member;
@@ -44,13 +47,10 @@ public class Jumoon {
 		this.book = book;
 		this.quantity = quantity;
 		this.jumoonat = LocalDateTime.now();
+		this.fine = false;
 	}
 
-	public Jumoon(Member member, Book book, Integer quantity, String jumoonat) {
-		this.member = member;
-		this.book = book;
-		this.quantity = quantity;
-		this.jumoonat = LocalDateTime.parse(jumoonat);
+	public void endFine(){
+		this.fine = true;
 	}
-
 }

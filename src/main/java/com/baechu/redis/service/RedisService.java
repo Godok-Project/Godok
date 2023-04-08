@@ -21,8 +21,6 @@ public class RedisService {
 
 	private final RedisTemplate redisTemplate;
 
-	private final BookRepository bookRepository;
-
 	//데이터 넣기
 	public void setValue(String key, Object data){
 		ValueOperations<String, Object> values = redisTemplate.opsForValue();

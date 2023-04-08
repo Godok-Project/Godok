@@ -25,7 +25,11 @@ public class BatchScheduler {
 	@Autowired
 	private FakejumoonConfig fakejumoonConfig;
 
-	@Autowired CycleConfig cycleConfig;
+	@Autowired
+	private CycleConfig cycleConfig;
+
+	@Autowired
+	private NoRankCycle noRankCycle;
 
 	// @Scheduled(cron = "30 5 * * * *")
 	// public void runJob(){
@@ -43,7 +47,7 @@ public class BatchScheduler {
 	// 		log.error(e.getMessage());
 	// 	}
 	// }
-
+	//
 	// @Scheduled(cron = "30 7 * * * *")
 	// public void resetAndRank(){
 	//
