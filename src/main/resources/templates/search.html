@@ -267,9 +267,8 @@
                         <span th:text="'가격 : '+${book.getPrice()}+' 원'">35000</span><br>
                         <span class="long-title" th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
                         <span class="long-title" th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
-                        <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
-                        82012.3
-                    </span>
+                        <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">82012.3</span>
+                        <span th:text="'score : ' + ${book.getScore()}"> 00 </span>
                     </div>
                 </div>
             </tr>
@@ -296,8 +295,29 @@
     let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
     let publish = params.get('publish') == null ? '' : params.get('publish');
     let author = params.get('author') == null ? '' : params.get('author');
-    let cursor = [[${result.getCursor()}]] == null ? '1' : [[${result.getCursor()}]];
-    let cursorList = localStorage.getItem('cursorList') == null ? [] : JSON.parse(localStorage.getItem('cursorList'));
+
+    /**
+     * 커서를 두 개 받는다. searchAfterId, searchAfterSort
+     * localstorage도 두 개 만든다. idList, sortList
+     * 로직은 지금이랑 크게 다르지 않다.
+     *
+     * - 변경사항
+     * 1. cursor가 두 개로 늘어남. 둘 다 따로 받아야함. (일단 어떤 형태로 넘어올지 모르니 변수만 설정하기)
+     * 2. 커서가 넘어오면 storage에 저장.(첫 페이지 처리 필요)
+     * 3. 페이지 이동 요청 시 커서도 쿼리 스트링으로 입력 필요. (변수 명은 받을때 결정)
+     * 4. 검색 버튼, 필터 버튼 누를 시 storage 초기화 필요
+     */
+
+        // 1.
+    let searchAfterId = [[${result.getSearchAfterId()}]]
+    let searchAfterSort = [[${result.getSearchAfterSort()}]]
+    console.log('id : ' + searchAfterId)
+    console.log('sort : ' + searchAfterSort)
+    // 2.
+    let idList = localStorage.getItem('idList') == null ? [] : JSON.parse(localStorage.getItem('idList'));
+    let sortList = localStorage.getItem('sortList') == null ? [] : JSON.parse(localStorage.getItem('sortList'));
+    console.log('idList : ' + idList)
+    console.log('sortList : ' + sortList)
 
     $('#author').attr("value", author);
     $('#publish').attr("value", publish);
@@ -308,16 +328,11 @@
     $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
 
-    console.log(cursorList)
 
-    if (cursor == 0 || cursor == -1 && cursorList.length == 0) {
-        $('#after-button').hide();
-        $('#before-button').hide();
-    } else if (cursor == -1) {
-        $('#after-button').hide();
-    } else if (cursorList.length == 0) {
-        $('#before-button').hide();
-    }
+    if (searchAfterSort == -1 || idList.length == 0)
+        $('#before-button').hide()
+    if (searchAfterId == -1 || (searchAfterId == 0 && idList.length == 0))
+        $('#after-button').hide()
 
     const categories = {
         '건강 취미': ['건강', '구기', '공예', '퍼즐 컬러링북', '취미', '운동', '의학', '등산 여행', '스포츠', '반려동물', '질병치료와 예방', '취미 기타', '건강 기타', '질병과 치료법', '스포츠/레크레이션', '공예/취미', '수집'],
@@ -357,24 +372,32 @@
     babyCategoryListing();
     $('#babyCategory').val(babyCategory).prop('selected', true);
 
-
     function nextPage() {
-        cursorList.push(cursor);
-        localStorage.setItem('cursorList', JSON.stringify(cursorList))
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        // 3.
+        idList.push(searchAfterId)
+        sortList.push(searchAfterSort)
+        localStorage.setItem('idList', JSON.stringify(idList))
+        localStorage.setItem('sortList', JSON.stringify(sortList))
+        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort
+        location.href = encodeURI(url);
     }
 
     function previousPage() {
-        cursorList.pop()
-        let previousCursor = ''
-        if (cursorList.length == 0) {
-            previousCursor = '1';
+        // 3.
+        idList.pop()
+        sortList.pop()
+        if (idList.length == 0) {
             window.localStorage.clear()
+            searchAfterId = null
+            searchAfterSort = null
         } else {
-            previousCursor = cursorList[cursorList.length - 1];
-            localStorage.setItem('cursorList', JSON.stringify(cursorList))
+            searchAfterId = idList[idList.length - 1];
+            searchAfterSort = sortList[sortList.length - 1];
+            localStorage.setItem('idList', JSON.stringify(idList))
+            localStorage.setItem('sortList', JSON.stringify(sortList))
         }
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + previousCursor;
+        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+        location.href = encodeURI(url);
     }
 
     function searchBook() {
@@ -385,14 +408,15 @@
             babyCategory = $("#babyCategory option:selected").val();
             sort = '0';
             year = '0';
-            cursor = '1';
+            searchAfterId = null
+            searchAfterSort = null
             month = '';
             star = '0';
             minprice = '';
             maxprice = '';
             publish = '';
             author = '';
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
         }
     }
 
@@ -407,8 +431,9 @@
                 sort = $("#sort option:selected").val();
                 year = $("#year option:selected").val();
                 star = $("#star option:selected").val();
-                cursor = '1';
-                location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+                searchAfterId = null
+                searchAfterSort = null
+                location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
             }
         }
     }

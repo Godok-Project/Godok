@@ -35,15 +35,9 @@ public class BookController {
 	@GetMapping("/search")
 	public String searchByWord(Model model, @ParamToDto FilterDto filter) {
 		filter.checkParameterValid();
-		BookListDto result = bookService.searchByCursor(filter);
-		model.addAttribute("result", result);
-		return "search";
-	}
-
-	@GetMapping("/search/es")
-	public String searchByES(Model model, @ParamToDto FilterDto filter) {
-		filter.checkParameterValid();
 		BookListDto result = bookService.afterSearchByES(filter);
+		// mysql 검색
+		// BookListDto result = bookService.searchByCursor(filter);
 		model.addAttribute("result", result);
 		return "search";
 	}

@@ -81,23 +81,16 @@ public class BookService {
 	// Cursor 기반 페이징
 	@Transactional(readOnly = true)
 	public BookListDto searchByCursor(FilterDto filter) {
-		CursorBookDto lastBook = getLastBook(filter);
-		List<Book> books = bookDSLRepository.searchByCursor(filter, lastBook);
-		Long cursor = getCursor(books, filter.getTotalRow());
-		return new BookListDto(books, cursor);
-	}
-
-	// ES 검색/////////////////////////
-	@Transactional(readOnly = true)
-	public BookListDto afterSearchByES(FilterDto filter) {
-		BookListDto books = elasticRepository.searchByEsAfter(filter);
-		return books;
+		List<BookDto> books = bookDSLRepository.searchByCursor(filter);
+		List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
+		return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1));
 	}
 
 	// ES 검색
 	@Transactional(readOnly = true)
-	public void searchByES(FilterDto filter) {
-		List<BookDto> books = elasticRepository.searchByEs(filter);
+	public BookListDto afterSearchByES(FilterDto filter) {
+		BookListDto books = elasticRepository.searchByEsAfter(filter);
+		return books;
 	}
 
 
@@ -143,20 +136,6 @@ public class BookService {
 
 		return bookList;
 	}
-
-	private CursorBookDto getLastBook(FilterDto filter) {
-		return bookDSLRepository.findScore(filter.getCursor(), filter.getQuery());
-	}
-
-	private Long getCursor(List<Book> books, Integer totalRow) {
-		if (books.isEmpty()) {
-			return 0L;
-		} else if (books.size() < totalRow)
-			return -1L;
-		return books.get(books.size() - 1).getId();
-	}
-
-
 
 	//트랜잭션 어노테이션 안에 배치를 사용할 수 없다.
 	private void summonRank(){
@@ -222,5 +201,35 @@ public class BookService {
 		values.set("rank",bookrankAndsold);
 
 
+	}
+
+
+	private List<Object> getCursor(List<BookDto> books, Integer totalRow, Integer sort) {
+		List<Object> cursors = new ArrayList<>();
+		if (books.isEmpty()) {
+			cursors.add("-1");
+			cursors.add(-1L);
+		} else if (books.size() < totalRow) {
+			cursors.add("0");
+			cursors.add(-1L);
+		} else {
+			// sort 정보를 이용해서 id이외의 값을 넣어야함
+			BookDto lastBook = books.get(books.size() - 1);
+			cursors.add(selectSortCursor(lastBook, sort));        // 정렬에 맞는 cursor 추가
+			cursors.add(lastBook.getId());        // id cursor 추가
+		}
+		return cursors;
+	}
+
+	private String selectSortCursor(BookDto lastBook, Integer sort) {
+		if (sort == null)
+			return String.valueOf(lastBook.getScore());
+		if (sort == 0) {    // sort == 0 이면, score 반환
+			return String.valueOf(lastBook.getScore());
+		} else if (sort == 1) {  // sort == 1 이면, title 반환
+			return lastBook.getTitle();
+		} else {    // sort == 2 or 3 이면, price 반환
+			return String.valueOf(lastBook.getPrice());
+		}
 	}
 }

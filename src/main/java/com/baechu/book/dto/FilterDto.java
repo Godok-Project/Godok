@@ -1,7 +1,5 @@
 package com.baechu.book.dto;
 
-import java.util.List;
-
 import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 
@@ -22,7 +20,6 @@ public class FilterDto {
 	private Integer totalRow;
 	private String category;
 	private String babyCategory;
-	private Long cursor;
 	private String searchAfterSort;
 	private Long searchAfterId;
 
@@ -30,6 +27,5 @@ public class FilterDto {
 		if (query == null || query.isEmpty())
 			throw new CustomException(ErrorCode.QUERY_NOT_FOUND);
 		totalRow = totalRow == null ? 10 : totalRow;
-		cursor = cursor == null ? 1 : cursor;
 	}
 }
