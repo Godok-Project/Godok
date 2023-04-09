@@ -1,7 +1,6 @@
 package com.baechu.common;
 
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,7 +37,9 @@ public class ParamToDtoResolver implements HandlerMethodArgumentResolver {
 		WebDataBinderFactory binderFactory
 	) throws Exception {
 		HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
-		String decodedQuery = URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8);
+		String decodedQuery = URLDecoder.decode(request.getQueryString(), "UTF-8")
+			.replaceAll("\"", "\\" + "\\" + "\"");
+		System.out.println(decodedQuery);
 		String json = queryToJson(decodedQuery);
 		Object obj = mapper.readValue(json, parameter.getParameterType());
 		return obj;

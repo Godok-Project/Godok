@@ -22,15 +22,15 @@ public class CustomQueryBuilders {
 	public static MatchQueryBuilder matchQuery(String name, String text) {
 		if (text == null)
 			return null;
-		else if(text.isEmpty())
+		else if (text.isEmpty())
 			return null;
 		return new MatchQueryBuilder(name, text);
 	}
 
 	public static MatchPhraseQueryBuilder matchPhraseQuery(String name, String text) {
-		if (text==null)
+		if (text == null)
 			return null;
-		else if(text.isEmpty())
+		else if (text.isEmpty())
 			return null;
 		return new MatchPhraseQueryBuilder(name, text);
 	}
@@ -76,7 +76,7 @@ public class CustomQueryBuilders {
 	// 정렬 선택
 	public static List<SortBuilder<?>> sortQuery(Integer sort) {
 		List<SortBuilder<?>> sortBuilders = new ArrayList<>();
-		if (sort == null) {    // 기본 정렬은 정렬안함 (sort = 0)
+		if (sort == null || sort == 0) {    // 기본 정렬은 정렬안함 (sort = 0)
 			sortBuilders.add(SortBuilders.scoreSort());
 			sortBuilders.add(SortBuilders.fieldSort("id").order(SortOrder.ASC));
 		} else if (sort == 1) {  // 제목 가나다순 (sort = 1)
