@@ -34,6 +34,7 @@ public class ElasticRepository {
 		List<Object> searchAfter = initSearchAfter(filter.getSearchAfterSort(), filter.getSearchAfterId());
 
 		NativeSearchQuery build = new NativeSearchQueryBuilder()
+			.withMinScore(10f)
 			.withQuery(new CustomBoolQueryBuilder()
 				.must(multiMatchQuery(filter.getQuery(), "title", "author", "publish"))
 				.filter(matchQuery("category.keyword", filter.getCategory()))
@@ -57,7 +58,7 @@ public class ElasticRepository {
 		String searchAfterSort = String.valueOf(searchAfter.get(0));
 		Long searchAfterId = Long.parseLong(String.valueOf(searchAfter.get(1)));
 
-		BookListDto result = new BookListDto(bookDtoList, searchAfterSort, searchAfterId);
+		BookListDto result = new BookListDto(bookDtoList, searchAfterSort, searchAfterId, filter.getPage());
 		return result;
 	}
 
