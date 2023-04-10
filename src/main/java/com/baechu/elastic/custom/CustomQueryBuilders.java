@@ -12,6 +12,12 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
+/**
+ *  null 처리를 위해 새로 만든 클래스. 기존 클래스는 QueryBuilders이다.
+ *  원래는 상속받아서 사용하려고 했지만 QueryBuilders가 final클래스라 필요한 메서드를 복사해서 사용
+ *  null인 경우 예외를 반환하는 것이 아닌 null을 반환하도록 변경
+ *  반환된 null값은 CustomBoolQueryBuilder에서 처리
+ */
 @Component
 public class CustomQueryBuilders {
 
@@ -69,6 +75,8 @@ public class CustomQueryBuilders {
 	// 별점 쿼리 결정
 	public static RangeQueryBuilder starQuery(Integer star) {
 		if (star == null)    // 입력 안한 경우
+			return null;
+		if(star == 0)
 			return null;
 		return new RangeQueryBuilder(STAR).gte(star);    // 입력 한 경우
 	}
