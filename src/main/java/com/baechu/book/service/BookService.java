@@ -203,18 +203,22 @@ public class BookService {
 
 	}
 
-
+	/**
+	 * - Mysql 커서 선택 메서드
+	 * 	- getCursor : 가져온 책 리스트의 수량에 따라 필요한 값 배치 (페이지 버튼 존재 확인용)
+	 * 		- search.html 332줄에 페이지 버튼 로직 있음
+	 * 	- selectSortCursor : 검색 결과가 필요양만큼 있을 때 다음 페이지를 위한 커서를 선택하는 메서드
+	 */
 	private List<Object> getCursor(List<BookDto> books, Integer totalRow, Integer sort) {
 		List<Object> cursors = new ArrayList<>();
-		if (books.isEmpty()) {
+		if (books.isEmpty()) {	// 검색 결과가 없는 경우
 			cursors.add("-1");
 			cursors.add(-1L);
-		} else if (books.size() < totalRow) {
+		} else if (books.size() < totalRow) {	// 검색결과가 필요한 양보다 적은 경우 ()
 			cursors.add("0");
 			cursors.add(-1L);
 		} else {
-			// sort 정보를 이용해서 id이외의 값을 넣어야함
-			BookDto lastBook = books.get(books.size() - 1);
+			BookDto lastBook = books.get(books.size() - 1);		// 마지막 책 데이터
 			cursors.add(selectSortCursor(lastBook, sort));        // 정렬에 맞는 cursor 추가
 			cursors.add(lastBook.getId());        // id cursor 추가
 		}
@@ -222,7 +226,7 @@ public class BookService {
 	}
 
 	private String selectSortCursor(BookDto lastBook, Integer sort) {
-		if (sort == null)
+		if (sort == null)	// null이면 0과같이 처리
 			return String.valueOf(lastBook.getScore());
 		if (sort == 0) {    // sort == 0 이면, score 반환
 			return String.valueOf(lastBook.getScore());

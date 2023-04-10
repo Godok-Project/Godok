@@ -36,7 +36,7 @@ public class BookController {
 	public String searchByWord(Model model, @ParamToDto FilterDto filter) {
 		filter.checkParameterValid();
 		BookListDto result = bookService.afterSearchByES(filter);
-		// mysql 검색
+		// mysql 검색 -> 서킷 브레이커 적용시 사용 예정
 		// BookListDto result = bookService.searchByCursor(filter);
 		model.addAttribute("result", result);
 		return "search";
