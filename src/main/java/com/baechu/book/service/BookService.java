@@ -83,7 +83,7 @@ public class BookService {
 	public BookListDto searchByCursor(FilterDto filter) {
 		List<BookDto> books = bookDSLRepository.searchByCursor(filter);
 		List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
-		return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1));
+		return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1), filter.getPage());
 	}
 
 	// ES 검색

@@ -22,10 +22,12 @@ public class FilterDto {
 	private String babyCategory;
 	private String searchAfterSort;
 	private Long searchAfterId;
+	private Integer page;
 
 	public void checkParameterValid() {
 		if (query == null || query.isEmpty())
 			throw new CustomException(ErrorCode.QUERY_NOT_FOUND);
 		totalRow = totalRow == null ? 10 : totalRow;
+		page = page == null ? 1 : page;
 	}
 }
