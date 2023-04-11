@@ -67,14 +67,8 @@ public class BookService {
 		info.put("publish", book.getPublish());
 		String birth = book.getYear() + "년 " + book.getMonth() + "월";
 		info.put("birth", birth);
+		info.put("inventory", book.getInventory());
 
-		String bookKey = "b" + bookid;
-		ValueOperations<String, String> values = redisTemplate.opsForValue();
-		if (values.get(bookKey) == null) {
-			info.put("inventory", book.getInventory());
-		} else {
-			info.put("inventory", values.get(bookKey).split(",")[1]);
-		}
 		return info;
 	}
 
