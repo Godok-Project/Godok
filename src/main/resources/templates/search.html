@@ -297,11 +297,30 @@
     let author = params.get('author') == null ? '' : params.get('author');
     let page = params.get('page') == null ? '1' : params.get('page');
 
+    let state = localStorage.getItem('state') == null ? '0' : localStorage.getItem('state');
+    let status = [[${result.getStatus()}]]
+    if (status == false && state == '0') {
+        alert("mysql로 변경")
+        localStorage.setItem('state', '1')
+        localStorage.removeItem('idList')
+        localStorage.removeItem('sortList')
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+    }
+    if (status == true && state == '1') {
+        alert("elastic으로 복귀")
+        localStorage.setItem('state', '0');
+        localStorage.removeItem('idList')
+        localStorage.removeItem('sortList')
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+    }
+
     let rowLength = [[${result.getBooks().size()}]]
     let searchAfterId = [[${result.getSearchAfterId()}]]
     let searchAfterSort = [[${result.getSearchAfterSort()}]]
 
-    console.log('page : ' + page)
+    console.log('state : ' + state + ', status : ' + status)
+
+    console.log('page : ' + page);
     document.getElementById("page").innerHTML=page + ' page'
     console.log('id : ' + searchAfterId)
     console.log('sort : ' + searchAfterSort)
@@ -310,6 +329,7 @@
     let sortList = getSortList()
     console.log('idList : ' + idList)
     console.log('sortList : ' + sortList)
+    console.log('length : ' + idList.length)
 
     $('#author').attr("value", author);
     $('#publish').attr("value", publish);
@@ -392,7 +412,8 @@
 
     function searchBook() {
         if (keywordValidation()) {
-            window.localStorage.clear();
+            localStorage.removeItem('idList')
+            localStorage.removeItem('sortList')
             query = $('#search-box').val();
             category = $("#category option:selected").val();
             babyCategory = $("#babyCategory option:selected").val();
@@ -412,7 +433,8 @@
 
     function applyFilter() {
         if (keywordValidation()) {
-            window.localStorage.clear();
+            localStorage.removeItem('idList')
+            localStorage.removeItem('sortList')
             minprice = $("#min-price").val();
             maxprice = $("#max-price").val();
             if (checkPrice(minprice, maxprice)) {
@@ -479,7 +501,7 @@
     }
 
     function getIdList() {
-        if (localStorage.getItem('idList') == null) {
+        if (localStorage.getItem('idList') == null || JSON.parse(localStorage.getItem('idList')).length == 0) {
             localStorage.setItem('idList', JSON.stringify([]));
             return [null];
         } else {
@@ -488,13 +510,14 @@
     }
 
     function getSortList() {
-        if (localStorage.getItem('sortList') == null) {
+        if (localStorage.getItem('sortList') == null || JSON.parse(localStorage.getItem('sortList')).length == 0) {
             localStorage.setItem('sortList', JSON.stringify([]));
             return [null];
         } else {
             return JSON.parse(localStorage.getItem('sortList'))
         }
     }
+
 
     /*]]>*/
 </script>

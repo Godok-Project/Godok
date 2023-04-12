@@ -58,7 +58,7 @@ public class ElasticRepository {
 		String searchAfterSort = String.valueOf(searchAfter.get(0));
 		Long searchAfterId = Long.parseLong(String.valueOf(searchAfter.get(1)));
 
-		BookListDto result = new BookListDto(bookDtoList, searchAfterSort, searchAfterId, filter.getPage());
+		BookListDto result = new BookListDto(bookDtoList, searchAfterSort, searchAfterId, filter.getPage(), true);
 		return result;
 	}
 
