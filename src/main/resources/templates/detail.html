@@ -209,7 +209,7 @@
             <button class="order-btn" type="button" onclick="location.href='../login'" th:if="${#strings.isEmpty(session.loginMember)}">로그인먼저</button>
         </div>
         <span th:if="${info.inventory == 0}">품절!</span>
-        <span th:if="${info.inventory == 0}">절판!</span>
+        <span th:if="${info.out_of_print == 1}">절판!</span>
 
       </form>
     </div>
