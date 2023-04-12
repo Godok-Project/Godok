@@ -168,7 +168,8 @@
     .image-area > img {
         position: absolute;
         width: 90%;
-        top: -3%;
+        height: 70%;
+        top: 15%;
     }
 
     .desc-area {
@@ -368,6 +369,7 @@
         <tr th:each="book:${list}">
             <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.id})}'|">
                 <div  class="image-area">
+                    <span th:if="${book.inventory==0}" ><strong><mark>품절</mark></strong></span>
                         <img th:src="${book.image}" alt="My Image" width="110" height="170"/>
                 </div>
                 <div  class="desc-area">
