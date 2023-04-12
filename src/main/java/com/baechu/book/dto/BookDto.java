@@ -26,6 +26,7 @@ public class BookDto {
 	private Integer month;
 	private Double score;
 	private Long inventory;
+	private int outOfPrint;
 
 	@Builder
 	public BookDto(Book book) {
@@ -39,11 +40,12 @@ public class BookDto {
 		this.year = book.getYear();
 		this.month = book.getMonth();
 		this.inventory=book.getInventory();
+		this.outOfPrint = book.getOutOfPrint();
 	}
 
 	@QueryProjection
 	public BookDto(long id, String image, Integer price, String author, String title, String publish, Integer star,
-		Integer year, Integer month, Double score, Long inventory) {
+		Integer year, Integer month, Double score, Long inventory, int outOfPrint) {
 		this.id = id;
 		this.image = image;
 		this.price = price;
@@ -55,5 +57,6 @@ public class BookDto {
 		this.month = month;
 		this.score = score;
 		this.inventory = inventory;
+		this.outOfPrint = outOfPrint;
 	}
 }

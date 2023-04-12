@@ -261,6 +261,8 @@
                 <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
                     <div class="image-area">
                         <span th:if="${book.inventory==0}"><strong><mark>품절</mark></strong></span>
+                        <span th:if="${book.outOfPrint==1}" ><strong><mark>절판</mark></strong></span>
+
                         <img th:src="${book.getImage()}" alt="My Image" width="97">
                     </div>
                     <div class="desc-area">

@@ -35,7 +35,7 @@ public class BookDSLRepository {
 			.select(
 				new QBookDto(book.id, book.image, book.price, book.author, book.title, book.publish, book.star,
 					book.year,
-					book.month, fulltextTitle(query), book.inventory))
+					book.month, fulltextTitle(query), book.inventory,book.outOfPrint))
 			.from(book)
 			.where(
 				categoryResult(filter.getCategory()),
