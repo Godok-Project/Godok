@@ -260,6 +260,7 @@
             <tr th:each="book : ${result.getBooks()}">
                 <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
                     <div class="image-area">
+                        <span th:if="${book.inventory==0}"><strong><mark>품절</mark></strong></span>
                         <img th:src="${book.getImage()}" alt="My Image" width="97">
                     </div>
                     <div class="desc-area">
@@ -321,7 +322,7 @@
     console.log('state : ' + state + ', status : ' + status)
 
     console.log('page : ' + page);
-    document.getElementById("page").innerHTML=page + ' page'
+    document.getElementById("page").innerHTML = page + ' page'
     console.log('id : ' + searchAfterId)
     console.log('sort : ' + searchAfterSort)
     // 2.
