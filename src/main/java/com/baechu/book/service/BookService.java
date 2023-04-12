@@ -1,7 +1,6 @@
 package com.baechu.book.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,31 +9,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baechu.batch.CycleConfig;
-import com.baechu.batch.NoRankCycle;
 import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.BookRankDto;
-import com.baechu.book.dto.CursorBookDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
 import com.baechu.book.repository.ElasticRepository;
-import com.baechu.common.exception.CustomException;
-import com.baechu.common.exception.ErrorCode;
 import com.baechu.jumoon.entity.Jumoon;
 import com.baechu.jumoon.repository.JumoonRepository;
 
@@ -68,14 +55,8 @@ public class BookService {
 		info.put("publish", book.getPublish());
 		String birth = book.getYear() + "년 " + book.getMonth() + "월";
 		info.put("birth", birth);
+		info.put("inventory", book.getInventory());
 
-		String bookKey = "b" + bookid;
-		ValueOperations<String, String> values = redisTemplate.opsForValue();
-		if (values.get(bookKey) == null) {
-			info.put("inventory", book.getInventory());
-		} else {
-			info.put("inventory", values.get(bookKey).split(",")[1]);
-		}
 		return info;
 	}
 
@@ -116,9 +97,7 @@ public class BookService {
 			try {
 				summonRank();
 			}catch (Exception e){
-
 			}
-
 
 			Long random;
 			Random r = new Random();
