@@ -185,6 +185,35 @@
         white-space: nowrap;
         overflow: hidden;
     }
+    .jumoon-box {
+        width: 380px;
+        text-align: center;
+        margin: 5px auto auto auto;
+        font-family: Arial;
+        font-size: 50px;
+        border-radius: 10px;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-jumoon{
+        width: 370px;
+        text-align: center;
+        font-family: Arial;
+        font-size: 35px;
+        border-radius: 10px;
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0 550px;
+    }
 
 </style>
 
@@ -212,19 +241,52 @@
     }
 </script>
 
+<script>
+    function noSpaceForm(obj) {
+        let str_space = /\s{2}/; // 공백 2칸 체크
+        let key_word = $('#search').val()
+        if (str_space.exec(obj.value)) {
+            alert("공백을 사용할 수 없습니다.");
+            obj.focus();
+            obj.value = obj.value.replace('  ', '');
+            return false
+        }
+    }
+
+    function search_keyword() {
+        let key_word = $('#search').val()
+            key_word = key_word.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/gi, "");
+            $('#search').val(key_word);
+            window.localStorage.clear();
+    }
+
+    function checkForm() {
+        let f = document.searchData
+        if (f.query.value === "") {
+            alert("검색어를 입력해주세요.")
+            return false
+        }
+    }
+</script>
+
 <body>
 <div class="title-box">
     <h1 id="title">Godok</h1>
+
     <button id="log-in" onclick="location.href='login' "th:if="${#strings.isEmpty(session.loginMember)}">로그인</button>
     <button id="log-out" onclick="logout()" th:if="${not #strings.isEmpty(session.loginMember)}">로그아웃</button>
 </div>
-
+<div class="jumoon-box">
+    <div class="main-jumoon">
+        <button id="jumoon-in" onclick="location.href='jumoon' "th:if="${not #strings.isEmpty(session.loginMember)}">나의 주문이력</button>
+    </div>
+</div>
 </body>
 
 <body>
 <div class="search-box">
 
-    <form action = "./search" name="searchData" method="get">
+    <form action = "./search" name="searchData" method="get" onsubmit="return checkForm()">
         <select id="category" name="category" onchange="babyCategoryListing();" style="font-size: 13px; width:150px; height:60px;">
             <option style="color: white" selected value="">대분류</option>
         </select>
@@ -233,9 +295,9 @@
             <option selected value="">소분류</option>
         </select>
 
-        <input class="search" name="query" type="text" placeholder="검색어 입력" style="width: 470px">
+        <input class="search" id="search" name="query" type="text" placeholder="검색어 입력" style="width: 470px" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"/>
 
-        <button id="search_btn" type="submit" value="search" style="font-size: 13px; width:70px; height:60px;">검색</button>
+        <button id="search_btn" type="submit" value="search" style="font-size: 13px; width:70px; height:60px;" onclick="search_keyword()">검색</button>
     </form>
 </div>
 
@@ -310,9 +372,10 @@
                 </div>
                 <div  class="desc-area">
                     <h5 class="long-title" th:text="${book.title}" >에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h5>
+                    <h6 th:text="'어제 팔린 권수 : '+${book.sold}+' 권'">어제 팔린 권수 : 8 권</h6>
                     <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
                     <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
-                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>
+<!--                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>-->
                     <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>
                 </div>
             </div>

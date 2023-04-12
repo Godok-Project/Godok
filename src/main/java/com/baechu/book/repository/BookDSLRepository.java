@@ -9,8 +9,9 @@ import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Repository;
 
+import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.FilterDto;
-import com.baechu.book.entity.Book;
+import com.baechu.book.dto.QBookDto;
 import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -28,20 +29,24 @@ public class BookDSLRepository {
 		this.queryFactory = new JPAQueryFactory(entityManager);
 	}
 
-	public List<Book> searchByCursor(FilterDto filter, Book lastBook) {
-		return queryFactory.selectFrom(book)
+	public List<BookDto> searchByCursor(FilterDto filter) {
+		String query = filter.getQuery();
+		return queryFactory
+			.select(
+				new QBookDto(book.id, book.image, book.price, book.author, book.title, book.publish, book.star,
+					book.year,
+					book.month, fulltextTitle(query)))
+			.from(book)
 			.where(
 				categoryResult(filter.getCategory()),
 				babyCategoryResult(filter.getBabyCategory()),
-				// titleResult(filter.getQuery()),
-				// full-text query
-				fulltextTitle(filter.getQuery()).gt(0),
+				fulltextTitle(query).gt(0),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
 				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
 				publishResult(filter.getPublish()),
 				authorResult(filter.getAuthor()),
-				cursorPaging(filter, lastBook)
+				cursorPaging(filter)
 			)
 			.orderBy(getCursorSort(filter.getSort()))
 			.limit(filter.getTotalRow())
@@ -62,14 +67,10 @@ public class BookDSLRepository {
 		return book.babyCategory.eq(babyCategory);
 	}
 
-	private Predicate titleResult(String query) {
-		return book.title.contains(query);
-	}
-
 	// full-text query
 	private NumberTemplate fulltextTitle(String query) {
 		NumberTemplate template = Expressions.numberTemplate(Double.class,
-			"function('match',{0},{1})", book.title, "+" + query + "*");
+			"function('match',{0},{1},{2})", book.title, book.author, query + "*");
 
 		return template;
 	}
@@ -103,27 +104,33 @@ public class BookDSLRepository {
 	}
 
 	private Predicate publishResult(String publish) {
-		return publish.isEmpty() ? null : book.publish.contains(publish);
+		return publish == null || publish.isEmpty() ? null : book.publish.contains(publish);
 	}
 
 	private Predicate authorResult(String author) {
-		return author.isEmpty() ? null : book.author.contains(author);
+		return author == null || author.isEmpty() ? null : book.author.contains(author);
 	}
 
-	private Predicate cursorPaging(FilterDto filter, Book lastBook) {
-		if (filter.getCursor() == 1) {
+	private Predicate cursorPaging(FilterDto filter) {
+		if (filter.getSearchAfterId() == null) {
 			return null;
 		}
 		Integer sort = filter.getSort();
-		Long cursor = filter.getCursor();
+		Long searchId = filter.getSearchAfterId();
+		String searchSort = filter.getSearchAfterSort();
+		if(searchSort == null || searchId == null)
+			return null;
 		if (sort == 0) {
-			return book.id.gt(cursor);
+			return fulltextTitle(filter.getQuery()).lt(Double.valueOf(searchSort))
+				.or(fulltextTitle(filter.getQuery()).eq(Double.valueOf(searchSort)).and(book.id.gt(searchId)));
 		} else if (sort == 1) {
-			return book.title.lt(lastBook.getTitle()).or(book.title.eq(lastBook.getTitle()).and(book.id.lt(cursor)));
+			return book.title.gt(searchSort).or(book.title.eq(searchSort).and(book.id.lt(searchId)));
 		} else if (sort == 2) {
-			return book.price.lt(lastBook.getPrice()).or(book.price.eq(lastBook.getPrice()).and(book.id.lt(cursor)));
+			return book.price.lt(Integer.valueOf(searchSort))
+				.or(book.price.eq(Integer.valueOf(searchSort)).and(book.id.lt(searchId)));
 		} else if (sort == 3) {
-			return book.price.gt(lastBook.getPrice()).or(book.price.eq(lastBook.getPrice()).and(book.id.gt(cursor)));
+			return book.price.gt(Integer.valueOf(searchSort))
+				.or(book.price.eq(Integer.valueOf(searchSort)).and(book.id.gt(searchId)));
 		}
 		return null;
 	}
@@ -137,7 +144,7 @@ public class BookDSLRepository {
 		}
 
 		if (sort == 1) {
-			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.title));
+			orderSpecifiers.add(new OrderSpecifier(Order.ASC, book.title));
 			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.id));
 		} else if (sort == 2) {
 			orderSpecifiers.add(new OrderSpecifier(Order.DESC, book.price));

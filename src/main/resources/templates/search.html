@@ -65,20 +65,6 @@
             margin-top: 30px;
         }
 
-        .star-select {
-            width: 30%;
-            margin-left: 20px;
-        }
-
-        .star-box {
-            width: 70%;
-            height: 200px;
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .price-area {
             margin-top: 30px;
         }
@@ -157,14 +143,22 @@
         .image-area {
             border-radius: 10px;
             margin-right: 7%;
-            width: 20%;
+            width: 100px;
         }
 
         .desc-area {
             border: 1px darkslategrey solid;
             padding: 10px;
             border-radius: 10px;
-            width: 78%;
+            width: 370px;
+        }
+
+        .long-title {
+            width: 300px;
+            display: inline-block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
     </style>
@@ -191,7 +185,7 @@
     <div class="filter-area">
         <h3>정렬</h3>
         <select id="sort" class="form-select" aria-label="Default select example">
-            <option selected value="0">선택</option>
+            <option selected value="0">정확도순</option>
             <option value="1">이름순</option>
             <option value="2">가격 높은순</option>
             <option value="3">가격 낮은순</option>
@@ -269,13 +263,11 @@
                         <img th:src="${book.getImage()}" alt="My Image" width="97">
                     </div>
                     <div class="desc-area">
-                        <h6 class="long-title" th:text="${book.getTitle()}">에밀</h6>
+                        <h6 class="long-title" th:text="${book.getTitle()}">에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h6>
                         <span th:text="'가격 : '+${book.getPrice()}+' 원'">35000</span><br>
-                        <span th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
-                        <span th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
-                        <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">
-                        82012.3
-                    </span>
+                        <span class="long-title" th:text="'작가 : '+${book.getAuthor()}">장 자크 루소</span><br>
+                        <span class="long-title" th:text="'출판사 : '+${book.getPublish()}">육문사</span><br>
+                        <span th:text="'별점 : '+${book.getStar()}+' / 발행년도 : '+${book.getYear()}+'.'+${book.getMonth()}">82012.3</span>
                     </div>
                 </div>
             </tr>
@@ -283,6 +275,7 @@
         <div>
             <button id="before-button" onclick="previousPage()"> 이전 페이지</button>
             <button id="after-button" onclick="nextPage()"> 다음 페이지</button>
+            <div id="page" style="text-align: center"></div>
         </div>
     </div>
 </div>
@@ -302,8 +295,41 @@
     let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
     let publish = params.get('publish') == null ? '' : params.get('publish');
     let author = params.get('author') == null ? '' : params.get('author');
-    let cursor = [[${result.getCursor()}]] == null ? '1' : [[${result.getCursor()}]];
-    let cursorList = localStorage.getItem('cursorList') == null ? [] : JSON.parse(localStorage.getItem('cursorList'));
+    let page = params.get('page') == null ? '1' : params.get('page');
+
+    let state = localStorage.getItem('state') == null ? '0' : localStorage.getItem('state');
+    let status = [[${result.getStatus()}]]
+    if (status == false && state == '0') {
+        alert("mysql로 변경")
+        localStorage.setItem('state', '1')
+        localStorage.removeItem('idList')
+        localStorage.removeItem('sortList')
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+    }
+    if (status == true && state == '1') {
+        alert("elastic으로 복귀")
+        localStorage.setItem('state', '0');
+        localStorage.removeItem('idList')
+        localStorage.removeItem('sortList')
+        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+    }
+
+    let rowLength = [[${result.getBooks().size()}]]
+    let searchAfterId = [[${result.getSearchAfterId()}]]
+    let searchAfterSort = [[${result.getSearchAfterSort()}]]
+
+    console.log('state : ' + state + ', status : ' + status)
+
+    console.log('page : ' + page);
+    document.getElementById("page").innerHTML=page + ' page'
+    console.log('id : ' + searchAfterId)
+    console.log('sort : ' + searchAfterSort)
+    // 2.
+    let idList = getIdList()
+    let sortList = getSortList()
+    console.log('idList : ' + idList)
+    console.log('sortList : ' + sortList)
+    console.log('length : ' + idList.length)
 
     $('#author').attr("value", author);
     $('#publish').attr("value", publish);
@@ -314,14 +340,11 @@
     $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
 
-    if (cursorList.length == 0) {
-        $('#before-button').hide();
-    } else if (cursor == -1) {
-        $('#after-button').hide();
-    } else if (cursor == 0) {
-        $('#after-button').hide();
-        $('#before-button').hide();
-    }
+
+    if (page - 2 < 0)
+        $('#before-button').hide()
+    if (rowLength < totalRow)
+        $('#after-button').hide()
 
     const categories = {
         '건강 취미': ['건강', '구기', '공예', '퍼즐 컬러링북', '취미', '운동', '의학', '등산 여행', '스포츠', '반려동물', '질병치료와 예방', '취미 기타', '건강 기타', '질병과 치료법', '스포츠/레크레이션', '공예/취미', '수집'],
@@ -361,55 +384,69 @@
     babyCategoryListing();
     $('#babyCategory').val(babyCategory).prop('selected', true);
 
-
     function nextPage() {
-        cursorList.push(cursor);
-        localStorage.setItem('cursorList', JSON.stringify(cursorList))
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        // 3.
+        page = params.get('page') == null ? '1' : params.get('page')
+        if (page >= JSON.parse(localStorage.getItem('idList')).length) {
+            idList.push(searchAfterId)
+            sortList.push(searchAfterSort)
+            localStorage.setItem('idList', JSON.stringify(idList))
+            localStorage.setItem('sortList', JSON.stringify(sortList))
+        }
+        searchAfterId = idList[page];
+        searchAfterSort = sortList[page];
+        page = Number(page) + 1
+        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
+        location.href = encodeURI(url);
     }
 
     function previousPage() {
-        cursorList.pop()
-        let previousCursor = ''
-        if (cursorList.length == 0) {
-            previousCursor = '1';
-            window.localStorage.clear()
-        } else {
-            previousCursor = cursorList[cursorList.length - 1];
-            localStorage.setItem('cursorList', JSON.stringify(cursorList))
-        }
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + previousCursor;
+        // 3.
+        page = params.get('page') == null ? '1' : params.get('page')
+        searchAfterId = idList[page - 2];
+        searchAfterSort = sortList[page - 2];
+        page = Number(page) - 1
+        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
+        location.href = encodeURI(url);
     }
 
     function searchBook() {
-        window.localStorage.clear();
-        query = $('#search-box').val();
-        category = $("#category option:selected").val();
-        babyCategory = $("#babyCategory option:selected").val();
-        sort = '0';
-        year = '0';
-        cursor = '1';
-        month = '';
-        star = '0';
-        minprice = '';
-        maxprice = '';
-        publish = '';
-        author = '';
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        if (keywordValidation()) {
+            localStorage.removeItem('idList')
+            localStorage.removeItem('sortList')
+            query = $('#search-box').val();
+            category = $("#category option:selected").val();
+            babyCategory = $("#babyCategory option:selected").val();
+            sort = '0';
+            year = '0';
+            searchAfterId = null
+            searchAfterSort = null
+            month = '';
+            star = '0';
+            minprice = '';
+            maxprice = '';
+            publish = '';
+            author = '';
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+        }
     }
 
     function applyFilter() {
-        window.localStorage.clear();
-        minprice = $("#min-price").val();
-        maxprice = $("#max-price").val();
-        if (checkPrice(minprice, maxprice)) {
-            publish = $("#publish").val();
-            author = $("#author").val();
-            sort = $("#sort option:selected").val();
-            year = $("#year option:selected").val();
-            star = $("#star option:selected").val();
-            cursor = '1';
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&cursor=" + cursor;
+        if (keywordValidation()) {
+            localStorage.removeItem('idList')
+            localStorage.removeItem('sortList')
+            minprice = $("#min-price").val();
+            maxprice = $("#max-price").val();
+            if (checkPrice(minprice, maxprice)) {
+                publish = $("#publish").val();
+                author = $("#author").val();
+                sort = $("#sort option:selected").val();
+                year = $("#year option:selected").val();
+                star = $("#star option:selected").val();
+                searchAfterId = null
+                searchAfterSort = null
+                location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+            }
         }
     }
 
@@ -449,6 +486,38 @@
         }
         $('#babyCategory').html(html)
     }
+
+    function keywordValidation() {
+        let space = /\s{2}/;
+        let inputValue = $('#search-box').val()
+        if (inputValue.trim().length == 0) {
+            alert("검색어를 입력해주세요.")
+            return false
+        } else if (space.exec(inputValue)) {
+            alert("공백은 두 칸이상 사용할 수 없습니다")
+            return false
+        }
+        return true;
+    }
+
+    function getIdList() {
+        if (localStorage.getItem('idList') == null || JSON.parse(localStorage.getItem('idList')).length == 0) {
+            localStorage.setItem('idList', JSON.stringify([]));
+            return [null];
+        } else {
+            return JSON.parse(localStorage.getItem('idList'))
+        }
+    }
+
+    function getSortList() {
+        if (localStorage.getItem('sortList') == null || JSON.parse(localStorage.getItem('sortList')).length == 0) {
+            localStorage.setItem('sortList', JSON.stringify([]));
+            return [null];
+        } else {
+            return JSON.parse(localStorage.getItem('sortList'))
+        }
+    }
+
 
     /*]]>*/
 </script>

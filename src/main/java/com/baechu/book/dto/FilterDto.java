@@ -1,9 +1,13 @@
 package com.baechu.book.dto;
 
-import lombok.Builder;
+import com.baechu.common.exception.CustomException;
+import com.baechu.common.exception.ErrorCode;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class FilterDto {
 	private String query;
 	private Integer sort;
@@ -16,23 +20,14 @@ public class FilterDto {
 	private Integer totalRow;
 	private String category;
 	private String babyCategory;
-	private Long cursor;
+	private String searchAfterSort;
+	private Long searchAfterId;
+	private Integer page;
 
-	@Builder
-	public FilterDto(String query, Integer sort, Integer year, Integer star, Integer minPrice, Integer maxPrice,
-		String publish, String author, Integer totalRow, String category, String babyCategory,
-		Long cursor) {
-		this.query = query;
-		this.sort = sort;
-		this.year = year;
-		this.star = star;
-		this.minPrice = minPrice;
-		this.maxPrice = maxPrice;
-		this.publish = publish;
-		this.author = author;
-		this.totalRow = totalRow;
-		this.category = category;
-		this.babyCategory = babyCategory;
-		this.cursor = cursor;
+	public void checkParameterValid() {
+		if (query == null || query.isEmpty())
+			throw new CustomException(ErrorCode.QUERY_NOT_FOUND);
+		totalRow = totalRow == null ? 10 : totalRow;
+		page = page == null ? 1 : page;
 	}
 }
