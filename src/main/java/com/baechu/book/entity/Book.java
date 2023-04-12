@@ -1,5 +1,6 @@
 package com.baechu.book.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +58,19 @@ public class Book {
 	@ColumnDefault("4")
 	private Long inventory;
 
+	@Column
+	private LocalDateTime modifiedAt;
+
+	@Column(nullable = false)
+	@ColumnDefault("0")
+	private int outOfPrint;
+
 	@OneToMany(mappedBy = "book")
 	private List<Jumoon> jumoons = new ArrayList<>();
 
 	public void orderbook(Long inventory){
 		this.inventory = inventory;
+		this.modifiedAt = LocalDateTime.now();
 	}
 
 }
