@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="ture" scanPeriod="30 seconds">
+    <property name="LOGS_PATH" value="./logs"/>
+    <springProperty name="SLACK_WEBHOOK_URI" source="logging.slack.webhook"/>
+
+    <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
+        <webhookUri>${SLACK_WEBHOOK_URI}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}][%M.%L][%-5level] : %msg%n</pattern>
+        </layout>
+        <username>godok-log</username>
+        <iconEmoji>:stuck_out_tongue_winking_eye:</iconEmoji>
+        <colorCoding>true</colorCoding>
+    </appender>
+
+<!--    추후에 로깅 필요한 부분 생기면 활성화-->
+<!--    <appender name="ROLLING_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            <level>WARN</level>-->
+<!--        </filter>-->
+<!--        <file>${LOGS_PATH}/logback.log</file>-->
+<!--        <encoder>-->
+<!--            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--        &lt;!&ndash; 롤링 정책 &ndash;&gt;-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            &lt;!&ndash;.gz, .zip등을 넣으면 자동으로 일자별로 압축&ndash;&gt;-->
+<!--            <fileNamePattern>${LOGS_PATH}/logback.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
+<!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+<!--                &lt;!&ndash; or whenever the file size reaches 100MB &ndash;&gt;-->
+<!--                <maxFileSize>5MB</maxFileSize>-->
+<!--                &lt;!&ndash; 일자별 로그파일 최대 보관주기 (일단위)&ndash;&gt;-->
+<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+<!--            <maxHistory>30</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--    </appender>-->
+
+    <root level="INFO">
+        <appender-ref ref="SLACK"/>
+    </root>
+</configuration>
