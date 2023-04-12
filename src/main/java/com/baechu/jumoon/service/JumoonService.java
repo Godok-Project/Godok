@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -33,11 +35,12 @@ public class JumoonService {
 
 	private final JumoonRepository jumoonRepository;
 
+	private final EntityManager entityManager;
+
 
 	@Transactional
 	public void fakebookorder(Book book, Member member, Integer quantity){
 		jumoonRepository.save(new Jumoon(member,book,quantity));
-
 	}
 
 	//주문 하기
@@ -52,8 +55,10 @@ public class JumoonService {
 			Member member = (Member)request.getSession()
 				.getAttribute(SessionConst.LOGIN_MEMBER);
 
-			Book book = bookRepository.findById(bookId).orElseThrow(
-				() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+			// Book book = bookRepository.findById(bookId).orElseThrow(
+			// 	() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
+
+			Book book = entityManager.find(Book.class, bookId, LockModeType.PESSIMISTIC_WRITE);
 
 			Long inven = book.getInventory()-quantity;
 			if (inven<0){
