@@ -21,6 +21,7 @@ public class BookRankDto {
 	private Integer month;
 	private Integer sold;
 	private Long inventory;
+	private int outOfPrint;
 
 	@Builder
 	public BookRankDto(Book book, Integer sold) {
@@ -35,6 +36,7 @@ public class BookRankDto {
 		this.month = book.getMonth();
 		this.sold = sold;
 		this.inventory = book.getInventory();
+		this.outOfPrint= book.getOutOfPrint();
 
 	}
 
