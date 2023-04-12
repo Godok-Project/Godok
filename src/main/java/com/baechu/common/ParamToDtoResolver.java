@@ -11,9 +11,14 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.baechu.common.exception.CustomException;
+import com.baechu.common.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class ParamToDtoResolver implements HandlerMethodArgumentResolver {
 
 	private ObjectMapper mapper;
@@ -35,14 +40,19 @@ public class ParamToDtoResolver implements HandlerMethodArgumentResolver {
 		ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest,
 		WebDataBinderFactory binderFactory
-	) throws Exception {
-		HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
-		String decodedQuery = URLDecoder.decode(request.getQueryString(), "UTF-8")
-			.replaceAll("\"", "\\" + "\\" + "\"");
-		System.out.println(decodedQuery);
-		String json = queryToJson(decodedQuery);
-		Object obj = mapper.readValue(json, parameter.getParameterType());
-		return obj;
+	) {
+		try {
+			HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
+			String decodedQuery = URLDecoder.decode(request.getQueryString(), "UTF-8")
+				.replaceAll("\"", "\\" + "\\" + "\"");
+			System.out.println(decodedQuery);
+			String json = queryToJson(decodedQuery);
+			Object obj = mapper.readValue(json, parameter.getParameterType());
+			return obj;
+		} catch (Exception e) {
+			log.warn("Cause : {}, Message : {}" ,e.getCause(), e.getMessage());
+			throw new CustomException(ErrorCode.INVALID_PARAMETERS);
+		}
 	}
 
 	// parameter json으로 변환

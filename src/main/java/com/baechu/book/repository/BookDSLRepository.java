@@ -118,6 +118,8 @@ public class BookDSLRepository {
 		Integer sort = filter.getSort();
 		Long searchId = filter.getSearchAfterId();
 		String searchSort = filter.getSearchAfterSort();
+		if(searchSort == null || searchId == null)
+			return null;
 		if (sort == 0) {
 			return fulltextTitle(filter.getQuery()).lt(Double.valueOf(searchSort))
 				.or(fulltextTitle(filter.getQuery()).eq(Double.valueOf(searchSort)).and(book.id.gt(searchId)));

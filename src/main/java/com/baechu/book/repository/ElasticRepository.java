@@ -34,6 +34,7 @@ public class ElasticRepository {
 		List<Object> searchAfter = initSearchAfter(filter.getSearchAfterSort(), filter.getSearchAfterId());
 
 		NativeSearchQuery build = new NativeSearchQueryBuilder()
+			.withMinScore(10f)
 			.withQuery(new CustomBoolQueryBuilder()
 				.must(multiMatchQuery(filter.getQuery(), "title", "author", "publish"))
 				.filter(matchQuery("category.keyword", filter.getCategory()))
@@ -57,11 +58,16 @@ public class ElasticRepository {
 		String searchAfterSort = String.valueOf(searchAfter.get(0));
 		Long searchAfterId = Long.parseLong(String.valueOf(searchAfter.get(1)));
 
-		BookListDto result = new BookListDto(bookDtoList, searchAfterSort, searchAfterId);
+		BookListDto result = new BookListDto(bookDtoList, searchAfterSort, searchAfterId, filter.getPage(), true);
 		return result;
 	}
 
-	List<Object> initSearchAfter(String searchAfterSort, Long searchAfterId) {
+	/**
+	 * - ES의 SearchAfter 값을 결정하는 메서드. (SearchAfter는 mysql에서의 Cursor와 같은 개념이다.)
+	 * 	- initSearchAfter : 요청받은 searchAfter를 list에 입력하는 메서드
+	 * 	- setSearchAfter : 검색 결과에 따라 필요한 searchAfter를 반환하는 메서드
+	 */
+	private List<Object> initSearchAfter(String searchAfterSort, Long searchAfterId) {
 		List<Object> searchAfter = new ArrayList<>();
 
 		if (searchAfterSort == null || searchAfterId == null)
@@ -72,13 +78,13 @@ public class ElasticRepository {
 		return searchAfter;
 	}
 
-	public List<Object> setSearchAfter(List<SearchHit<BookDto>> searchHits, FilterDto filter) {
+	private List<Object> setSearchAfter(List<SearchHit<BookDto>> searchHits, FilterDto filter) {
 		List<Object> lists = new ArrayList<>();
-		if (searchHits.size() == 0) {
+		if (searchHits.size() == 0) {		// 검색 결과가 없는 경우
 			lists.add("-1");
 			lists.add("-1");
 			return lists;
-		} else if (searchHits.size() < filter.getTotalRow()) {
+		} else if (searchHits.size() < filter.getTotalRow()) {		// 검색 결과가 총 개수보다 작은 경우
 			lists.add("0");
 			lists.add("-1");
 			return lists;
