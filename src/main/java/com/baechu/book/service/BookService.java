@@ -38,6 +38,7 @@ import com.baechu.common.exception.ErrorCode;
 import com.baechu.jumoon.entity.Jumoon;
 import com.baechu.jumoon.repository.JumoonRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,14 +81,21 @@ public class BookService {
 
 	// Cursor 기반 페이징
 	@Transactional(readOnly = true)
-	public BookListDto searchByCursor(FilterDto filter) {
-		List<BookDto> books = bookDSLRepository.searchByCursor(filter);
-		List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
-		return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1), filter.getPage());
+	public BookListDto searchByCursor(FilterDto filter, Throwable t) {
+		try {
+			log.info("Elastic down : " + t.getMessage());
+			List<BookDto> books = bookDSLRepository.searchByCursor(filter);
+			List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
+			return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1), filter.getPage(), false);
+		} catch (Exception e) {
+			log.warn("Mysql SQLException 발생");
+			return new BookListDto(new ArrayList<>(), null, null, null, false);
+		}
 	}
 
 	// ES 검색
 	@Transactional(readOnly = true)
+	@CircuitBreaker(name = "ElasticError", fallbackMethod = "searchByCursor")
 	public BookListDto afterSearchByES(FilterDto filter) {
 		BookListDto books = elasticRepository.searchByEsAfter(filter);
 		return books;

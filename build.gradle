@@ -51,6 +51,10 @@ dependencies {
 //    testImplementation 'org.springframework.boot:spring-boot-batch-test'
     //Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // CurcuitBreaker
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
