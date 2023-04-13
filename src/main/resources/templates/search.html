@@ -176,9 +176,16 @@
     <select id="babyCategory" class="form-select" aria-label="Default select example">
         <option selected value="">소분류</option>
     </select>
-
-    <input type="text" class="form-control" id="search-box" placeholder="검색">
-
+    <div>
+        <input type="text" class="form-control" id="search-box" placeholder="검색">
+        <div class="list-group" style = "width: 500px; margin-left: 20px;">
+            <div id="autoMaker">
+                <div th:each="maker : ${makers}">
+                    <button type="button" th:text="${maker}" onclick="inputText(value)" th:value="${maker}" class="list-group-item list-group-item-action">A second button item</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <input class="btn btn-primary" type="button" onclick="searchBook()" value="검색">
 </div>
 <div class="mid-area">
@@ -519,6 +526,39 @@
         } else {
             return JSON.parse(localStorage.getItem('sortList'))
         }
+    }
+
+    $('#search-box').keyup(function () {
+        console.log("keyup 입장")
+        let text = query = $('#search-box').val()
+        let autoMakerAvailable = false
+        if (text.trim() != '') {
+            $('#autoMaker').children().remove()
+            // 값 받아오기
+            console.log("ajax 시작")
+            $.ajax({
+                type : 'GET',
+                url : '/auto?query='+ text,
+                success : function(result) {
+                    console.log(result)
+                    // 받아온 값 클릭 시 동작 정의하기
+                    $('#autoMaker').replaceWith(result);
+                    // 완성 상태 표시하기
+                },
+                error : function(request, status, error) {
+                    console.log("ajax 에러")
+                    $('#autoMaker').children().remove()
+                }
+            })
+        } else {
+            console.log("공백 입력")
+            $('#autoMaker').children().remove()
+        }
+    });
+
+    function inputText(value) {
+        $('#search-box').val(value)
+        $('#autoMaker').children().remove()
     }
 
 
