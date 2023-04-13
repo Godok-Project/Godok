@@ -1,5 +1,7 @@
 package com.baechu.book.entity;
 
+import java.sql.Timestamp;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +72,11 @@ public class Book {
 
 	public void orderbook(Long inventory){
 		this.inventory = inventory;
-		this.modifiedAt = LocalDateTime.now();
+		this.modifiedAt = LocalDateTime.now().minusHours(9);
+	}
+
+	public void batchBook(Long inventory){
+		this.inventory = inventory;
 	}
 
 }
