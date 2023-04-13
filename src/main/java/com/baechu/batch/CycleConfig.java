@@ -170,7 +170,9 @@ public class CycleConfig {
 					Book book = bookRepository.findById(i).orElseThrow(
 						()->new CustomException(ErrorCode.BOOK_NOT_FOUND)
 					);
-					book.orderbook(20L);
+					if(book.getOutOfPrint() != 1){
+						book.batchBook(20L);
+					}
 				}
 				return RepeatStatus.FINISHED;
 			})
