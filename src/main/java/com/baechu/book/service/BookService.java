@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.BookRankDto;
 import com.baechu.book.dto.FilterDto;
+import com.baechu.book.dto.autoMakerDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
@@ -65,12 +68,12 @@ public class BookService {
 	@Transactional(readOnly = true)
 	public BookListDto searchByCursor(FilterDto filter, Throwable t) {
 		try {
-			log.info("Elastic down : " + t.getMessage());
+			log.warn("Elastic Down : " + t.getMessage());
 			List<BookDto> books = bookDSLRepository.searchByCursor(filter);
 			List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
 			return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1), filter.getPage(), false);
 		} catch (Exception e) {
-			log.warn("Mysql SQLException 발생");
+			log.warn("Mysql SQLException : " + e.getMessage());
 			return new BookListDto(new ArrayList<>(), null, null, null, false);
 		}
 	}
@@ -236,5 +239,13 @@ public class BookService {
 		} else {    // sort == 2 or 3 이면, price 반환
 			return String.valueOf(lastBook.getPrice());
 		}
+	}
+
+	public List<String> autoMaker(String query) {
+		SearchHits<autoMakerDto> searchHits = elasticRepository.autoMaker(query);
+		return searchHits.getSearchHits()
+			.stream()
+			.map(i -> i.getContent().getTitle())
+			.collect(Collectors.toList());
 	}
 }

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FuzzyQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -16,8 +20,10 @@ import org.springframework.stereotype.Repository;
 import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.FilterDto;
+import com.baechu.book.dto.autoMakerDto;
 import com.baechu.elastic.custom.CustomBoolQueryBuilder;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -36,7 +42,7 @@ public class ElasticRepository {
 		NativeSearchQuery build = new NativeSearchQueryBuilder()
 			.withMinScore(10f)
 			.withQuery(new CustomBoolQueryBuilder()
-				.must(multiMatchQuery(filter.getQuery(), "title", "author", "publish"))
+				.must(multiMatchQuery(filter.getQuery(), "title", "author"))
 				.filter(matchQuery("category.keyword", filter.getCategory()))
 				.filter(matchQuery("baby_category.keyword", filter.getBabyCategory()))
 				.filter(priceQuery(filter.getMinPrice(), filter.getMaxPrice()))
@@ -92,4 +98,14 @@ public class ElasticRepository {
 		return searchHits.get(searchHits.size() - 1).getSortValues();
 	}
 
+	public SearchHits<autoMakerDto> autoMaker(String query) {
+		NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+			.withQuery(new BoolQueryBuilder()
+				.should(new MatchPhraseQueryBuilder("title", query))
+				.should(new PrefixQueryBuilder("title.keyword", query))
+			)
+			.withCollapseField("title.keyword")
+			.build();
+		return operations.search(searchQuery, autoMakerDto.class);
+	}
 }

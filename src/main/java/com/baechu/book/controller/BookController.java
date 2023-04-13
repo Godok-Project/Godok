@@ -7,11 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.BookRankDto;
 import com.baechu.book.dto.FilterDto;
-import com.baechu.book.entity.Book;
 import com.baechu.book.service.BookService;
 import com.baechu.common.ParamToDto;
 
@@ -36,8 +36,6 @@ public class BookController {
 	public String searchByWord(Model model, @ParamToDto FilterDto filter) {
 		filter.checkParameterValid();
 		BookListDto result = bookService.afterSearchByES(filter);
-		// mysql 검색 -> 서킷 브레이커 적용시 사용 예정
-		// BookListDto result = bookService.searchByCursor(filter);
 		model.addAttribute("result", result);
 		return "search";
 	}
@@ -49,5 +47,12 @@ public class BookController {
 		model.addAttribute("list", list);
 
 		return "main";
+	}
+
+	@GetMapping("/auto")
+	public String autoMaker(Model model, @RequestParam String query) {
+		List<String> result = bookService.autoMaker(query);
+		model.addAttribute("makers", result);
+		return "/search::#autoMaker";
 	}
 }
