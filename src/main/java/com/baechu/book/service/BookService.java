@@ -56,6 +56,7 @@ public class BookService {
 		String birth = book.getYear() + "년 " + book.getMonth() + "월";
 		info.put("birth", birth);
 		info.put("inventory", book.getInventory());
+		info.put("out_of_print", book.getOutOfPrint());
 
 		return info;
 	}
@@ -106,7 +107,7 @@ public class BookService {
 				random = (long)r.nextInt(4000000);
 				Optional<Book> book = bookRepository.findById(random);
 				if (book.isPresent()) {
-					bookList.add(new BookRankDto(book.get(), 0));
+					bookList.add(new BookRankDto(book.get(), 0,String.valueOf(bookList.size()+1)));
 				} else
 					i--;
 			}
@@ -117,7 +118,11 @@ public class BookService {
 				Integer booksold = Integer.valueOf(i.split(",")[1]);
 
 				Optional<Book> book = bookRepository.findById(bookid);
-				bookList.add(new BookRankDto(book.get(),booksold));
+				if(booksold==0){
+					bookList.add(new BookRankDto(book.get(),booksold,"추천 도서"));
+
+				}else
+				bookList.add(new BookRankDto(book.get(),booksold,String.valueOf(bookList.size()+1)+"등"));
 			}
 		}
 
@@ -165,15 +170,24 @@ public class BookService {
 		Collections.sort(bookidkeys, ((o1, o2) -> (soldbooks.get(o2).compareTo(soldbooks.get(o1)))));
 
 		//어제 주문된 책 종류가 8개 미만인 경우 100,101,102... 순으로 책을 채워준다.
-		Long cnt = 100L;
+		// Long cnt = 100L;
+		// while (bookidkeys.size()<8){
+		// 	bookidkeys.add(cnt);
+		// 	soldbooks.put(cnt,0);
+		// 	cnt++;
+		// }
+
+
+		//랜덤으로 책 채워주기
+		Long random;
+		Random r = new Random();
 		while (bookidkeys.size()<8){
-			bookidkeys.add(cnt);
-			soldbooks.put(cnt,0);
-			cnt++;
+			random = (long)r.nextInt(4000000);
+			bookidkeys.add(random);
+			soldbooks.put(random,0);
 		}
 
 		//이제 랭크 순서대로 넣어준다. "rank" : {"1,9", "2,8"....} 책id와 판매량은 쉼표로 구분하고 각각 리스트의 원소로 넣자
-
 		List<String> bookrankAndsold = new ArrayList<>();
 		for (int i = 0; i < 8; i++) {
 			String rankvalue = bookidkeys.get(i)+","+soldbooks.get(bookidkeys.get(i));

@@ -192,7 +192,7 @@
         <div>남은 재고 : </div>
         <div class="storage-count" name= "bookrestover" id="bookrestover" th:text="${info.inventory}">
         </div>
-        <div class="form-input-container" id="bookcount">
+        <div class="form-input-container" id="bookcount" th:if="${info.inventory != 0}">
           <select id="inventory" class="form-select form-select-sm select-form" aria-label=".form-select-sm example" >
             <option selected>주문할 권 수</option>
             <option value="1">1권</option>
@@ -205,10 +205,12 @@
             <option value="8">8권</option>
             <option value="9">9권</option>
           </select>
-          <button class="order-btn" type="button" onclick="buybook()" th:if="${not #strings.isEmpty(session.loginMember)}">주문하기</button>
-          <button class="order-btn" type="button" onclick="location.href='../login'" th:if="${#strings.isEmpty(session.loginMember)}">로그인먼저</button>
-
+            <button class="order-btn" type="button" onclick="buybook()" th:if="${not #strings.isEmpty(session.loginMember)}">주문하기</button>
+            <button class="order-btn" type="button" onclick="location.href='../login'" th:if="${#strings.isEmpty(session.loginMember)}">로그인먼저</button>
         </div>
+        <span th:if="${info.inventory == 0}">품절!</span>
+        <span th:if="${info.out_of_print == 1}">절판!</span>
+
       </form>
     </div>
   </div>

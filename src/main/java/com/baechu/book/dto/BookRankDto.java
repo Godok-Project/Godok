@@ -20,9 +20,12 @@ public class BookRankDto {
 	private Integer year;
 	private Integer month;
 	private Integer sold;
+	private Long inventory;
+	private int outOfPrint;
+	private String rank;
 
 	@Builder
-	public BookRankDto(Book book, Integer sold) {
+	public BookRankDto(Book book, Integer sold, String rank) {
 		this.id = book.getId();
 		this.image = book.getImage();
 		this.price = book.getPrice();
@@ -33,7 +36,9 @@ public class BookRankDto {
 		this.year = book.getYear();
 		this.month = book.getMonth();
 		this.sold = sold;
-
+		this.inventory = book.getInventory();
+		this.outOfPrint= book.getOutOfPrint();
+		this.rank = rank;
 	}
 
 

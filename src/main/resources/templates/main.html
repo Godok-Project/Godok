@@ -168,7 +168,8 @@
     .image-area > img {
         position: absolute;
         width: 90%;
-        top: -3%;
+        height: 70%;
+        top: 15%;
     }
 
     .desc-area {
@@ -368,6 +369,9 @@
         <tr th:each="book:${list}">
             <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.id})}'|">
                 <div  class="image-area">
+<!--                    <span th:if="${book.inventory==0}" ><strong><mark>품절</mark></strong></span>-->
+<!--                    <span th:if="${book.outOfPrint==1}" ><strong><mark>절판</mark></strong></span>-->
+                    <span th:text="${book.rank}"><strong><mark>1등</mark></strong></span>
                         <img th:src="${book.image}" alt="My Image" width="110" height="170"/>
                 </div>
                 <div  class="desc-area">
@@ -376,7 +380,9 @@
                     <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
                     <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
 <!--                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>-->
-                    <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>
+<!--                    <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>-->
+                    <span th:if="${book.inventory==0}" ><strong><mark>품절</mark></strong></span>
+                    <span th:if="${book.outOfPrint==1}" ><strong><mark>절판</mark></strong></span>
                 </div>
             </div>
         </tr>
