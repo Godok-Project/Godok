@@ -13,29 +13,23 @@
         <colorCoding>true</colorCoding>
     </appender>
 
-<!--    추후에 로깅 필요한 부분 생기면 활성화-->
-<!--    <appender name="ROLLING_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-<!--            <level>WARN</level>-->
-<!--        </filter>-->
-<!--        <file>${LOGS_PATH}/logback.log</file>-->
-<!--        <encoder>-->
-<!--            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--        &lt;!&ndash; 롤링 정책 &ndash;&gt;-->
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-<!--            &lt;!&ndash;.gz, .zip등을 넣으면 자동으로 일자별로 압축&ndash;&gt;-->
-<!--            <fileNamePattern>${LOGS_PATH}/logback.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>-->
-<!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
-<!--                &lt;!&ndash; or whenever the file size reaches 100MB &ndash;&gt;-->
-<!--                <maxFileSize>5MB</maxFileSize>-->
-<!--                &lt;!&ndash; 일자별 로그파일 최대 보관주기 (일단위)&ndash;&gt;-->
-<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
-<!--            <maxHistory>30</maxHistory>-->
-<!--        </rollingPolicy>-->
-<!--    </appender>-->
+    <!--     properties 파일 지정-->
+    <property resource="application.properties"/>
+    <property name="LOGSTASH_URL" value="${logstash.url}"/>
+
+    <!-- Logstash -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_URL}</destination>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}]%level: %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <root level="WARN">
         <appender-ref ref="SLACK"/>
     </root>
+    <logger name="OrderLog" level="info" additivity="false">
+        <appender-ref ref="SLACK"/>
+        <appender-ref ref="LOGSTASH"/>
+    </logger>
 </configuration>
