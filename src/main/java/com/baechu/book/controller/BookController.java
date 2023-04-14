@@ -35,7 +35,15 @@ public class BookController {
 	@GetMapping("/search")
 	public String searchByWord(Model model, @ParamToDto FilterDto filter) {
 		filter.checkParameterValid();
-		BookListDto result = bookService.afterSearchByES(filter);
+		BookListDto result = bookService.keywordSearchByElastic(filter);
+		model.addAttribute("result", result);
+		return "search";
+	}
+
+	@GetMapping("/search/filter")
+	public String searchByFilter(Model model, @ParamToDto FilterDto filter) {
+		filter.checkParameterValid();
+		BookListDto result = bookService.filterSearchByElastic(filter);
 		model.addAttribute("result", result);
 		return "search";
 	}
