@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class FilterDto {
 	private String query;
 	private Integer sort;
+	private Integer inventory;
 	private Integer year;
 	private Integer star;
 	private Integer minPrice;

@@ -1,7 +1,6 @@
 package com.baechu.book.service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,32 +8,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baechu.batch.CycleConfig;
-import com.baechu.batch.NoRankCycle;
 import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.BookRankDto;
-import com.baechu.book.dto.CursorBookDto;
 import com.baechu.book.dto.FilterDto;
+import com.baechu.book.dto.autoMakerDto;
 import com.baechu.book.entity.Book;
 import com.baechu.book.repository.BookDSLRepository;
 import com.baechu.book.repository.BookRepository;
 import com.baechu.book.repository.ElasticRepository;
-import com.baechu.common.exception.CustomException;
-import com.baechu.common.exception.ErrorCode;
 import com.baechu.jumoon.entity.Jumoon;
 import com.baechu.jumoon.repository.JumoonRepository;
 
@@ -52,7 +43,9 @@ public class BookService {
 	private final ElasticRepository elasticRepository;
 	private final JumoonRepository jumoonRepository;
 
-
+	/**
+	 *	 책 상세 정보
+	 */
 
 	@Transactional(readOnly = true)
 	public Map<String, Object> bookdetail(Long bookid) {
@@ -68,39 +61,82 @@ public class BookService {
 		info.put("publish", book.getPublish());
 		String birth = book.getYear() + "년 " + book.getMonth() + "월";
 		info.put("birth", birth);
+		info.put("inventory", book.getInventory());
+		info.put("out_of_print", book.getOutOfPrint());
 
-		String bookKey = "b" + bookid;
-		ValueOperations<String, String> values = redisTemplate.opsForValue();
-		if (values.get(bookKey) == null) {
-			info.put("inventory", book.getInventory());
-		} else {
-			info.put("inventory", values.get(bookKey).split(",")[1]);
-		}
 		return info;
+	}
+
+	/**
+	 * 키워드 검색
+	 */
+
+	// ES 검색
+	@Transactional(readOnly = true)
+	@CircuitBreaker(name = "ElasticError", fallbackMethod = "keywordSearchBySql")
+	public BookListDto keywordSearchByElastic(FilterDto filter) {
+		SearchHits<BookDto> search = elasticRepository.keywordSearchByElastic(filter);
+		BookListDto result = resultToDto(search, filter);
+		return result;
 	}
 
 	// Cursor 기반 페이징
 	@Transactional(readOnly = true)
-	public BookListDto searchByCursor(FilterDto filter, Throwable t) {
+	public BookListDto keywordSearchBySql(FilterDto filter, Throwable t) {
 		try {
-			log.info("Elastic down : " + t.getMessage());
-			List<BookDto> books = bookDSLRepository.searchByCursor(filter);
+			log.warn("keyword Elastic Down : " + t.getMessage());
+			List<BookDto> books = bookDSLRepository.keywordSearchByCursor(filter);
 			List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
 			return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1), filter.getPage(), false);
 		} catch (Exception e) {
-			log.warn("Mysql SQLException 발생");
+			log.warn("keyword Mysql SQLException : " + e.getMessage());
 			return new BookListDto(new ArrayList<>(), null, null, null, false);
 		}
 	}
 
+	/**
+	 * 필터 검색
+	 */
+
 	// ES 검색
 	@Transactional(readOnly = true)
-	@CircuitBreaker(name = "ElasticError", fallbackMethod = "searchByCursor")
-	public BookListDto afterSearchByES(FilterDto filter) {
-		BookListDto books = elasticRepository.searchByEsAfter(filter);
-		return books;
+	@CircuitBreaker(name = "ElasticError", fallbackMethod = "filterSearchBySql")
+	public BookListDto filterSearchByElastic(FilterDto filter) {
+		List<Object> searchAfter = initSearchAfter(filter.getSearchAfterSort(), filter.getSearchAfterId());
+		SearchHits<BookDto> search = elasticRepository.filterSearchByElastic(filter, searchAfter);
+		BookListDto result = resultToDto(search, filter);
+		return result;
 	}
 
+	// Cursor 기반 페이징
+	@Transactional(readOnly = true)
+	public BookListDto filterSearchBySql(FilterDto filter, Throwable t) {
+		try {
+			log.warn("filter Elastic Down : " + t.getMessage());
+			List<BookDto> books = bookDSLRepository.filterSearchByCursor(filter);
+			List<Object> cursors = getCursor(books, filter.getTotalRow(), filter.getSort());
+			return new BookListDto(books, (String)cursors.get(0), (Long)cursors.get(1), filter.getPage(), false);
+		} catch (Exception e) {
+			log.warn("filter Mysql SQLException : " + e.getMessage());
+			return new BookListDto(new ArrayList<>(), null, null, null, false);
+		}
+	}
+
+	/**
+	 *  자동 완성
+	 */
+
+	public List<String> autoMaker(String query) {
+		SearchHits<autoMakerDto> searchHits = elasticRepository.autoMaker(query);
+		return searchHits.getSearchHits()
+			.stream()
+			.map(i -> i.getContent().getTitle())
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 *	메인 페이지 책 리스팅
+	 */
 
 	@Transactional
 	public List<BookRankDto> bookList() {
@@ -116,9 +152,7 @@ public class BookService {
 			try {
 				summonRank();
 			}catch (Exception e){
-
 			}
-
 
 			Long random;
 			Random r = new Random();
@@ -127,7 +161,7 @@ public class BookService {
 				random = (long)r.nextInt(4000000);
 				Optional<Book> book = bookRepository.findById(random);
 				if (book.isPresent()) {
-					bookList.add(new BookRankDto(book.get(), 0));
+					bookList.add(new BookRankDto(book.get(), 0,String.valueOf(bookList.size()+1)));
 				} else
 					i--;
 			}
@@ -138,7 +172,11 @@ public class BookService {
 				Integer booksold = Integer.valueOf(i.split(",")[1]);
 
 				Optional<Book> book = bookRepository.findById(bookid);
-				bookList.add(new BookRankDto(book.get(),booksold));
+				if(booksold==0){
+					bookList.add(new BookRankDto(book.get(),booksold,"추천 도서"));
+
+				}else
+				bookList.add(new BookRankDto(book.get(),booksold,String.valueOf(bookList.size()+1)+"등"));
 			}
 		}
 
@@ -186,15 +224,24 @@ public class BookService {
 		Collections.sort(bookidkeys, ((o1, o2) -> (soldbooks.get(o2).compareTo(soldbooks.get(o1)))));
 
 		//어제 주문된 책 종류가 8개 미만인 경우 100,101,102... 순으로 책을 채워준다.
-		Long cnt = 100L;
+		// Long cnt = 100L;
+		// while (bookidkeys.size()<8){
+		// 	bookidkeys.add(cnt);
+		// 	soldbooks.put(cnt,0);
+		// 	cnt++;
+		// }
+
+
+		//랜덤으로 책 채워주기
+		Long random;
+		Random r = new Random();
 		while (bookidkeys.size()<8){
-			bookidkeys.add(cnt);
-			soldbooks.put(cnt,0);
-			cnt++;
+			random = (long)r.nextInt(4000000);
+			bookidkeys.add(random);
+			soldbooks.put(random,0);
 		}
 
 		//이제 랭크 순서대로 넣어준다. "rank" : {"1,9", "2,8"....} 책id와 판매량은 쉼표로 구분하고 각각 리스트의 원소로 넣자
-
 		List<String> bookrankAndsold = new ArrayList<>();
 		for (int i = 0; i < 8; i++) {
 			String rankvalue = bookidkeys.get(i)+","+soldbooks.get(bookidkeys.get(i));
@@ -214,7 +261,6 @@ public class BookService {
 	/**
 	 * - Mysql 커서 선택 메서드
 	 * 	- getCursor : 가져온 책 리스트의 수량에 따라 필요한 값 배치 (페이지 버튼 존재 확인용)
-	 * 		- search.html 332줄에 페이지 버튼 로직 있음
 	 * 	- selectSortCursor : 검색 결과가 필요양만큼 있을 때 다음 페이지를 위한 커서를 선택하는 메서드
 	 */
 	private List<Object> getCursor(List<BookDto> books, Integer totalRow, Integer sort) {
@@ -243,5 +289,48 @@ public class BookService {
 		} else {    // sort == 2 or 3 이면, price 반환
 			return String.valueOf(lastBook.getPrice());
 		}
+	}
+
+	/**
+	 * - ES의 SearchAfter 값을 결정하는 메서드. (SearchAfter는 mysql에서의 Cursor와 같은 개념이다.)
+	 * 	- initSearchAfter : 요청받은 searchAfter를 list에 입력하는 메서드
+	 * 	- resultToDto : 검색 결과를 Dto로 변환하는 메서드
+	 * 		- setSearchAfter : 검색 결과에 따라 필요한 searchAfter를 반환하는 메서드
+	 */
+	private List<Object> initSearchAfter(String searchAfterSort, Long searchAfterId) {
+		List<Object> searchAfter = new ArrayList<>();
+
+		if (searchAfterSort == null || searchAfterId == null)
+			return null;
+
+		searchAfter.add(searchAfterSort);
+		searchAfter.add(searchAfterId);
+		return searchAfter;
+	}
+
+	private BookListDto resultToDto(SearchHits<BookDto> search, FilterDto filter) {
+		List<SearchHit<BookDto>> searchHits = search.getSearchHits();
+		System.out.println(search.getTotalHits());
+		List<BookDto> bookDtoList = searchHits.stream().map(hit -> hit.getContent()).collect(Collectors.toList());
+
+		List<Object> searchAfter = setSearchAfter(searchHits, filter);
+		String searchAfterSort = String.valueOf(searchAfter.get(0));
+		Long searchAfterId = Long.parseLong(String.valueOf(searchAfter.get(1)));
+
+		return new BookListDto(bookDtoList, searchAfterSort, searchAfterId, filter.getPage(), true);
+	}
+
+	private List<Object> setSearchAfter(List<SearchHit<BookDto>> searchHits, FilterDto filter) {
+		List<Object> lists = new ArrayList<>();
+		if (searchHits.size() == 0) {		// 검색 결과가 없는 경우
+			lists.add("-1");
+			lists.add("-1");
+			return lists;
+		} else if (searchHits.size() < filter.getTotalRow()) {		// 검색 결과가 총 개수보다 작은 경우
+			lists.add("0");
+			lists.add("-1");
+			return lists;
+		}
+		return searchHits.get(searchHits.size() - 1).getSortValues();
 	}
 }

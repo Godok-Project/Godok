@@ -58,7 +58,11 @@
             margin-left: 2%;
             border: 1px darkblue solid;
             border-radius: 8px;
-            height: 800px
+            height: 900px
+        }
+
+        .inventory-area{
+            margin-top: 30px;
         }
 
         .star-area {
@@ -176,20 +180,34 @@
     <select id="babyCategory" class="form-select" aria-label="Default select example">
         <option selected value="">소분류</option>
     </select>
-
-    <input type="text" class="form-control" id="search-box" placeholder="검색">
-
+    <div>
+        <input type="text" class="form-control" id="search-box" placeholder="검색">
+        <div class="list-group" style = "width: 500px; margin-left: 20px;">
+            <div id="autoMaker">
+                <div th:each="maker : ${makers}">
+                    <button type="button" th:text="${maker}" onclick="inputText(value)" th:value="${maker}" class="list-group-item list-group-item-action">A second button item</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <input class="btn btn-primary" type="button" onclick="searchBook()" value="검색">
 </div>
 <div class="mid-area">
     <div class="filter-area">
         <h3>정렬</h3>
-        <select id="sort" class="form-select" aria-label="Default select example">
+        <select id="sort" class="form-select" aria-label="Default select example" style="height: 40px">
             <option selected value="0">정확도순</option>
             <option value="1">이름순</option>
             <option value="2">가격 높은순</option>
             <option value="3">가격 낮은순</option>
         </select>
+        <div class="inventory-area">
+            <h4>재고</h4>
+            <select id="inventory" class="form-select" aria-label="Default select example" style="height: 40px">
+                <option selected value="0">품절 포함</option>
+                <option value="1">품절 제외</option>
+            </select>
+        </div>
         <div class="star-area">
             <h3>별점 <span style="font-size: 0.6em">(이상)</span></h3>
             <select id="star" class="form-select" aria-label="Default select example" style="height: 40px">
@@ -260,6 +278,9 @@
             <tr th:each="book : ${result.getBooks()}">
                 <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.getId()})}'|">
                     <div class="image-area">
+                        <span th:if="${book.inventory==0}"><strong><mark>품절</mark></strong></span>
+                        <span th:if="${book.out_of_print==1}" ><strong><mark>절판</mark></strong></span>
+
                         <img th:src="${book.getImage()}" alt="My Image" width="97">
                     </div>
                     <div class="desc-area">
@@ -288,6 +309,7 @@
     let query = params.get('query') == null ? '' : params.get('query');
     let totalRow = params.get('totalRow') == null ? '10' : params.get('totalRow');
     let sort = params.get('sort') == null ? '0' : params.get('sort');
+    let inventory = params.get('inventory') == null? '0' : params.get('inventory');
     let year = params.get('year') == null ? '0' : params.get('year');
     let month = params.get('month') == null ? '' : params.get('month');
     let star = params.get('star') == null ? '0' : params.get('star');
@@ -304,14 +326,14 @@
         localStorage.setItem('state', '1')
         localStorage.removeItem('idList')
         localStorage.removeItem('sortList')
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+        location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
     }
     if (status == true && state == '1') {
         alert("elastic으로 복귀")
         localStorage.setItem('state', '0');
         localStorage.removeItem('idList')
         localStorage.removeItem('sortList')
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+        location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
     }
 
     let rowLength = [[${result.getBooks().size()}]]
@@ -321,7 +343,7 @@
     console.log('state : ' + state + ', status : ' + status)
 
     console.log('page : ' + page);
-    document.getElementById("page").innerHTML=page + ' page'
+    document.getElementById("page").innerHTML = page + ' page'
     console.log('id : ' + searchAfterId)
     console.log('sort : ' + searchAfterSort)
     // 2.
@@ -337,6 +359,7 @@
     $('#max-price').attr("value", maxprice);
     $('#year').val(year).prop('selected', true);
     $('#sort').val(sort).prop('selected', true);
+    $('#inventory').val(inventory).prop('selected', true);
     $('#star').val(star).prop('selected', true);
     $('#search-box').attr("value", query);
 
@@ -396,7 +419,7 @@
         searchAfterId = idList[page];
         searchAfterSort = sortList[page];
         page = Number(page) + 1
-        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
+        let url = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
         location.href = encodeURI(url);
     }
 
@@ -406,7 +429,7 @@
         searchAfterId = idList[page - 2];
         searchAfterSort = sortList[page - 2];
         page = Number(page) - 1
-        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
+        let url = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
         location.href = encodeURI(url);
     }
 
@@ -418,6 +441,7 @@
             category = $("#category option:selected").val();
             babyCategory = $("#babyCategory option:selected").val();
             sort = '0';
+            inventory = '0';
             year = '0';
             searchAfterId = null
             searchAfterSort = null
@@ -427,7 +451,7 @@
             maxprice = '';
             publish = '';
             author = '';
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&searchAfterSort=" + searchAfterSort;
         }
     }
 
@@ -441,11 +465,12 @@
                 publish = $("#publish").val();
                 author = $("#author").val();
                 sort = $("#sort option:selected").val();
+                inventory = $("#inventory option:selected").val();
                 year = $("#year option:selected").val();
                 star = $("#star option:selected").val();
                 searchAfterId = null
                 searchAfterSort = null
-                location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+                location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
             }
         }
     }
@@ -516,6 +541,39 @@
         } else {
             return JSON.parse(localStorage.getItem('sortList'))
         }
+    }
+
+    $('#search-box').keyup(function () {
+        console.log("keyup 입장")
+        let text = query = $('#search-box').val()
+        let autoMakerAvailable = false
+        if (text.trim() != '') {
+            $('#autoMaker').children().remove()
+            // 값 받아오기
+            console.log("ajax 시작")
+            $.ajax({
+                type : 'GET',
+                url : '/auto?query='+ text,
+                success : function(result) {
+                    console.log(result)
+                    // 받아온 값 클릭 시 동작 정의하기
+                    $('#autoMaker').replaceWith(result);
+                    // 완성 상태 표시하기
+                },
+                error : function(request, status, error) {
+                    console.log("ajax 에러")
+                    $('#autoMaker').children().remove()
+                }
+            })
+        } else {
+            console.log("공백 입력")
+            $('#autoMaker').children().remove()
+        }
+    });
+
+    function inputText(value) {
+        $('#search-box').val(value)
+        $('#autoMaker').children().remove()
     }
 
 

@@ -35,7 +35,7 @@
 <!--        </rollingPolicy>-->
 <!--    </appender>-->
 
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="SLACK"/>
     </root>
 </configuration>

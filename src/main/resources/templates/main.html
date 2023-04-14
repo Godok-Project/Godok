@@ -21,6 +21,7 @@
         border-radius: 10px;
         padding: 10px;
         box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+        height: 90px;
 
         display: flex;
         flex-direction: column;
@@ -50,20 +51,16 @@
         text-align: center;
     }
     .search {
-        position: relative;
+        margin: 40px 20px 0px 30px;
         width: 400px;
-    }
-
-    input {
-        width: 100%;
         border: 1px solid #bbb;
         border-radius: 5px;
         padding: 10px 12px;
         font-size: 15px;
     }
 
+
     img {
-        position : absolute;
         width: 22px;
         top: 10px;
         right: 12px;
@@ -76,7 +73,6 @@
 
         display: flex;
         flex-direction: row;
-        align-items: center;
         justify-content: center;
 
         margin: 30px auto auto auto;
@@ -137,11 +133,6 @@
         box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
     }
 
-    .search {
-        margin: 30px 20px 25px 30px;
-    }
-
-
     .wrap {
         width: 1400px;
 
@@ -162,13 +153,12 @@
         border-radius: 10px;
         margin-right: 15px;
         width: 20%;
-        position: relative;
     }
 
     .image-area > img {
-        position: absolute;
         width: 90%;
-        top: -3%;
+        height: 70%;
+        top: 15%;
     }
 
     .desc-area {
@@ -257,7 +247,8 @@
         let key_word = $('#search').val()
             key_word = key_word.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/gi, "");
             $('#search').val(key_word);
-            window.localStorage.clear();
+        localStorage.removeItem('idList')
+        localStorage.removeItem('sortList')
     }
 
     function checkForm() {
@@ -284,22 +275,59 @@
 </body>
 
 <body>
-<div class="search-box">
 
-    <form action = "./search" name="searchData" method="get" onsubmit="return checkForm()">
-        <select id="category" name="category" onchange="babyCategoryListing();" style="font-size: 13px; width:150px; height:60px;">
+<form action="./search" name="searchData" method="get" onsubmit="return checkForm()">
+    <div class="search-box">
+        <select id="category" name="category" onchange="babyCategoryListing();"
+                style="font-size: 13px; width:150px; height:60px;">
             <option style="color: white" selected value="">대분류</option>
         </select>
 
         <select id="babyCategory" name="babyCategory" style="font-size: 13px; width:150px; height:60px;">
             <option selected value="">소분류</option>
         </select>
+        <div>
+            <input class="search" id="search" name="query" type="text" placeholder="검색어 입력" style="width: 470px"
+            onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"/>
+            <div class="list-group" style = "width: 470px; margin-left: 30px;">
+                <div id="autoMaker">
+                    <div th:each="maker : ${makers}">
+                        <button type="button" th:text="${maker}" onclick="inputText(value)" th:value="${maker}" class="list-group-item list-group-item-action">A second button item</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <input class="search" id="search" name="query" type="text" placeholder="검색어 입력" style="width: 470px" onkeyup="noSpaceForm(this)" onchange="noSpaceForm(this);"/>
-
-        <button id="search_btn" type="submit" value="search" style="font-size: 13px; width:70px; height:60px;" onclick="search_keyword()">검색</button>
-    </form>
+        <button id="search_btn" type="submit" value="search" style="font-size: 13px; width:70px; height:60px;"
+                onclick="search_keyword()">검색
+        </button>
+    </div>
+</form>
+<div class="wrap">
+    <div id="book_info_area" class="row row-cols-1 row-cols-md-2 g-4">
+        <tr th:each="book:${list}">
+            <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.id})}'|">
+                <div  class="image-area">
+                    <!--                    <span th:if="${book.inventory==0}" ><strong><mark>품절</mark></strong></span>-->
+                    <!--                    <span th:if="${book.outOfPrint==1}" ><strong><mark>절판</mark></strong></span>-->
+                    <span th:text="${book.rank}"><strong><mark>1등</mark></strong></span>
+                    <img th:src="${book.image}" alt="My Image" width="110" height="170"/>
+                </div>
+                <div  class="desc-area">
+                    <h5 class="long-title" th:text="${book.title}" >에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h5>
+                    <h6 th:text="'어제 팔린 권수 : '+${book.sold}+' 권'">어제 팔린 권수 : 8 권</h6>
+                    <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
+                    <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
+                    <!--                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>-->
+                    <!--                    <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>-->
+                    <span th:if="${book.inventory==0}" ><strong><mark>품절</mark></strong></span>
+                    <span th:if="${book.outOfPrint==1}" ><strong><mark>절판</mark></strong></span>
+                </div>
+            </div>
+        </tr>
+    </div>
 </div>
+
 
 <script>
     const categories = {
@@ -359,30 +387,40 @@
     }
     categoryListing()
 
+    $('#search').keyup(function () {
+        console.log("keyup 입장")
+        let text = query = $('#search').val()
+        let autoMakerAvailable = false
+        if (text.trim() != '') {
+            $('#autoMaker').children().remove()
+            // 값 받아오기
+            console.log("ajax 시작")
+            $.ajax({
+                type : 'GET',
+                url : '/auto?query='+ text,
+                success : function(result) {
+                    console.log(result)
+                    // 받아온 값 클릭 시 동작 정의하기
+                    $('#autoMaker').replaceWith(result);
+                    // 완성 상태 표시하기
+                },
+                error : function(request, status, error) {
+                    console.log("ajax 에러")
+                    $('#autoMaker').children().remove()
+                }
+            })
+        } else {
+            console.log("공백 입력")
+            $('#autoMaker').children().remove()
+        }
+    });
+
+    function inputText(value) {
+        $('#search').val(value)
+        $('#autoMaker').children().remove()
+    }
+
 </script>
 
 </body>
-
-<div class="wrap">
-    <div id="book_info_area" class="row row-cols-1 row-cols-md-2 g-4">
-        <tr th:each="book:${list}">
-            <div class="book-box" type="button" th:onclick="|location.href='@{/detail/{id}(id=${book.id})}'|">
-                <div  class="image-area">
-                        <img th:src="${book.image}" alt="My Image" width="110" height="170"/>
-                </div>
-                <div  class="desc-area">
-                    <h5 class="long-title" th:text="${book.title}" >에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀에밀</h5>
-                    <h6 th:text="'어제 팔린 권수 : '+${book.sold}+' 권'">어제 팔린 권수 : 8 권</h6>
-                    <h6 th:text="${book.price} + ' 원'">가격 : 35000 원</h6>
-                    <h6 th:text="'작가 : '+ ${book.author}">작가 : 장 자크 루소</h6>
-<!--                    <h6 th:text="'출판사 : '+${book.publish}">출판사 : 육문사</h6>-->
-                    <h6 th:text="'별점 : ' + ${book.star} + ' / 발행년도 : ' + ${book.year} + '.' + ${book.month}">별점 : 8 / 발행년도 : 2012.3</h6>
-                </div>
-            </div>
-        </tr>
-    </div>
-
-
-</div>
-
 </html>
