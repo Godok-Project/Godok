@@ -170,8 +170,12 @@ public class CycleConfig {
 					Book book = bookRepository.findById(i).orElseThrow(
 						()->new CustomException(ErrorCode.BOOK_NOT_FOUND)
 					);
-					if(book.getOutOfPrint() != 1){
-						book.batchBook(20L);
+					if(book.getOutOfPrint() != 1){ // 절판이 아닐 때만 재고를 올려줌
+						if(book.getInventory() == 0){ // 기존 상태가 품절이었으면 modifiedAt까지 함께 변경
+							book.orderbook(20L);
+						}else {
+							book.batchBook(20L); // 품절이 아니었으면 재고만 변경
+						}
 					}
 				}
 				return RepeatStatus.FINISHED;
