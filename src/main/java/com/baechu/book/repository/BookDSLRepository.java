@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.baechu.book.dto.BookDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.dto.QBookDto;
+import com.baechu.book.entity.Book;
 import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -61,6 +62,28 @@ public class BookDSLRepository {
 				babyCategoryResult(filter.getBabyCategory()),
 				fulltextTitle(query).gt(0),
 				inventoryResult(filter.getInventory()),
+				starResult(filter.getStar()),
+				yearResult(filter.getYear()),
+				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
+				publishResult(filter.getPublish()),
+				authorResult(filter.getAuthor()),
+				cursorPaging(filter)
+			)
+			.orderBy(getCursorSort(filter.getSort()))
+			.limit(filter.getTotalRow())
+			.fetch();
+	}
+
+	// 테스트 용 like 쿼리
+	public List<Book> filterSearchByLike(FilterDto filter) {
+		String query = filter.getQuery();
+		return queryFactory
+			.select(book)
+			.from(book)
+			.where(
+				categoryResult(filter.getCategory()),
+				babyCategoryResult(filter.getBabyCategory()),
+				book.title.contains(query),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
 				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),

@@ -61,6 +61,6 @@ public class BookController {
 	public String autoMaker(Model model, @RequestParam String query) {
 		List<String> result = bookService.autoMaker(query);
 		model.addAttribute("makers", result);
-		return "/search::#autoMaker";
+		return "search::#autoMaker";
 	}
 }
