@@ -314,14 +314,14 @@
         localStorage.setItem('state', '1')
         localStorage.removeItem('idList')
         localStorage.removeItem('sortList')
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+        location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
     }
     if (status == true && state == '1') {
         alert("elastic으로 복귀")
         localStorage.setItem('state', '0');
         localStorage.removeItem('idList')
         localStorage.removeItem('sortList')
-        location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
+        location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
     }
 
     let rowLength = [[${result.getBooks().size()}]]
@@ -406,7 +406,7 @@
         searchAfterId = idList[page];
         searchAfterSort = sortList[page];
         page = Number(page) + 1
-        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
+        let url = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
         location.href = encodeURI(url);
     }
 
@@ -416,7 +416,7 @@
         searchAfterId = idList[page - 2];
         searchAfterSort = sortList[page - 2];
         page = Number(page) - 1
-        let url = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
+        let url = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
         location.href = encodeURI(url);
     }
 
@@ -437,7 +437,7 @@
             maxprice = '';
             publish = '';
             author = '';
-            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+            location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&searchAfterSort=" + searchAfterSort;
         }
     }
 
@@ -455,7 +455,7 @@
                 star = $("#star option:selected").val();
                 searchAfterId = null
                 searchAfterSort = null
-                location.href = "/search?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
+                location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort;
             }
         }
     }

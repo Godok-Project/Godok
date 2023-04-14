@@ -29,7 +29,26 @@ public class BookDSLRepository {
 		this.queryFactory = new JPAQueryFactory(entityManager);
 	}
 
-	public List<BookDto> searchByCursor(FilterDto filter) {
+	public List<BookDto> keywordSearchByCursor(FilterDto filter) {
+		String query = filter.getQuery();
+		return queryFactory
+			.select(
+				new QBookDto(book.id, book.image, book.price, book.author, book.title, book.publish, book.star,
+					book.year,
+					book.month, fulltextTitle(query), book.inventory,book.outOfPrint))
+			.from(book)
+			.where(
+				categoryResult(filter.getCategory()),
+				babyCategoryResult(filter.getBabyCategory()),
+				fulltextTitle(query).gt(0),
+				cursorPaging(filter)
+			)
+			.orderBy(getCursorSort(filter.getSort()))
+			.limit(filter.getTotalRow())
+			.fetch();
+	}
+
+	public List<BookDto> filterSearchByCursor(FilterDto filter) {
 		String query = filter.getQuery();
 		return queryFactory
 			.select(
@@ -52,6 +71,10 @@ public class BookDSLRepository {
 			.limit(filter.getTotalRow())
 			.fetch();
 	}
+
+	/**
+	 *  필터 로직
+	 */
 
 	private Predicate categoryResult(String category) {
 		if (category == null || category.isEmpty()) {

@@ -247,7 +247,8 @@
         let key_word = $('#search').val()
             key_word = key_word.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/gi, "");
             $('#search').val(key_word);
-            window.localStorage.clear();
+        localStorage.removeItem('idList')
+        localStorage.removeItem('sortList')
     }
 
     function checkForm() {
