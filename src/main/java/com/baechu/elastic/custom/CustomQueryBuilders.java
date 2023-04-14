@@ -81,6 +81,16 @@ public class CustomQueryBuilders {
 		return new RangeQueryBuilder(STAR).gte(star);    // 입력 한 경우
 	}
 
+	//품절 선택 여부
+	public static MatchQueryBuilder inventoryQuery (Integer inventory) {
+		System.out.println("inventory = " + inventory);
+		if(inventory == null)
+			return new MatchQueryBuilder("inventory",-1);
+		if(inventory == 0)
+			return new MatchQueryBuilder("inventory",-1);
+		return new MatchQueryBuilder("inventory",0);
+	}
+
 	// 정렬 선택
 	public static List<SortBuilder<?>> sortQuery(Integer sort) {
 		List<SortBuilder<?>> sortBuilders = new ArrayList<>();
