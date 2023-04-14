@@ -333,4 +333,13 @@ public class BookService {
 		}
 		return searchHits.get(searchHits.size() - 1).getSortValues();
 	}
+
+	/**
+	 *  테스트 용 like 쿼리
+	 */
+
+	@Transactional(readOnly = true)
+	public void filterSearchByLike(FilterDto filter) {
+		bookDSLRepository.filterSearchByLike(filter);
+	}
 }

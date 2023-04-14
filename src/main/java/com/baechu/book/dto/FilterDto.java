@@ -31,4 +31,18 @@ public class FilterDto {
 		totalRow = totalRow == null ? 10 : totalRow;
 		page = page == null ? 1 : page;
 	}
+
+	public FilterDto(String query, Integer star, Integer minPrice, Integer maxPrice, String category,
+		String babyCategory,
+		String searchAfterSort, Long searchAfterId) {
+		this.query = query;
+		this.star = star;
+		this.minPrice = minPrice;
+		this.maxPrice = maxPrice;
+		this.category = category;
+		this.babyCategory = babyCategory;
+		this.searchAfterSort = searchAfterSort;
+		this.searchAfterId = searchAfterId;
+		checkParameterValid();
+	}
 }
