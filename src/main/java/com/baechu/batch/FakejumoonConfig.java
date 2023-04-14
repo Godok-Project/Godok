@@ -33,8 +33,6 @@ public class FakejumoonConfig {
 
 	private final JumoonService jumoonService;
 
-	int num = 1;
-
 	@Bean
 	public Job job() {
 		Job job = jobBuilderFactory.get("job")
@@ -74,6 +72,7 @@ public class FakejumoonConfig {
 	public Step stepNextConditionalStepB() {
 		return stepBuilderFactory.get("stepNextConditionalStepB")
 			.tasklet((contribution, chunkContext) -> {
+				int num = 1001;
 
 				for (int i = num; i < num+8; i++) {
 					Member member = memberRepository.findById(Long.valueOf(i)).orElseThrow(
@@ -86,7 +85,6 @@ public class FakejumoonConfig {
 
 					jumoonService.fakebookorder(book,member,(10-i));
 				}
-				num += 10;
 				return RepeatStatus.FINISHED;
 			})
 			.build();
