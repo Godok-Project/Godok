@@ -80,6 +80,14 @@ public class JumoonService {
 		Jumoon jumoon = jumoonRepository.findByIdAndMember(jumoonId, member).orElseThrow(
 			()-> new CustomException(ErrorCode.Forbidden)
 		);
+
+		Book book = bookRepository.findById(jumoon.getBook().getId()).orElseThrow(
+			()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+		);
+
+		Long inven = book.getInventory()+jumoon.getQuantity();
+		book.orderbook(inven);
+
 		jumoonRepository.delete(jumoon);
 
 		return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
