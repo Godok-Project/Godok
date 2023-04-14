@@ -73,6 +73,7 @@ public class FakejumoonConfig {
 		return stepBuilderFactory.get("stepNextConditionalStepB")
 			.tasklet((contribution, chunkContext) -> {
 				int num = 1001;
+				int bookorder = 9;
 
 				for (int i = num; i < num+8; i++) {
 					Member member = memberRepository.findById(Long.valueOf(i)).orElseThrow(
@@ -83,7 +84,7 @@ public class FakejumoonConfig {
 						()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
 					);
 
-					jumoonService.fakebookorder(book,member,(10-i));
+					jumoonService.fakebookorder(book,member,(bookorder--));
 				}
 				return RepeatStatus.FINISHED;
 			})
