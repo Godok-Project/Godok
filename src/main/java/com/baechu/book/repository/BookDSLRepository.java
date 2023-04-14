@@ -60,6 +60,7 @@ public class BookDSLRepository {
 				categoryResult(filter.getCategory()),
 				babyCategoryResult(filter.getBabyCategory()),
 				fulltextTitle(query).gt(0),
+				inventoryResult(filter.getInventory()),
 				starResult(filter.getStar()),
 				yearResult(filter.getYear()),
 				PriceResult(filter.getMinPrice(), filter.getMaxPrice()),
@@ -102,6 +103,12 @@ public class BookDSLRepository {
 		if (star == null || star == 0)
 			return null;
 		return book.star.goe(star);
+	}
+
+	private Predicate inventoryResult(Integer inventory) {
+		if(inventory == null || inventory == 0)
+			return null;
+		return  book.inventory.goe(inventory);
 	}
 
 	private Predicate yearResult(Integer year) {

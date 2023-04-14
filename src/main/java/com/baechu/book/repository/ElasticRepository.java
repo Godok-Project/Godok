@@ -2,22 +2,18 @@ package com.baechu.book.repository;
 
 import static com.baechu.elastic.custom.CustomQueryBuilders.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Repository;
 
 import com.baechu.book.dto.BookDto;
-import com.baechu.book.dto.BookListDto;
 import com.baechu.book.dto.FilterDto;
 import com.baechu.book.dto.autoMakerDto;
 import com.baechu.elastic.custom.CustomBoolQueryBuilder;
@@ -54,6 +50,7 @@ public class ElasticRepository {
 			.withMinScore(10f)
 			.withQuery(new CustomBoolQueryBuilder()
 				.must(multiMatchQuery(filter.getQuery(), "title", "author"))
+				.mustNot(inventoryQuery(filter.getInventory()))
 				.filter(matchQuery("category.keyword", filter.getCategory()))
 				.filter(matchQuery("baby_category.keyword", filter.getBabyCategory()))
 				.filter(priceQuery(filter.getMinPrice(), filter.getMaxPrice()))
