@@ -28,39 +28,37 @@ public class BatchScheduler {
 	@Autowired
 	private CycleConfig cycleConfig;
 
-	@Autowired
-	private NoRankCycle noRankCycle;
 
-	// @Scheduled(cron = "30 5 * * * *")
-	// public void runJob(){
+	@Scheduled(cron = "0 5 2 * * *")
+	public void runJob(){
+
+		//Job parameter 설정
+		Map<String, JobParameter> confMap = new HashMap<>();
+		confMap.put("time", new JobParameter(System.currentTimeMillis()));
+		JobParameters jobParameters = new JobParameters(confMap);
+
+		try{
+			jobLauncher.run(fakejumoonConfig.job(), jobParameters);
+		}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException |
+				JobParametersInvalidException
+				| org.springframework.batch.core.repository.JobRestartException e){
+			log.error(e.getMessage());
+		}
+	}
 	//
-	// 	//Job parameter 설정
-	// 	Map<String, JobParameter> confMap = new HashMap<>();
-	// 	confMap.put("time", new JobParameter(System.currentTimeMillis()));
-	// 	JobParameters jobParameters = new JobParameters(confMap);
-	//
-	// 	try{
-	// 		jobLauncher.run(fakejumoonConfig.job(), jobParameters);
-	// 	}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException |
-	// 			JobParametersInvalidException
-	// 			| org.springframework.batch.core.repository.JobRestartException e){
-	// 		log.error(e.getMessage());
-	// 	}
-	// }
-	//
-	// @Scheduled(cron = "30 7 * * * *")
-	// public void resetAndRank(){
-	//
-	// 	//Job parameter 설정
-	// 	Map<String, JobParameter> confMap = new HashMap<>();
-	// 	confMap.put("time", new JobParameter(System.currentTimeMillis()));
-	// 	JobParameters jobParameters = new JobParameters(confMap);
-	//
-	// 	try{
-	// 		jobLauncher.run(cycleConfig.jobs(), jobParameters);
-	// 	}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException | JobParametersInvalidException
-	// 			| org.springframework.batch.core.repository.JobRestartException e){
-	// 		log.error(e.getMessage());
-	// 	}
-	// }
+	@Scheduled(cron = "0 0 2 * * *")
+	public void resetAndRank(){
+
+		//Job parameter 설정
+		Map<String, JobParameter> confMap = new HashMap<>();
+		confMap.put("time", new JobParameter(System.currentTimeMillis()));
+		JobParameters jobParameters = new JobParameters(confMap);
+
+		try{
+			jobLauncher.run(cycleConfig.jobs(), jobParameters);
+		}catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException | JobParametersInvalidException
+				| org.springframework.batch.core.repository.JobRestartException e){
+			log.error(e.getMessage());
+		}
+	}
 }
