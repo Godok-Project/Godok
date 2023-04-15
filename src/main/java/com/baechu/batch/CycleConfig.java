@@ -77,7 +77,6 @@ public class CycleConfig {
 				log.info("일단 주문들은 취소가능한 상태(주문 미완료)로 두고 다음날 02시에 재시도를 한다.");
 				log.info("StepA에서 fine가 false인 책들만 가져와서 쌓인 주문들도 처리하고 쌓인 책들로 한번에 랭킹을 만들어 줄 것이다.");
 				log.info("Service로직에서는 서킷 브레이커를 통해 redis에 접속이 되면 ranking을 만들고 안되면 추천 책만 main에서 보여줄 것이다.");
-				jumoons = jumoonRepository.findAllByFine(false);
 
 				ValueOperations<String, List<String>> values = redisTemplate.opsForValue();
 				if (values.get("rank") == null){
