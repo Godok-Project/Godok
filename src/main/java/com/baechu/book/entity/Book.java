@@ -68,7 +68,7 @@ public class Book {
 	@OneToMany(mappedBy = "book")
 	private List<Jumoon> jumoons = new ArrayList<>();
 
-	public void orderbook(Long inventory){
+	public void inventoryChangeBook(Long inventory){
 		this.inventory = inventory;
 		this.modifiedAt = LocalDateTime.now();
 	}
