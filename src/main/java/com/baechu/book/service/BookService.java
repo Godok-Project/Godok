@@ -138,6 +138,7 @@ public class BookService {
 	 */
 
 	@Transactional
+	@CircuitBreaker(name = "RedisError", fallbackMethod = "NonRedisBookList")
 	public List<BookRankDto> bookList() {
 
 		List<BookRankDto> bookList = new ArrayList<>();
@@ -180,6 +181,30 @@ public class BookService {
 
 		return bookList;
 	}
+
+	@Transactional
+	public List<BookRankDto> NonRedisBookList(Throwable t) {
+
+		try {
+			log.warn("Redis Rank Down : " + t.getMessage());
+			List<BookRankDto> bookList = new ArrayList<>();
+			long[] rbs = {2415062,387099,886063,1820350,1957841,1984839,1984355,21504};
+
+			for (int i = 0; i < 8; i++) {
+				Optional<Book> book = bookRepository.findById(rbs[i]);
+				if (book.isPresent()) {
+					bookList.add(new BookRankDto(book.get(), 0,"추천 도서"));
+				} else
+					i--;
+			}
+			return bookList;
+
+		} catch (Exception e) {
+			log.warn("Redis Connection SQLException : " + e.getMessage());
+			return null;
+		}
+	}
+
 
 	//트랜잭션 어노테이션 안에 배치를 사용할 수 없다.
 	private void summonRank(){

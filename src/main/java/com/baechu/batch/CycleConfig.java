@@ -40,7 +40,11 @@ public class CycleConfig {
 	@Bean
 	public Job jobs() {
 		Job job = jobBuilderFactory.get("job")
-			.start(StepA())
+			.start(StepZero())
+			.on("FAILED")
+			.end()
+			.on("*")
+			.to(StepA())
 			.on("FAILED")
 			.end()
 			.from(StepA())
@@ -63,6 +67,29 @@ public class CycleConfig {
 
 	List<Long> bookidkeys = new ArrayList<>();
 	List<Jumoon> jumoons = new ArrayList<>();
+
+	@Bean
+	public Step StepZero() {
+		return stepBuilderFactory.get("StepZero")
+			.tasklet((contribution, chunkContext) -> {
+				log.info("Step1. RedisServer와 연동되는지 확인하기");
+				log.info("만약에 연동이 안된다면 StepZero에서 멈추고 아무것도 안한다.");
+				log.info("일단 주문들은 취소가능한 상태(주문 미완료)로 두고 다음날 02시에 재시도를 한다.");
+				log.info("StepA에서 fine가 false인 책들만 가져와서 쌓인 주문들도 처리하고 쌓인 책들로 한번에 랭킹을 만들어 줄 것이다.");
+				log.info("Service로직에서는 서킷 브레이커를 통해 redis에 접속이 되면 ranking을 만들고 안되면 추천 책만 main에서 보여줄 것이다.");
+				jumoons = jumoonRepository.findAllByFine(false);
+
+				ValueOperations<String, List<String>> values = redisTemplate.opsForValue();
+				if (values.get("rank") == null){
+					log.info("랭킹 데이터가 없습니다.");
+				}else {
+					log.info("랭킹 데이터가 있습니다.");
+				}
+
+				return RepeatStatus.FINISHED;
+			})
+			.build();
+	}
 
 	@Bean
 	public Step StepA() {
@@ -141,6 +168,7 @@ public class CycleConfig {
 
 				for(Jumoon i : jumoons){
 					i.endFine();
+					jumoonRepository.save(i);
 				}
 
 				return RepeatStatus.FINISHED;
