@@ -26,11 +26,8 @@ public class FakejumoonConfig {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-
 	private final BookRepository bookRepository;
-
 	private final MemberRepository memberRepository;
-
 	private final JumoonService jumoonService;
 
 	@Bean
@@ -54,8 +51,6 @@ public class FakejumoonConfig {
 		return job;
 	}
 
-
-
 	@Bean
 	public Step stepNextConditionalStepA() {
 		return stepBuilderFactory.get("stepNextConditionalStepA")
@@ -75,15 +70,13 @@ public class FakejumoonConfig {
 				int num = 1001;
 				int bookorder = 9;
 
-				for (int i = num; i < num+8; i++) {
+				for (int i = 1; i < 9; i++) {
 					Member member = memberRepository.findById(Long.valueOf(i)).orElseThrow(
 						()-> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
 					);
-
-					Book book = bookRepository.findById(Long.valueOf(i)).orElseThrow(
+					Book book = bookRepository.findById(Long.valueOf(num++)).orElseThrow(
 						()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
 					);
-
 					jumoonService.fakebookorder(book,member,(bookorder--));
 				}
 				return RepeatStatus.FINISHED;
