@@ -9,6 +9,8 @@ import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,8 @@ public class JumoonService {
 	private final JumoonRepository jumoonRepository;
 
 	private final EntityManager entityManager;
+
+	protected static final Logger orderLogger = LoggerFactory.getLogger("OrderLog");
 
 
 	@Transactional
@@ -73,10 +77,10 @@ public class JumoonService {
 			if (inven<0){
 				return BaseResponse.toResponseEntity(ErrorCode.INVALIDATION_NOT_ENOUGH);
 			}else {
-				jumoonRepository.save(new Jumoon(member,book,quantity));
+				Jumoon save = jumoonRepository.save(new Jumoon(member, book, quantity));
 				book.orderbook(inven);
 			}
-
+			orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",bookId,member.getId(),"order",quantity,book.getPrice()*quantity);
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}
 	}
@@ -96,7 +100,7 @@ public class JumoonService {
 		book.orderbook(inven);
 
 		jumoonRepository.delete(jumoon);
-
+		orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",book.getId(),member.getId(),"cancel",jumoon.getQuantity(),book.getPrice()*jumoon.getQuantity());
 		return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 	}
 
