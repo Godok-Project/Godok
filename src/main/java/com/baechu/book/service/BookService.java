@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -154,14 +153,13 @@ public class BookService {
 			}catch (Exception e){
 			}
 
-			Long random;
-			Random r = new Random();
+
+			long[] rbs = {2415062,387099,886063,1820350,1957841,1984839,1984355,21504};
 
 			for (int i = 0; i < 8; i++) {
-				random = (long)r.nextInt(4000000);
-				Optional<Book> book = bookRepository.findById(random);
+				Optional<Book> book = bookRepository.findById(rbs[i]);
 				if (book.isPresent()) {
-					bookList.add(new BookRankDto(book.get(), 0,String.valueOf(bookList.size()+1)));
+					bookList.add(new BookRankDto(book.get(), 0,"추천 도서"));
 				} else
 					i--;
 			}
@@ -196,13 +194,13 @@ public class BookService {
 
 		if (now.getHour()>=2){
 			LocalDateTime ytd = now.minusDays(1);
-			starttime = LocalDateTime.of(ytd.getYear(),ytd.getMonth(), ytd.getDayOfMonth(), ytd.getHour(), 0);
-			endtime = LocalDateTime.of(now.getYear(),now.getMonth(),now.getDayOfMonth(), now.getHour(), 0);
+			starttime = LocalDateTime.of(ytd.getYear(),ytd.getMonth(), ytd.getDayOfMonth(), 2, 0);
+			endtime = LocalDateTime.of(now.getYear(),now.getMonth(),now.getDayOfMonth(), 2, 0);
 		}else {
 			LocalDateTime yytd = now.minusDays(2);
 			LocalDateTime ytd = now.minusDays(1);
-			starttime = LocalDateTime.of(yytd.getYear(),yytd.getMonth(), yytd.getDayOfMonth(), yytd.getHour(), 0);
-			endtime = LocalDateTime.of(ytd.getYear(),ytd.getMonth(), ytd.getDayOfMonth(), ytd.getHour(), 0);
+			starttime = LocalDateTime.of(yytd.getYear(),yytd.getMonth(), yytd.getDayOfMonth(), 2, 0);
+			endtime = LocalDateTime.of(ytd.getYear(),ytd.getMonth(), ytd.getDayOfMonth(), 2, 0);
 		}
 		jumoons = jumoonRepository.findAllByJumoonatBetween(starttime,endtime);
 
@@ -223,13 +221,16 @@ public class BookService {
 		bookidkeys = new ArrayList<>(soldbooks.keySet());
 		Collections.sort(bookidkeys, ((o1, o2) -> (soldbooks.get(o2).compareTo(soldbooks.get(o1)))));
 
-		//랜덤으로 책 채워주기
-		Long random;
-		Random r = new Random();
-		while (bookidkeys.size()<8){
-			random = (long)r.nextInt(4000000);
-			bookidkeys.add(random);
-			soldbooks.put(random,0);
+		//추천 책 채워주기
+		if (bookidkeys.size()<8){
+			long[] rbs = {2415062,387099,886063,1820350,1957841,1984839,1984355,21504};
+			int cnt = 0;
+
+			while (bookidkeys.size()<8){
+				bookidkeys.add(rbs[cnt]);
+				soldbooks.put(rbs[cnt],0);
+				cnt++;
+			}
 		}
 
 		//이제 랭크 순서대로 넣어준다. "rank" : {"1,9", "2,8"....} 책id와 판매량은 쉼표로 구분하고 각각 리스트의 원소로 넣자
