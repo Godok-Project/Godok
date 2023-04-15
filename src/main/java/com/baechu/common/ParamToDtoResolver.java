@@ -43,11 +43,10 @@ public class ParamToDtoResolver implements HandlerMethodArgumentResolver {
 	) {
 		try {
 			HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
-			String decodedQuery = URLDecoder.decode(request.getQueryString(), "UTF-8")
-				.replaceAll("\"", "\\" + "\\" + "\"");
-			System.out.println(decodedQuery);
-			String json = queryToJson(decodedQuery);
-			Object obj = mapper.readValue(json, parameter.getParameterType());
+			String json = queryToJson(request.getQueryString()).replaceAll("%5C","%5C%5C");
+			String decodedJson = URLDecoder.decode(json, "UTF-8");
+			System.out.println(decodedJson);
+			Object obj = mapper.readValue(decodedJson, parameter.getParameterType());
 			return obj;
 		} catch (Exception e) {
 			log.warn("Cause : {}, Message : {}" ,e.getCause(), e.getMessage());
