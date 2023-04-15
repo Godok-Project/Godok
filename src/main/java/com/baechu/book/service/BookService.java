@@ -223,15 +223,6 @@ public class BookService {
 		bookidkeys = new ArrayList<>(soldbooks.keySet());
 		Collections.sort(bookidkeys, ((o1, o2) -> (soldbooks.get(o2).compareTo(soldbooks.get(o1)))));
 
-		//어제 주문된 책 종류가 8개 미만인 경우 100,101,102... 순으로 책을 채워준다.
-		// Long cnt = 100L;
-		// while (bookidkeys.size()<8){
-		// 	bookidkeys.add(cnt);
-		// 	soldbooks.put(cnt,0);
-		// 	cnt++;
-		// }
-
-
 		//랜덤으로 책 채워주기
 		Long random;
 		Random r = new Random();

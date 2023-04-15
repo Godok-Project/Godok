@@ -115,6 +115,10 @@
             width: 80%;
         }
 
+        #inventory{
+            width: 80%;
+        }
+
         /*책 정보 영역*/
         .body-area {
             width: 75%;
@@ -306,7 +310,7 @@
     const params = new URLSearchParams(location.search);
     let category = params.get('category') == null ? '' : params.get('category');
     let babyCategory = params.get('babyCategory') == null ? '' : params.get('babyCategory');
-    let query = params.get('query') == null ? '' : params.get('query');
+    let query = params.get('query') == null ? '' : encodeURIComponent(params.get('query'));
     let totalRow = params.get('totalRow') == null ? '10' : params.get('totalRow');
     let sort = params.get('sort') == null ? '0' : params.get('sort');
     let inventory = params.get('inventory') == null? '0' : params.get('inventory');
@@ -315,8 +319,8 @@
     let star = params.get('star') == null ? '0' : params.get('star');
     let minprice = params.get('minPrice') == null ? '' : params.get('minPrice');
     let maxprice = params.get('maxPrice') == null ? '' : params.get('maxPrice');
-    let publish = params.get('publish') == null ? '' : params.get('publish');
-    let author = params.get('author') == null ? '' : params.get('author');
+    let publish = params.get('publish') == null ? '' : encodeURIComponent(params.get('publish'));
+    let author = params.get('author') == null ? '' : encodeURIComponent(params.get('author'));
     let page = params.get('page') == null ? '1' : params.get('page');
 
     let state = localStorage.getItem('state') == null ? '0' : localStorage.getItem('state');
@@ -336,9 +340,14 @@
         location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
     }
 
+    console.log(query)
+    console.log(decodeURIComponent(query))
+    console.log(encodeURIComponent(decodeURIComponent(query)))
+
     let rowLength = [[${result.getBooks().size()}]]
     let searchAfterId = [[${result.getSearchAfterId()}]]
-    let searchAfterSort = [[${result.getSearchAfterSort()}]]
+    let tempSort = [[${result.getSearchAfterSort()}]]
+    let searchAfterSort = encodeURIComponent(tempSort)
 
     console.log('state : ' + state + ', status : ' + status)
 
@@ -353,15 +362,15 @@
     console.log('sortList : ' + sortList)
     console.log('length : ' + idList.length)
 
-    $('#author').attr("value", author);
-    $('#publish').attr("value", publish);
+    $('#author').attr("value", decodeURIComponent(author));
+    $('#publish').attr("value", decodeURIComponent(publish));
     $('#min-price').attr("value", minprice);
     $('#max-price').attr("value", maxprice);
     $('#year').val(year).prop('selected', true);
     $('#sort').val(sort).prop('selected', true);
     $('#inventory').val(inventory).prop('selected', true);
     $('#star').val(star).prop('selected', true);
-    $('#search-box').attr("value", query);
+    $('#search-box').attr("value", decodeURIComponent(query));
 
 
     if (page - 2 < 0)
@@ -416,11 +425,11 @@
             localStorage.setItem('idList', JSON.stringify(idList))
             localStorage.setItem('sortList', JSON.stringify(sortList))
         }
+        query = encodeURIComponent(decodeURIComponent(query));
         searchAfterId = idList[page];
         searchAfterSort = sortList[page];
         page = Number(page) + 1
-        let url = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
-        location.href = encodeURI(url);
+        location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page
     }
 
     function previousPage() {
@@ -429,15 +438,15 @@
         searchAfterId = idList[page - 2];
         searchAfterSort = sortList[page - 2];
         page = Number(page) - 1
-        let url = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
-        location.href = encodeURI(url);
+        query = encodeURIComponent(decodeURIComponent(query));
+        location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow + "&searchAfterId=" + searchAfterId + "&searchAfterSort=" + searchAfterSort + "&page=" + page;
     }
 
     function searchBook() {
         if (keywordValidation()) {
             localStorage.removeItem('idList')
             localStorage.removeItem('sortList')
-            query = $('#search-box').val();
+            query = encodeURIComponent($('#search-box').val());
             category = $("#category option:selected").val();
             babyCategory = $("#babyCategory option:selected").val();
             sort = '0';
@@ -462,8 +471,9 @@
             minprice = $("#min-price").val();
             maxprice = $("#max-price").val();
             if (checkPrice(minprice, maxprice)) {
-                publish = $("#publish").val();
-                author = $("#author").val();
+                query = encodeURIComponent(decodeURIComponent(query));
+                publish = encodeURIComponent($("#publish").val());
+                author = encodeURIComponent($("#author").val());
                 sort = $("#sort option:selected").val();
                 inventory = $("#inventory option:selected").val();
                 year = $("#year option:selected").val();

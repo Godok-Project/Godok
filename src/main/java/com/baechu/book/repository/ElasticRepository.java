@@ -7,6 +7,7 @@ import java.util.List;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -31,11 +32,12 @@ public class ElasticRepository {
 	// keyword 검색
 	public SearchHits<BookDto> keywordSearchByElastic(FilterDto filter) {
 		NativeSearchQuery build = new NativeSearchQueryBuilder()
-			.withMinScore(10f)
+			.withMinScore(50f)
 			.withQuery(new CustomBoolQueryBuilder()
 				.must(multiMatchQuery(filter.getQuery(), "title", "author"))
 				.filter(matchQuery("category.keyword", filter.getCategory()))
 				.filter(matchQuery("baby_category.keyword", filter.getBabyCategory()))
+				.should(new RangeQueryBuilder("inventory").gte(1).boost(40F))
 				.should(matchPhraseQuery("title", filter.getQuery()))
 			)
 			.withSorts(sortQuery(filter.getSort()))
@@ -47,9 +49,10 @@ public class ElasticRepository {
 	// filter 검색
 	public SearchHits<BookDto> filterSearchByElastic(FilterDto filter, List<Object> searchAfter) {
 		NativeSearchQuery build = new NativeSearchQueryBuilder()
-			.withMinScore(10f)
+			.withMinScore(50f)
 			.withQuery(new CustomBoolQueryBuilder()
 				.must(multiMatchQuery(filter.getQuery(), "title", "author"))
+				.should(new RangeQueryBuilder("inventory").gte(1).boost(40F))
 				.mustNot(inventoryQuery(filter.getInventory()))
 				.filter(matchQuery("category.keyword", filter.getCategory()))
 				.filter(matchQuery("baby_category.keyword", filter.getBabyCategory()))
@@ -57,8 +60,8 @@ public class ElasticRepository {
 				.filter(starQuery(filter.getStar()))
 				.filter(yearQuery(filter.getYear()))
 				.should(matchPhraseQuery("title", filter.getQuery()))
-				.should(matchQuery("author", filter.getAuthor()))
-				.should(matchQuery("publish", filter.getPublish())))
+				.must(matchQuery("author", filter.getAuthor()))
+				.must(matchQuery("publish", filter.getPublish())))
 			.withSearchAfter(searchAfter)
 			.withSorts(sortQuery(filter.getSort()))
 			.build();

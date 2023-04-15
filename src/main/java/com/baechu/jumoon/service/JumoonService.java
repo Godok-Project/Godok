@@ -9,6 +9,8 @@ import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,16 +33,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JumoonService {
 
-	private final BookRepository bookRepository;
-
 	private final JumoonRepository jumoonRepository;
 
 	private final EntityManager entityManager;
+
+	protected static final Logger orderLogger = LoggerFactory.getLogger("OrderLog");
 
 
 	@Transactional
 	public void fakebookorder(Book book, Member member, Integer quantity){
 		jumoonRepository.save(new Jumoon(member,book,quantity));
+	}
+
+	@Transactional
+	public void testbookorder(Long bookid, Integer quantity, Member member){
+
+		Book book = entityManager.find(Book.class,bookid,LockModeType.PESSIMISTIC_WRITE);
+
+		Long inven = book.getInventory()-quantity;
+		if (inven<0){
+			throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
+		}else {
+			book.orderbook(inven);
+			jumoonRepository.save(new Jumoon(member,book,quantity));
+		}
 	}
 
 	//주문 하기
@@ -55,19 +71,16 @@ public class JumoonService {
 			Member member = (Member)request.getSession()
 				.getAttribute(SessionConst.LOGIN_MEMBER);
 
-			// Book book = bookRepository.findById(bookId).orElseThrow(
-			// 	() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
-
 			Book book = entityManager.find(Book.class, bookId, LockModeType.PESSIMISTIC_WRITE);
 
 			Long inven = book.getInventory()-quantity;
 			if (inven<0){
 				return BaseResponse.toResponseEntity(ErrorCode.INVALIDATION_NOT_ENOUGH);
 			}else {
-				jumoonRepository.save(new Jumoon(member,book,quantity));
+				Jumoon save = jumoonRepository.save(new Jumoon(member, book, quantity));
 				book.orderbook(inven);
 			}
-
+			orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",bookId,member.getId(),"order",quantity,book.getPrice()*quantity);
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}
 	}
@@ -81,15 +94,13 @@ public class JumoonService {
 			()-> new CustomException(ErrorCode.Forbidden)
 		);
 
-		Book book = bookRepository.findById(jumoon.getBook().getId()).orElseThrow(
-			()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
-		);
+		Book book = entityManager.find(Book.class, jumoon.getBook().getId(), LockModeType.PESSIMISTIC_WRITE);
 
 		Long inven = book.getInventory()+jumoon.getQuantity();
 		book.orderbook(inven);
 
 		jumoonRepository.delete(jumoon);
-
+		orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",book.getId(),member.getId(),"cancel",jumoon.getQuantity(),book.getPrice()*jumoon.getQuantity());
 		return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 	}
 
