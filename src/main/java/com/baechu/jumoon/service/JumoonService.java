@@ -31,8 +31,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JumoonService {
 
-	private final BookRepository bookRepository;
-
 	private final JumoonRepository jumoonRepository;
 
 	private final EntityManager entityManager;
@@ -41,6 +39,20 @@ public class JumoonService {
 	@Transactional
 	public void fakebookorder(Book book, Member member, Integer quantity){
 		jumoonRepository.save(new Jumoon(member,book,quantity));
+	}
+
+	@Transactional
+	public void testbookorder(Long bookid, Integer quantity, Member member){
+
+		Book book = entityManager.find(Book.class,bookid,LockModeType.PESSIMISTIC_WRITE);
+
+		Long inven = book.getInventory()-quantity;
+		if (inven<0){
+			throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
+		}else {
+			book.orderbook(inven);
+			jumoonRepository.save(new Jumoon(member,book,quantity));
+		}
 	}
 
 	//주문 하기
@@ -54,9 +66,6 @@ public class JumoonService {
 
 			Member member = (Member)request.getSession()
 				.getAttribute(SessionConst.LOGIN_MEMBER);
-
-			// Book book = bookRepository.findById(bookId).orElseThrow(
-			// 	() -> new CustomException(ErrorCode.BOOK_NOT_FOUND));
 
 			Book book = entityManager.find(Book.class, bookId, LockModeType.PESSIMISTIC_WRITE);
 
@@ -81,9 +90,7 @@ public class JumoonService {
 			()-> new CustomException(ErrorCode.Forbidden)
 		);
 
-		Book book = bookRepository.findById(jumoon.getBook().getId()).orElseThrow(
-			()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
-		);
+		Book book = entityManager.find(Book.class, jumoon.getBook().getId(), LockModeType.PESSIMISTIC_WRITE);
 
 		Long inven = book.getInventory()+jumoon.getQuantity();
 		book.orderbook(inven);
