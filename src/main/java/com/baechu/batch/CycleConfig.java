@@ -102,11 +102,15 @@ public class CycleConfig {
 				Collections.sort(bookidkeys, ((o1, o2) -> (soldbooks.get(o2).compareTo(soldbooks.get(o1)))));
 
 				//어제 주문된 책 종류가 8개 미만인 경우 100,101,102... 순으로 책을 채워준다.
-				Long cnt = 100L;
-				while (bookidkeys.size()<8){
-					bookidkeys.add(cnt);
-					soldbooks.put(cnt,0);
-					cnt++;
+				if (bookidkeys.size()<8){
+					long[] rbs = {2415062,387099,886063,1820350,1957841,1984839,1984355,21504};
+					int cnt = 0;
+
+					while (bookidkeys.size()<8){
+						bookidkeys.add(rbs[cnt]);
+						soldbooks.put(rbs[cnt],0);
+						cnt++;
+					}
 				}
 
 				//이제 랭크 순서대로 넣어준다. "rank" : {"1,9", "2,8"....} 책id와 판매량은 쉼표로 구분하고 각각 리스트의 원소로 넣자
@@ -150,7 +154,6 @@ public class CycleConfig {
 			.tasklet((contribution, chunkContext) -> {
 				log.info("Step4. 재고량 채워 주기");
 
-				//이 부분 Query DSL로 바꾸는게 좋을듯
 				for (Long i: bookidkeys){
 					Book book = bookRepository.findById(i).orElseThrow(
 						()->new CustomException(ErrorCode.BOOK_NOT_FOUND)
