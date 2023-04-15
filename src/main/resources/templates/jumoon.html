@@ -114,7 +114,28 @@
                 <th th:text="${jumoon.quantity}">주문 권수 : 3권</th>
                 <th th:text="${jumoon.jumoonat}">yyyy-MM-dd HH:mm:ss</th>
                 <th th:if="${jumoon.wtc == 'Y'}">
-                <button type="button" th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|">주문 취소</button>
+<!--                <button type="button" th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|">주문 취소</button>-->
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        주문 취소
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">정말 주문을 취소 하시겠습니까?</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                  주문이 취소되고, 주문 이력에서 사라집니다.
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니요</button>
+                                    <button type="button" class="btn btn-primary"  th:onclick="|location.href='/jumoon/@{(${jumoon.id})}'|">취소할래요.</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </th>
             </div>
         </tr>
