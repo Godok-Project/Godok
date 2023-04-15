@@ -22,6 +22,8 @@ public interface JumoonRepository extends JpaRepository<Jumoon, Long> {
 
 	List<Jumoon> findAllByMember(Member member);
 
+	List<Jumoon> findAllByBook_Id(Long bookid);
+
 	List<Jumoon> findAllByJumoonatBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }

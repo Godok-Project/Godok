@@ -33,12 +33,8 @@ public class CycleConfig {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-
 	private final BookRepository bookRepository;
-
 	private final JumoonRepository jumoonRepository;
-
-
 	private final RedisTemplate redisTemplate;
 
 	@Bean
@@ -65,19 +61,8 @@ public class CycleConfig {
 		return job;
 	}
 
-	//필요한스텝
-	//데이터 주문들 check
-	//어떤 책이 얼마나 팔렸나 계산
-	//랭킹 매기기
-	//책들 다 endFine 로 true로 바꿔주기
-	//redis에 ranking 넣어주기
-
-
 	List<Long> bookidkeys = new ArrayList<>();
-
 	List<Jumoon> jumoons = new ArrayList<>();
-
-
 
 	@Bean
 	public Step StepA() {
