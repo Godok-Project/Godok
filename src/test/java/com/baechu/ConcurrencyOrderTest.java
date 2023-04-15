@@ -59,7 +59,7 @@ public class ConcurrencyOrderTest {
 		Book book = bookRepository.findById(1L).orElseThrow(
 			()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
 		);
-		book.orderbook(20L);
+		book.inventoryChangeBook(20L);
 
 		List<Member> members = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
