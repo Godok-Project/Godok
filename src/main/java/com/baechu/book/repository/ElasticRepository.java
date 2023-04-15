@@ -60,8 +60,8 @@ public class ElasticRepository {
 				.filter(starQuery(filter.getStar()))
 				.filter(yearQuery(filter.getYear()))
 				.should(matchPhraseQuery("title", filter.getQuery()))
-				.should(matchQuery("author", filter.getAuthor()))
-				.should(matchQuery("publish", filter.getPublish())))
+				.must(matchQuery("author", filter.getAuthor()))
+				.must(matchQuery("publish", filter.getPublish())))
 			.withSearchAfter(searchAfter)
 			.withSorts(sortQuery(filter.getSort()))
 			.build();
