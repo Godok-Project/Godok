@@ -70,7 +70,7 @@ public class Book {
 
 	public void orderbook(Long inventory){
 		this.inventory = inventory;
-		this.modifiedAt = LocalDateTime.now().minusHours(9);
+		this.modifiedAt = LocalDateTime.now();
 	}
 
 	public void batchBook(Long inventory){
