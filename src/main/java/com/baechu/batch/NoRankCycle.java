@@ -86,7 +86,6 @@ public class NoRankCycle {
 			.tasklet((contribution, chunkContext) -> {
 				log.info("Step2. 어떤 책이 얼마나 팔렸나 계산");
 
-
 				//어떤 책이 얼마나 팔렸는지 map으로 저장
 				Map<Long, Integer> soldbooks = new HashMap<>();
 				for(Jumoon i : jumoons){
@@ -120,11 +119,10 @@ public class NoRankCycle {
 					bookrankAndsold.add(rankvalue);
 				}
 
-				//rankvalue를 redis에 저장시키기
 				ValueOperations<String, List<String>> values = redisTemplate.opsForValue();
 				//레디스 초기화 이후
 				redisTemplate.getConnectionFactory().getConnection().flushAll();
-				//랭크값 넣어주기
+				//rankvalue를 redis에 저장시키기
 				values.set("rank",bookrankAndsold);
 
 				return RepeatStatus.FINISHED;
