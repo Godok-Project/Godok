@@ -55,7 +55,7 @@
 <summary>펼쳐보기</summary>
 <div>
 
-![Untitled](https://user-images.githubusercontent.com/119986573/231785571-5861b9c7-bb17-4623-92cd-0cfd59aed0de.png)
+<img width="85%" height = "550" alt="ERD Final" src="https://user-images.githubusercontent.com/119986573/232374057-c013bf41-a298-4581-8c42-80d44f13986d.PNG">
 
 </div>
 </details>
