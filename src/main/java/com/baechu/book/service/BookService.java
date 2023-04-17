@@ -144,6 +144,9 @@ public class BookService {
 		List<BookRankDto> bookList = new ArrayList<>();
 		ValueOperations<String, List<String>> values = redisTemplate.opsForValue();
 
+		int rankcnt = 0;
+		int savebooksold =-99;
+
 		if (values.get("rank") == null) {
 
 			//일단 랭킹을 만들어 달라고 하자
@@ -174,8 +177,13 @@ public class BookService {
 				if(booksold==0){
 					bookList.add(new BookRankDto(book.get(),booksold,"추천 도서"));
 
-				}else
-				bookList.add(new BookRankDto(book.get(),booksold,String.valueOf(bookList.size()+1)+"등"));
+				}else{
+					if (savebooksold!=booksold){
+						rankcnt++;
+					}
+					bookList.add(new BookRankDto(book.get(),booksold,String.valueOf(rankcnt)+" 등"));
+					savebooksold =booksold;
+				}
 			}
 		}
 
