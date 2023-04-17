@@ -326,14 +326,12 @@
     let state = localStorage.getItem('state') == null ? '0' : localStorage.getItem('state');
     let status = [[${result.getStatus()}]]
     if (status == false && state == '0') {
-        alert("mysql로 변경")
         localStorage.setItem('state', '1')
         localStorage.removeItem('idList')
         localStorage.removeItem('sortList')
         location.href = "/search/filter?category=" + category + "&babyCategory=" + babyCategory + "&query=" + query + "&sort=" + sort + "&inventory=" + inventory + "&year=" + year + "&month=" + month + "&star=" + star + "&minPrice=" + minprice + "&maxPrice=" + maxprice + "&publish=" + publish + "&author=" + author + "&totalRow=" + totalRow
     }
     if (status == true && state == '1') {
-        alert("elastic으로 복귀")
         localStorage.setItem('state', '0');
         localStorage.removeItem('idList')
         localStorage.removeItem('sortList')
