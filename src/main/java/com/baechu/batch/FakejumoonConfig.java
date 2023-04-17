@@ -67,17 +67,14 @@ public class FakejumoonConfig {
 	public Step stepNextConditionalStepB() {
 		return stepBuilderFactory.get("stepNextConditionalStepB")
 			.tasklet((contribution, chunkContext) -> {
-				int num = 1001;
 				int bookorder = 9;
+				long[] rbs = {2415062,387099,886063,1820350,1957841,1984839,1984355,21504};
 
 				for (int i = 1; i < 9; i++) {
 					Member member = memberRepository.findById(Long.valueOf(i)).orElseThrow(
 						()-> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
 					);
-					Book book = bookRepository.findById(Long.valueOf(num++)).orElseThrow(
-						()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
-					);
-					jumoonService.fakebookorder(book,member,(bookorder--));
+					jumoonService.testbookorder(rbs[i-1],bookorder--,member);
 				}
 				return RepeatStatus.FINISHED;
 			})

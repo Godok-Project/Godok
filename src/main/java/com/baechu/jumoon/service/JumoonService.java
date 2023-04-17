@@ -40,11 +40,6 @@ public class JumoonService {
 
 
 	@Transactional
-	public void fakebookorder(Book book, Member member, Integer quantity){
-		jumoonRepository.save(new Jumoon(member,book,quantity));
-	}
-
-	@Transactional
 	public void testbookorder(Long bookid, Integer quantity, Member member){
 
 		Book book = entityManager.find(Book.class,bookid,LockModeType.PESSIMISTIC_WRITE);
