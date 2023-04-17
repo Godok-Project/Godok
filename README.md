@@ -7,14 +7,15 @@
 
 
 # 프로젝트 설명
-- 프로젝트 이름 : Godok(고독, go讀)
+- 프로젝트 이름 : Godok(고독, Go讀)
 - 프로젝트 목표
     - 검색 최적화 : 10,000,000 건 이상의 책 정보를 다양한 검색 조건에 따라 고객에게 제공
     - 동시성 제어 : 동일한 책에 대해 동시에 여러 개의 주문 발생 시 누락 없는 주문 처리
     - 검색 자동 완성
     - 기간별 랭킹 서비스 : 일정 기간 동안 판매된 책 정보를 고객에게 제공하여 책 추천
 - 프로젝트 둘러보기
-    - 배포 주소
+    - [Godok 둘러보기](http://15.165.243.65:8080/)
+    - [Godok Notion](https://great-waltz-aa7.notion.site/go-f7836e2681ca449598aeeac7401b890a)
 
 # Crew
 |-|이름|주특기|<img src="https://img.shields.io/badge/Github-181717?style=flat&logo=github&logoColor=white"/>|
