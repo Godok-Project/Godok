@@ -14,22 +14,22 @@
     </appender>
 
     <!--     properties 파일 지정-->
-    <property resource="application.properties"/>
-    <property name="LOGSTASH_URL" value="${logstash.url}"/>
+<!--    <property resource="application.properties"/>-->
+    <!--    <property name="LOGSTASH_URL" value="${logstash.url}"/>-->
 
     <!-- Logstash -->
-    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_URL}</destination>
-        <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss}]%level: %msg%n</pattern>
-        </encoder>
-    </appender>
+<!--    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--        <destination>${LOGSTASH_URL}</destination>-->
+<!--        <encoder>-->
+<!--            <pattern>[%d{yyyy-MM-dd HH:mm:ss}]%level: %msg%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
 
     <root level="WARN">
         <appender-ref ref="SLACK"/>
     </root>
     <logger name="OrderLog" level="info" additivity="false">
         <appender-ref ref="SLACK"/>
-        <appender-ref ref="LOGSTASH"/>
+<!--        <appender-ref ref="LOGSTASH"/>-->
     </logger>
 </configuration>

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baechu.book.entity.Book;
-import com.baechu.book.repository.BookRepository;
 import com.baechu.common.dto.BaseResponse;
 import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
@@ -41,11 +40,6 @@ public class JumoonService {
 
 
 	@Transactional
-	public void fakebookorder(Book book, Member member, Integer quantity){
-		jumoonRepository.save(new Jumoon(member,book,quantity));
-	}
-
-	@Transactional
 	public void testbookorder(Long bookid, Integer quantity, Member member){
 
 		Book book = entityManager.find(Book.class,bookid,LockModeType.PESSIMISTIC_WRITE);
@@ -54,7 +48,7 @@ public class JumoonService {
 		if (inven<0){
 			throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
 		}else {
-			book.orderbook(inven);
+			book.inventoryChangeBook(inven);
 			jumoonRepository.save(new Jumoon(member,book,quantity));
 		}
 	}
@@ -74,11 +68,14 @@ public class JumoonService {
 			Book book = entityManager.find(Book.class, bookId, LockModeType.PESSIMISTIC_WRITE);
 
 			Long inven = book.getInventory()-quantity;
-			if (inven<0){
+			if (inven<0){ // 재고가 0보다 작으면 잘 못된 주문
 				return BaseResponse.toResponseEntity(ErrorCode.INVALIDATION_NOT_ENOUGH);
-			}else {
+			}else if(inven ==0 ){ // 재고가 0이면 품절 -> modifiedAt 변경
 				Jumoon save = jumoonRepository.save(new Jumoon(member, book, quantity));
-				book.orderbook(inven);
+				book.inventoryChangeBook(inven);
+			}else { // 품절되지 않으면 inventory만 바꿔줌
+				Jumoon save = jumoonRepository.save(new Jumoon(member, book, quantity));
+				book.batchBook(inven);
 			}
 			orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",bookId,member.getId(),"order",quantity,book.getPrice()*quantity);
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
@@ -97,7 +94,7 @@ public class JumoonService {
 		Book book = entityManager.find(Book.class, jumoon.getBook().getId(), LockModeType.PESSIMISTIC_WRITE);
 
 		Long inven = book.getInventory()+jumoon.getQuantity();
-		book.orderbook(inven);
+		book.inventoryChangeBook(inven);
 
 		jumoonRepository.delete(jumoon);
 		orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",book.getId(),member.getId(),"cancel",jumoon.getQuantity(),book.getPrice()*jumoon.getQuantity());
