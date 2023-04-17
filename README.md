@@ -1,5 +1,5 @@
 <p align = "center">
-<img width="100%" height = "550" alt="Godok_concept_1" src="https://user-images.githubusercontent.com/119986573/231754676-2e36d1bc-7674-4370-b10f-81b3d3bc8849.PNG" >
+<img width="85%" height = "550" alt="Godok_concept_1" src="https://user-images.githubusercontent.com/119986573/232371260-1fec27ee-e74d-4be8-940a-03e3f60f0f44.png" >
 </p>
   
 # Godok 📚
@@ -48,7 +48,7 @@
 <img src="https://img.shields.io/badge/Slack-4A154B?style=flat&logo=Slack&logoColor=white"/> <img src="https://img.shields.io/badge/KaKaoTalk-FFCD00?style=flat&logo=KaKaoTalk&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=Notion&logoColor=white"/> 
 
 # 아키텍처 📐
-<img width="100%" height = "550" alt="Godok_concept_1" src="https://user-images.githubusercontent.com/119986573/231781798-e62129d3-fd4e-425e-a96c-0410898a7ae0.png" >
+<img width="100%" height = "550" alt="Godok_concept_1" src="https://user-images.githubusercontent.com/119986573/232371441-1d23c4f1-f8e9-4b40-b5f8-973d0d2c9cbc.png" >
 
 # ERD 📂
 <details>
