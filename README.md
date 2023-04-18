@@ -49,7 +49,7 @@
 <img src="https://img.shields.io/badge/Slack-4A154B?style=flat&logo=Slack&logoColor=white"/> <img src="https://img.shields.io/badge/KaKaoTalk-FFCD00?style=flat&logo=KaKaoTalk&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=Notion&logoColor=white"/> 
 
 # 아키텍처 📐
-<img width="100%" height = "550" alt="Godok_concept_1" src="https://user-images.githubusercontent.com/119986573/232371441-1d23c4f1-f8e9-4b40-b5f8-973d0d2c9cbc.png" >
+![아키텍처_실전_v3](https://user-images.githubusercontent.com/119986573/232654837-fb21873d-a2de-427d-b561-49330f95c782.png)
 
 # ERD 📂
 <details>
