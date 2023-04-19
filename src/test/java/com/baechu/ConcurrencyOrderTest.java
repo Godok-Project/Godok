@@ -9,8 +9,6 @@
 // import java.util.stream.Collectors;
 // import java.util.stream.Stream;
 //
-// import javax.persistence.EntityManager;
-//
 // import org.junit.jupiter.api.RepeatedTest;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -43,26 +41,22 @@
 // 	@Autowired
 // 	JumoonService jumoonService;
 //
-// 	@Autowired
-// 	EntityManager entityManager;
-//
 // 	@RepeatedTest(10)
 // 	void testConnection() throws InterruptedException {
 //
-//
 // 		// 방법1: Book 생성자를 만들어 주어야 한다.
-// 		// Book book = new Book("큰카테", "작은카테", "제목스", 9999, 9
-// 		// 	, "작가스", "출판스", null, 1993, 5, 20L);
-// 		// bookRepository.save(book);
+// 		Book book = new Book("큰카테", "작은카테", "제목스", 9999, 9
+// 			, "작가스", "출판스", null, 1993, 5, 20L);
+// 		bookRepository.save(book);
 //
 // 		// 방법2: 기존 DB에 있는 책을 이용하고 재고량을 20으로 설정하고 시작한다.
-// 		Book book = bookRepository.findById(1L).orElseThrow(
-// 			()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
-// 		);
-// 		book.inventoryChangeBook(20L);
+// 		// Book book = bookRepository.findById(1L).orElseThrow(
+// 		// 	()-> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+// 		// );
+// 		// book.inventoryChangeBook(20L);
 //
 // 		List<Member> members = new ArrayList<>();
-// 		for (int i = 0; i < 20; i++) {
+// 		for (int i = 0; i < 1; i++) {
 // 			String email = "testman" + i + "@ntest.com";
 // 			SigninDto signinDto = new SigninDto();
 // 			signinDto.setEmail(email);
@@ -104,6 +98,8 @@
 // 		private Book book;
 // 		private int quantity;
 // 		private CountDownLatch countDownLatch;
+//
+//
 //
 // 		public JumoonWorker(Member member, Book book, int quantity, CountDownLatch countDownLatch) {
 // 			this.member = member;
