@@ -102,8 +102,6 @@ public class JumoonService {
 					return BaseResponse.toResponseEntity(ErrorCode.CONFLICT_KEY);
 				}
 
-				Thread.sleep(10);
-
 				Member member = (Member)request.getSession()
 					.getAttribute(SessionConst.LOGIN_MEMBER);
 
