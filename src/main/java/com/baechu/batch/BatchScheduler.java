@@ -46,7 +46,8 @@ public class BatchScheduler {
 		}
 	}
 	//
-	@Scheduled(cron = "0 0 2 * * *")
+	// @Scheduled(cron = "0 0 2 * * *")
+	@Scheduled(cron = "0 25 * * * *")
 	public void resetAndRank(){
 
 		//Job parameter 설정
