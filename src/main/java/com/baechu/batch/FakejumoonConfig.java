@@ -74,7 +74,8 @@ public class FakejumoonConfig {
 					Member member = memberRepository.findById(Long.valueOf(i)).orElseThrow(
 						()-> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
 					);
-					int ranq = quantities[i-1]+(int)(Math.random()-0.5)*15;
+					int ranq = quantities[i-1]+((int)(Math.random()-0.5)*15);
+					System.out.println(rbs[i-1]+", "+ranq);
 					jumoonService.testbookorder(rbs[i-1],ranq,member);
 				}
 				return RepeatStatus.FINISHED;
