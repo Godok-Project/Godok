@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baechu.book.entity.Book;
+import com.baechu.book.repository.BookRepository;
 import com.baechu.common.dto.BaseResponse;
 import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
@@ -36,24 +37,71 @@ public class JumoonService {
 
 	private final EntityManager entityManager;
 
+	private final BookRepository bookRepository;
+
 	protected static final Logger orderLogger = LoggerFactory.getLogger("OrderLog");
+
+	// private final RedissonClient redissonClient;
 
 
 	@Transactional
-	public void testbookorder(Long bookid, Integer quantity, Member member){
+	public void testbookorder(Long bookid, Integer quantity, Member member) {
 
-		Book book = entityManager.find(Book.class,bookid,LockModeType.PESSIMISTIC_WRITE);
+		Book book = entityManager.find(Book.class, bookid, LockModeType.PESSIMISTIC_WRITE);
 
-		Long inven = book.getInventory()-quantity;
-		if (inven<0){
+		Long inven = book.getInventory() - quantity;
+
+		if (inven < 0) {
 			throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
-		}else {
-			book.inventoryChangeBook(inven);
-			jumoonRepository.save(new Jumoon(member,book,quantity));
+
+		} else {
+			book.batchBook(inven);
+			bookRepository.save(book);
+			jumoonRepository.save(new Jumoon(member, book, quantity));
 		}
+
 	}
 
-	//주문 하기
+
+
+	// public void testbookorder(Long bookid, Integer quantity, Member member) {
+	//
+	// 	final String lockname = bookid + ":lock";
+	// 	final RLock lock = redissonClient.getLock(lockname);
+	//
+	// 	try {
+	// 		if (!lock.tryLock(3, 1, TimeUnit.SECONDS)) {
+	// 			throw new RuntimeException("Rock fail");
+	// 		}
+	//
+	// 		Book book = bookRepository.findById(bookid).orElseThrow(
+	// 			() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+	// 		);
+	//
+	// 		testordermethod(book,quantity,member);
+	//
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	} finally {
+	// 		if (lock != null && lock.isLocked()) {
+	// 			lock.unlock();
+	// 		}
+	// 	}
+	// }
+	// @Transactional
+	// public void testordermethod(Book book, Integer quantity, Member member){
+	// 	Long inven = book.getInventory() - quantity;
+	//
+	// 	if (inven < 0) {
+	// 		throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
+	//
+	// 	} else {
+	// 		book.batchBook(inven);
+	// 		bookRepository.save(book);
+	// 		jumoonRepository.save(new Jumoon(member, book, quantity));
+	// 	}
+	// }
+
 	@Transactional
 	public ResponseEntity<BaseResponse> bookdemand(Long bookId, Integer quantity, HttpServletRequest request) {
 
@@ -68,19 +116,85 @@ public class JumoonService {
 			Book book = entityManager.find(Book.class, bookId, LockModeType.PESSIMISTIC_WRITE);
 
 			Long inven = book.getInventory()-quantity;
+
 			if (inven<0){ // 재고가 0보다 작으면 잘 못된 주문
-				return BaseResponse.toResponseEntity(ErrorCode.INVALIDATION_NOT_ENOUGH);
+				throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
 			}else if(inven ==0 ){ // 재고가 0이면 품절 -> modifiedAt 변경
-				Jumoon save = jumoonRepository.save(new Jumoon(member, book, quantity));
+				jumoonRepository.save(new Jumoon(member, book, quantity));
 				book.inventoryChangeBook(inven);
 			}else { // 품절되지 않으면 inventory만 바꿔줌
-				Jumoon save = jumoonRepository.save(new Jumoon(member, book, quantity));
+				jumoonRepository.save(new Jumoon(member, book, quantity));
 				book.batchBook(inven);
 			}
+
+
 			orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",bookId,member.getId(),"order",quantity,book.getPrice()*quantity);
+
+
 			return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 		}
 	}
+
+
+
+
+
+
+	//주문 하기
+	// public ResponseEntity<BaseResponse> bookdemand(Long bookId, Integer quantity, HttpServletRequest request) {
+	// 	final String lockname = bookId + "lock";
+	// 	final RLock lock = redissonClient.getLock(lockname);
+	//
+	// 	HttpSession session = request.getSession(false);
+	// 	if (session == null) {
+	// 		return BaseResponse.toResponseEntity(ErrorCode.Forbidden);
+	// 	} else {
+	//
+	// 		try{
+	// 			if (!lock.tryLock(1,3, TimeUnit.SECONDS)){
+	// 				System.out.println("키 점거 실패");
+	// 				orderLogger.info("키 점거 실패");
+	// 				return BaseResponse.toResponseEntity(ErrorCode.CONFLICT_KEY);
+	// 			}
+	//
+	// 			Member member = (Member)request.getSession()
+	// 				.getAttribute(SessionConst.LOGIN_MEMBER);
+	//
+	// 			Book book = entityManager.find(Book.class, bookId);
+	//
+	// 			bookorder(book,quantity,member);
+	//
+	//
+	// 			orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",bookId,member.getId(),"order",quantity,book.getPrice()*quantity);
+	//
+	// 		}catch (Exception e){
+	// 			e.printStackTrace();
+	// 		}finally {
+	// 			if (lock != null && lock.isLocked()){
+	// 				lock.unlock();
+	// 			}
+	// 		}
+	//
+	// 		return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
+	// 	}
+	// }
+	//
+	// @Transactional
+	// public void bookorder(Book book, Integer quantity, Member member){
+	// 	Long inven = book.getInventory()-quantity;
+	//
+	// 	if (inven<0){ // 재고가 0보다 작으면 잘 못된 주문
+	// 		throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
+	// 	}else if(inven ==0 ){ // 재고가 0이면 품절 -> modifiedAt 변경
+	// 		jumoonRepository.save(new Jumoon(member, book, quantity));
+	// 		book.inventoryChangeBook(inven);
+	// 	}else { // 품절되지 않으면 inventory만 바꿔줌
+	// 		jumoonRepository.save(new Jumoon(member, book, quantity));
+	// 		book.batchBook(inven);
+	// 	}
+	// }
+
+
 
 	@Transactional
 	public ResponseEntity<BaseResponse> cancelbook(Long jumoonId, HttpServletRequest request) {
@@ -91,15 +205,75 @@ public class JumoonService {
 			()-> new CustomException(ErrorCode.Forbidden)
 		);
 
-		Book book = entityManager.find(Book.class, jumoon.getBook().getId(), LockModeType.PESSIMISTIC_WRITE);
+		Long bookid = jumoon.getBook().getId();
+
+
+
+		Book book = entityManager.find(Book.class, bookid,LockModeType.PESSIMISTIC_WRITE);
 
 		Long inven = book.getInventory()+jumoon.getQuantity();
 		book.inventoryChangeBook(inven);
 
+		book.inventoryChangeBook(inven);
 		jumoonRepository.delete(jumoon);
+
 		orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",book.getId(),member.getId(),"cancel",jumoon.getQuantity(),book.getPrice()*jumoon.getQuantity());
+
+
 		return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
 	}
+
+
+
+	// public ResponseEntity<BaseResponse> cancelbook(Long jumoonId, HttpServletRequest request) {
+	// 	Member member = (Member)request.getSession()
+	// 		.getAttribute(SessionConst.LOGIN_MEMBER);
+	//
+	// 	Jumoon jumoon = jumoonRepository.findByIdAndMember(jumoonId, member).orElseThrow(
+	// 		()-> new CustomException(ErrorCode.Forbidden)
+	// 	);
+	//
+	// 	Long bookid = jumoon.getBook().getId();
+	//
+	// 	final String lockname = bookid + "lock";
+	// 	final RLock lock = redissonClient.getLock(lockname);
+	//
+	// 	try{
+	// 		if (!lock.tryLock(1,3, TimeUnit.SECONDS)){
+	// 			System.out.println("키 점거 실패");
+	// 			orderLogger.info("키 점거 실패");
+	// 			return BaseResponse.toResponseEntity(ErrorCode.CONFLICT_KEY);
+	// 		}
+	//
+	// 		Book book = entityManager.find(Book.class, bookid);
+	//
+	// 		Long inven = book.getInventory()+jumoon.getQuantity();
+	// 		book.inventoryChangeBook(inven);
+	//
+	// 		bookcancle(book,inven,jumoon);
+	//
+	// 		orderLogger.info("bookId:{}, memberId:{}, state:{}, quantity:{}, totalPrice:{}",book.getId(),member.getId(),"cancel",jumoon.getQuantity(),book.getPrice()*jumoon.getQuantity());
+	//
+	// 	}catch (Exception e){
+	// 		e.printStackTrace();
+	// 	}finally {
+	// 		if (lock != null && lock.isLocked()){
+	// 			lock.unlock();
+	// 		}
+	// 	}
+	// 	return BaseResponse.toResponseEntity(SuccessCode.ORDER_SUCCESS);
+	// }
+	//
+	// @Transactional
+	// public void bookcancle(Book book, Long inven, Jumoon jumoon){
+	// 	book.inventoryChangeBook(inven);
+	// 	jumoonRepository.delete(jumoon);
+	//
+	// }
+
+
+
+
 
 	//주문 리스트 만들기
 	@Transactional

@@ -9,11 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import com.baechu.book.entity.Book;
 import com.baechu.jumoon.dto.JumoonResponseDto;
-import com.baechu.jumoon.entity.Jumoon;
 import com.baechu.jumoon.service.JumoonService;
 
 import lombok.RequiredArgsConstructor;
