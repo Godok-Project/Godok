@@ -30,7 +30,7 @@ public class BatchScheduler {
 
 
 	// @Scheduled(cron = "0 5 2 * * *")
-	@Scheduled(cron = "0 20 * * * *")
+	@Scheduled(cron = "0 10 * * * *")
 	public void runJob(){
 
 		//Job parameter 설정
@@ -48,7 +48,7 @@ public class BatchScheduler {
 	}
 	//
 	// @Scheduled(cron = "0 0 2 * * *")
-	@Scheduled(cron = "30 20 * * * *")
+	@Scheduled(cron = "30 10 * * * *")
 	public void resetAndRank(){
 
 		//Job parameter 설정
