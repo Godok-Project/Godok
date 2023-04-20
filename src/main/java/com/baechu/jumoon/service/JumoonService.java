@@ -46,44 +46,43 @@ public class JumoonService {
 	private final RedissonClient redissonClient;
 
 
-	//테스트 할 때만 주석 해제해서 사용하세요
-	// public void testbookorder(Long bookid, Integer quantity, Member member) {
-	//
-	// 	final String lockname = bookid + ":lock";
-	// 	final RLock lock = redissonClient.getLock(lockname);
-	//
-	// 	try {
-	// 		if (!lock.tryLock(3, 1, TimeUnit.SECONDS)) {
-	// 			throw new RuntimeException("Rock fail");
-	// 		}
-	//
-	// 		Book book = bookRepository.findById(bookid).orElseThrow(
-	// 			() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
-	// 		);
-	//
-	// 		intrymethod(book,quantity,member);
-	//
-	// 	} catch (Exception e) {
-	// 		e.printStackTrace();
-	// 	} finally {
-	// 		if (lock != null && lock.isLocked()) {
-	// 			lock.unlock();
-	// 		}
-	// 	}
-	// }
-	// @Transactional
-	// public void intrymethod(Book book, Integer qqq, Member member){
-	// 	Long inven = book.getInventory() - qqq;
-	//
-	// 	if (inven < 0) {
-	// 		throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
-	//
-	// 	} else {
-	// 		book.batchBook(inven);
-	// 		bookRepository.save(book);
-	// 		jumoonRepository.save(new Jumoon(member, book, qqq));
-	// 	}
-	// }
+	public void testbookorder(Long bookid, Integer quantity, Member member) {
+
+		final String lockname = bookid + ":lock";
+		final RLock lock = redissonClient.getLock(lockname);
+
+		try {
+			if (!lock.tryLock(3, 1, TimeUnit.SECONDS)) {
+				throw new RuntimeException("Rock fail");
+			}
+
+			Book book = bookRepository.findById(bookid).orElseThrow(
+				() -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+			);
+
+			testordermethod(book,quantity,member);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (lock != null && lock.isLocked()) {
+				lock.unlock();
+			}
+		}
+	}
+	@Transactional
+	public void testordermethod(Book book, Integer quantity, Member member){
+		Long inven = book.getInventory() - quantity;
+
+		if (inven < 0) {
+			throw new CustomException(ErrorCode.INVALIDATION_NOT_ENOUGH);
+
+		} else {
+			book.batchBook(inven);
+			bookRepository.save(book);
+			jumoonRepository.save(new Jumoon(member, book, quantity));
+		}
+	}
 
 	//주문 하기
 	public ResponseEntity<BaseResponse> bookdemand(Long bookId, Integer quantity, HttpServletRequest request) {
