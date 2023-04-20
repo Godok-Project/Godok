@@ -191,9 +191,11 @@ public class JumoonService {
 		}else if(inven ==0 ){ // 재고가 0이면 품절 -> modifiedAt 변경
 			jumoonRepository.save(new Jumoon(member, book, quantity));
 			book.inventoryChangeBook(inven);
+			bookRepository.save(book);
 		}else { // 품절되지 않으면 inventory만 바꿔줌
 			jumoonRepository.save(new Jumoon(member, book, quantity));
 			book.batchBook(inven);
+			bookRepository.save(book);
 		}
 	}
 
