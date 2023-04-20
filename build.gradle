@@ -52,7 +52,7 @@ dependencies {
     //Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //Redisson
-    implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.17.5'
     // CurcuitBreaker
     implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
