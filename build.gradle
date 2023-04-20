@@ -28,6 +28,9 @@ configurations {
 }
 
 repositories {
+    maven {
+        allowInsecureProtocol true
+    }
     mavenCentral()
 }
 
@@ -52,7 +55,7 @@ dependencies {
     //Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //Redisson
-//    implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
 //    implementation 'org.redisson:redisson-spring-boot-starter:2.15.2'
     // CurcuitBreaker
     implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
