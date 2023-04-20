@@ -8,8 +8,6 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.baechu.book.entity.Book;
-import com.baechu.book.repository.BookRepository;
 import com.baechu.common.exception.CustomException;
 import com.baechu.common.exception.ErrorCode;
 import com.baechu.jumoon.service.JumoonService;
@@ -26,7 +24,6 @@ public class FakejumoonConfig {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-	private final BookRepository bookRepository;
 	private final MemberRepository memberRepository;
 	private final JumoonService jumoonService;
 
